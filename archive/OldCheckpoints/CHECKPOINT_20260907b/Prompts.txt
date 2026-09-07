@@ -1,0 +1,163 @@
+READY PROMPTS - paste with base_layer.png attached
+==================================================
+
+Each one is the template from ImageSwap.txt with the five rows filled in. The
+opening paragraph is the part that matters and is identical every time: it tells
+the model the waves are finished. Do not shorten it.
+
+
+-------------------------------------------------------------------------------
+1. EYE HEALTH
+-------------------------------------------------------------------------------
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already
+drawn and are final: do not move them, do not redraw them, do not restyle them,
+do not change their shape, their length, their thickness, their colour or their
+gloss, and do not extend or shorten them. The five row background colours and
+the Healthness logo at the bottom are also final and stay exactly as they are.
+Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no
+particles anywhere in the image.
+
+Add only these, composited on top:
+
+TITLE, in the empty area across the top fifth of the poster, centred, heavy bold
+condensed uppercase white type:
+  Title:    'EYE HEALTH'
+  Subtitle: 'FOODS FOR SCREEN-TIRED EYES'
+
+In each of the five rows, add three things: a clear glass bowl of food on the left, large enough to cover the left tip of that row's wave; an organ illustration on the right, large enough to cover the right tip of that row's wave; and two short labels along the bottom of that row, one under the bowl and one under the organ, in heavy bold condensed uppercase, white on the dark rows and near-black on the light rows, clear of the wave.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing - no bowl, no organ, no letter of any label, no part of the title - may come closer than one tenth of the width to the left or the right edge of the poster. A vertical social feed crops the sides, and anything in that strip is lost.
+
+  Row 1:  bowl of whole eggs with cracked yolks
+          organ: anatomical eyeball cross-section
+          labels 'EGG YOLKS' and 'MACULAR PROTECTION'
+  Row 2:  bowl of whole carrots
+          organ: simple eye with a calm night sky in the iris
+          labels 'CARROTS' and 'NIGHT VISION'
+  Row 3:  bowl of curly kale leaves
+          organ: eye beside a plain shield shape
+          labels 'KALE' and 'BLUE LIGHT FILTERING'
+  Row 4:  bowl of sliced sweet potato
+          organ: cornea cross-section
+          labels 'SWEET POTATO' and 'CORNEA HEALTH'
+  Row 5:  bowl of raw salmon fillets
+          organ: eye with one plain drop at the corner
+          labels 'SALMON' and 'DRY EYE RELIEF'
+
+The bowls and organs are photorealistic and cleanly cut out, with no glow and no
+cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+
+-------------------------------------------------------------------------------
+2. KIDNEY HEALTH
+-------------------------------------------------------------------------------
+
+[same opening paragraph and same layout instructions - copy them verbatim]
+
+  Title:    'KIDNEY HEALTH'
+  Subtitle: 'FOODS THAT FLUSH YOUR FILTERS'
+
+  Row 1:  bowl of red cranberries      organ: kidney
+          labels 'CRANBERRIES' and 'URINARY DEFENSE'
+  Row 2:  bowl of watermelon cubes     organ: bladder
+          labels 'WATERMELON' and 'NATURAL FLUSH'
+  Row 3:  bowl of parsley sprigs       organ: kidney cross-section
+          labels 'PARSLEY' and 'KIDNEY CLEANSE'
+  Row 4:  bowl of blueberries          organ: adrenal glands on a kidney
+          labels 'BLUEBERRIES' and 'ADRENAL SUPPORT'
+  Row 5:  bowl of lemon slices         organ: kidney with mineral crystals
+          labels 'LEMONS' and 'STONE PREVENTION'
+
+
+-------------------------------------------------------------------------------
+3. BRAIN POWER
+-------------------------------------------------------------------------------
+
+[same opening paragraph and same layout instructions - copy them verbatim]
+
+  Title:    'BRAIN POWER'
+  Subtitle: 'FOODS THAT FEED YOUR MIND'
+
+  Row 1:  bowl of raw salmon cubes     organ: neuron with a myelin sheath
+          labels 'SALMON' and 'NERVE MYELIN'
+  Row 2:  bowl of blackberries         organ: hippocampus inside a brain outline
+          labels 'BLACKBERRIES' and 'MEMORY CENTER'
+  Row 3:  bowl of roasted coffee beans organ: brain with the prefrontal cortex lit
+          labels 'COFFEE' and 'SHARP FOCUS'
+  Row 4:  bowl of turmeric root slices organ: amygdala in a brain cross-section
+          labels 'TURMERIC' and 'MOOD BALANCE'
+  Row 5:  bowl of sage and rosemary    organ: synapse with neurotransmitters
+          labels 'SAGE & ROSEMARY' and 'RECALL SPEED'
+
+
+-------------------------------------------------------------------------------
+4. GUT HEALTH        (attach base_gut.png)
+-------------------------------------------------------------------------------
+
+[same opening paragraph and same layout instructions - copy them verbatim]
+
+  Title:    'GUT HEALTH'
+  Subtitle: 'FOODS THAT FEED YOUR MICROBIOME'
+
+  Row 1:  bowl of kimchi                organ: stomach
+          labels 'KIMCHI' and 'GUT FLORA'
+  Row 2:  bowl of red cabbage sauerkraut organ: colon
+          labels 'SAUERKRAUT' and 'COLON BALANCE'
+  Row 3:  bowl of ginger root slices    organ: stomach cross-section
+          labels 'GINGER' and 'CALM DIGESTION'
+  Row 4:  bowl of asparagus spears      organ: small intestine with villi
+          labels 'ASPARAGUS' and 'PREBIOTIC FUEL'
+  Row 5:  bowl of kefir                 organ: intestinal lining close-up
+          labels 'KEFIR' and 'GUT BARRIER'
+
+  Palette: rows #1C2A12 / #F2EFE0, waves #FF5F3D, #7A2E6E, #FFC233, #1E6B4F, #6FD3C8
+
+
+-------------------------------------------------------------------------------
+5. LIVER RESET        (attach base_liver.png)
+-------------------------------------------------------------------------------
+
+Entries 1-4 above still show the title and the labels inside the prompt. Both
+moved out of it since: the title is drawn into the base by recolor_base.py and
+the captions go on afterwards with add_labels.py. This one is the current shape
+of the prompt - copy it, not them.
+
+  Title:    'LIVER RESET'
+  Subtitle: 'FOODS YOUR LIVER LOVES'
+
+  Row 1:  mixed leafy greens, rocket and dandelion leaves
+          Organ: whole anatomical human liver
+  Row 2:  raw beetroot chunks
+          Organ: liver with the gallbladder attached
+  Row 3:  fresh turmeric root slices
+          Organ: liver cross-section
+  Row 4:  raw broccoli florets
+          Organ: liver with its bile duct tree
+  Row 5:  roasted coffee beans
+          Organ: liver lobule close-up
+
+  Each row carries the bowl description in full - 'seen from a low three-quarter
+  angle in perspective, its rim an ellipse and the side of the bowl clearly
+  visible, the food heaped above the rim'. See ImageSwap.txt for why.
+
+  Captions: 'LEAFY GREENS|FAT BREAKDOWN,BEETROOT|BILE FLOW,TURMERIC|REPAIR
+            SUPPORT,BROCCOLI|DETOX ENZYMES,COFFEE|LOWER LIVER FAT'
+
+  Palette: rows #122238 / #EFE6D2
+           waves #3FE07F, #A8123F, #FFC21F, #0F6F5C, #FF6A2A
+
+
+-------------------------------------------------------------------------------
+ABOUT COLOURS
+-------------------------------------------------------------------------------
+
+The wave colours and the row background colours are not in the prompt, because
+they are already in base_layer.png and the prompt's job is to leave them alone.
+
+For a different palette, recolour the base layer rather than asking the
+generator for it. The same ribbon_mask.png still applies: the mask is geometry,
+and recolouring does not move a single pixel. So one mask covers every colour
+scheme you ever make, and each palette is one base layer file.

@@ -1,0 +1,85 @@
+ADDING A TOPIC TO base_layer.png
+================================
+
+The base layer already contains everything that must never change: the five row
+background stripes, the five liquid waves, and the Healthness logo. The waves
+are the animated part, and the animation reads them from ribbon_mask.png, which
+was authored from this exact file. If a wave moves by even a few pixels, the
+mask no longer fits and the video breaks.
+
+So the generator's job is only to ADD: bowls on the left, organs on the right,
+a label under each, and the title at the top.
+
+Attach base_layer.png as the input image and use the prompt below.
+
+
+GEOMETRY OF THE BASE LAYER  (1536 x 2752)
+
+  waves span x 306-1212          = 20% to 79% of the width
+  row 1 wave  y  563- 798        row stripes start at 0, 865, 1220, 1595, 1952
+  row 2 wave  y  931-1166
+  row 3 wave  y 1295-1530
+  row 4 wave  y 1658-1893
+  row 5 wave  y 2020-2255
+  empty header above row 1       y 0-563    (top 20% - the title goes here)
+  logo                           y ~2494-2576, centred
+
+  The bowl must cover the left tip of the wave, the organ the right tip.
+  Bowls sit in the left 22% of the width, organs in the right 22%.
+  Labels sit below the wave inside their own row, never on top of it.
+
+
+=== THE PROMPT ===  (fill the five rows, paste with base_layer.png attached)
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already
+drawn and are final: do not move them, do not redraw them, do not restyle them,
+do not change their shape, their length, their thickness, their colour or their
+gloss, and do not extend or shorten them. The five row background colours and
+the Healthness logo at the bottom are also final and stay exactly as they are.
+Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no
+particles anywhere in the image.
+
+Add only these, composited on top:
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle, a heading or
+any text at the top of the poster. The heading you can see is final and must not
+be moved, restyled, recoloured or covered.
+EACH ROW HAS TWO FAINT CIRCLES, one on the left and one on the right. They mark
+exactly where the bowl and the organ go. Place the bowl centred in the left
+circle and the organ centred in the right circle, each large enough to cover its
+circle completely, so that no part of either circle is still visible in the
+finished image. The circles sit over the two ends of the wave, so filling them
+puts the food and the organ in contact with the liquid.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing - no bowl, no organ, no letter of any label, no part of the title - may come closer than one tenth of the width to the left or the right edge of the poster. A vertical social feed crops the sides, and anything in that strip is lost.
+
+  Row 1:  bowl of <FOOD 1>      organ <ORGAN 1>      labels '<LABEL 1L>' and '<LABEL 1R>'
+  Row 2:  bowl of <FOOD 2>      organ <ORGAN 2>      labels '<LABEL 2L>' and '<LABEL 2R>'
+  Row 3:  bowl of <FOOD 3>      organ <ORGAN 3>      labels '<LABEL 3L>' and '<LABEL 3R>'
+  Row 4:  bowl of <FOOD 4>      organ <ORGAN 4>      labels '<LABEL 4L>' and '<LABEL 4R>'
+  Row 5:  bowl of <FOOD 5>      organ <ORGAN 5>      labels '<LABEL 5L>' and '<LABEL 5R>'
+
+The bowls and organs are photorealistic and cleanly cut out, with no glow and no
+cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+=== END OF PROMPT ===
+
+
+NEGATIVE PROMPT, if the tool offers a separate field:
+
+changed liquid, redrawn wave, different wave shape, moved wave, recoloured wave,
+extra liquid, droplets, splash, spray, particles, sparkles, glow, halo, drop
+shadow, changed background colour, changed logo, watermark
+
+
+AFTER GENERATING
+
+Check the wave before animating:
+
+    .venv/bin/python check_base.py new_poster.png
+
+It reports how far each wave has drifted from the base layer. Under about two
+pixels the authored mask still fits. Above that, regenerate rather than animate:
+the animation cannot correct a wave the generator has redrawn.

@@ -24,9 +24,9 @@ poster move is here, and **nowhere else**.
 overlays, its prompt, its palettes, its output.
 
 This is not tidiness. Copies were how the same five tools ended up at three
-different generations at once: on 7 September 2026 MikroVersion was running
+different generations at once: on 7 September 2026 Micro was running
 `add_labels.py` from the checkpoint of the 7th, `make_base.py` from the one after
-it and `check_base.py` from the 6th, while ExerciseVersion had quietly changed
+it and `check_base.py` from the 6th, while Exercise had quietly changed
 all five. Neither had the two fixes made that morning, so in both of them the
 liquid still broke where it met the organ.
 
@@ -54,3 +54,30 @@ passed in explicitly and is written where the caller stands.
 Change any of that and every `base_<topic>.png` in every variant has to be
 rebuilt, because `ribbon_mask.png` no longer fits. That is the one change that is
 never cheap.
+
+## The overlay seam
+
+A variant that wants to draw on top of the finished frames does not fork the
+animator. It writes a module with three functions and names it:
+
+    ../../engine/flowanim.py poster.png --overlay micro_overlay ...
+
+    add_arguments(parser)   its own flags, added before the final parse
+    build(args, ctx)        whatever it needs to draw with, or None to do nothing
+    draw(frame, plan, t)    on the finished frame, t in seconds
+
+`ctx` carries `W`, `H`, `fps`, `seconds`, `frames`, `layout`, `geo`, `base`,
+`mask`, and `curves` - one function per row giving the wave's own centre line at
+any x, which is what an overlay needs to sit *in* the liquid rather than on a row
+centre the wave crosses twice and sits on nowhere.
+
+Modules are imported from the directory the command was run in, so a variant's
+`work/` folder is where they live. Several can be named, comma separated, and
+they draw in that order: `--overlay body_overlay,muscle_overlay` puts the body
+down first so a badge is never behind it.
+
+## sfx/
+
+The sound shelf, shared. `flow_soft_8s.m4a` under the food clips,
+`lift_bed_8s.m4a` under the exercise ones, both normalised to -18 LUFS, both CC0
+with the sources in `LICENCES.md`.

@@ -1,0 +1,112 @@
+ADDING A TOPIC TO base_<topic>.png
+==================================
+
+The base layer already contains everything that must never change: the five row
+background stripes, the five liquid waves, the title and the Healthness logo.
+The waves are the animated part, and the animation reads them from
+ribbon_mask.png, which was authored from this exact geometry. If a wave moves by
+even a few pixels, the mask no longer fits and the video breaks.
+
+So the generator's job is only to ADD: a bowl on the left of every row and an
+organ on the right. No text of any kind - the title is drawn into the base and
+the row captions go on afterwards with add_labels.py.
+
+Attach the base for the topic (base_<topic>.png, not base_layer.png) and use the
+prompt below.
+
+
+GEOMETRY OF THE BASE LAYER  (1536 x 2752)
+
+  waves span x 229-1289          = 15% to 84% of the width
+  row 1 wave  y  491- 702        row stripes start at 412, 825, 1238, 1649, 2063
+  row 2 wave  y  904-1115        each stripe 413 tall
+  row 3 wave  y 1317-1527
+  row 4 wave  y 1729-1940
+  row 5 wave  y 2142-2353
+  title                          y ~160-368, drawn into the base
+  logo                           y ~2494-2576, centred
+
+  guide circles   r 137, centred x 250 and x 1270, one per row over each wave tip
+  caption bars    380 x 78, centred under each circle, 20px below it
+
+  Both tips of the wave sit on a circle centre, within a pixel, so a bowl that
+  fills its circle takes the liquid in at its middle.
+
+  The bowl fills the left circle, the organ the right one. The caption bars stay
+  empty: add_labels.py writes into them.
+
+  The safe area in the prompt is one FOURTEENTH of the width, not one tenth.
+  The circles reach x 112 and x 1408, and one tenth is 154 - so a tenth tells the
+  model to keep the bowl out of the very circle it is told to fill, and it obeys
+  the sentence rather than the mark. A fourteenth is 110, just outside them.
+
+
+=== THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the bowls or the organs, nothing at all. Text is added later, outside the generator.
+
+EACH ROW HAS TWO FAINT CIRCLES and, under each circle, A FAINT BAR. Place the bowl centred in the left circle and the organ centred in the right circle, each large enough to cover its circle completely, so that no part of either circle is still visible. The bars are reserved for text that is added later: keep them completely clear, do not cover them with the bowl, the organ or anything else, and do not draw on them.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster.
+
+Every one of the five bowls is shot from a low three-quarter angle. Not one of them is seen from above.
+
+Row 1: a bowl of <FOOD 1>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: <ORGAN 1>.
+
+Row 2: a bowl of <FOOD 2>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: <ORGAN 2>.
+
+Row 3: a bowl of <FOOD 3>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: <ORGAN 3>.
+
+Row 4: a bowl of <FOOD 4>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: <ORGAN 4>.
+
+Row 5: a bowl of <FOOD 5>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: <ORGAN 5>.
+
+The liquid leaves each bowl at its near rim on the right-hand side. The bowls and organs are photorealistic and cleanly cut out, with no glow and no cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+=== END OF PROMPT ===
+
+
+WHY THE PROMPT LOOKS REPETITIVE
+
+Every line of it was paid for once.
+
+- The camera angle is stated twice: once for all five bowls, then again inside
+  every row. Said only at the top it holds for the first row or two and the rest
+  come out flat, seen straight down - a disc of food, not a bowl. Said only in
+  the rows it is ignored as decoration. Both, and all five are in perspective.
+- "its rim an ellipse and the side of the bowl clearly visible, the food heaped
+  above the rim" is the same instruction made checkable. A three-quarter angle is
+  a phrase the model can nod at; an elliptical rim and a visible side wall are
+  things it either draws or does not.
+- The no-text rule is split in two - the title, then everything else. Combined in
+  one paragraph the model reads it as being about the heading only and still puts
+  a word under each bowl.
+- The bars are described in the same breath as the circles, because they are the
+  same kind of mark: one to fill, one to leave alone. Mentioned in a paragraph of
+  their own they get treated as part of the background and covered.
+
+
+NEGATIVE PROMPT, if the tool offers a separate field:
+
+text, letters, caption, label, title, top-down view, overhead shot, flat lay,
+bowl seen from above, changed liquid, redrawn wave, different wave shape, moved
+wave, recoloured wave, extra liquid, droplets, splash, spray, particles,
+sparkles, glow, halo, drop shadow, changed background colour, changed logo,
+watermark
+
+
+AFTER GENERATING
+
+Check the wave before animating:
+
+    .venv/bin/python check_base.py new_poster.png --base base_<topic>.png
+
+It reports how far each wave has drifted from the base layer. Under about two
+pixels the authored mask still fits. Above that, regenerate rather than animate:
+the animation cannot correct a wave the generator has redrawn.

@@ -14,66 +14,10 @@ Tune with --x0/--x1 (where the ribbons live, as a fraction of width) and
 --amp (how strong the sheen is).
 """
 import argparse
-from pathlib import Path
-import importlib, json, os, subprocess, sys
+import json, subprocess, sys
 import numpy as np
 from PIL import Image, ImageFilter
 from scipy import ndimage
-
-
-# The mask lives beside this script. --base and --anchored stay explicit: those
-# are the topic's own files and belong to whichever folder is calling.
-_HERE = Path(__file__).resolve().parent
-
-
-def wave_centre_curves(geo, layout, W):
-    """One function per row giving the wave's own centre line at any x.
-
-    An overlay that wants to sit *in* the liquid - a badge, a marker - needs the
-    line the wave actually follows, not the row's centre, which the wave crosses
-    twice and sits on nowhere. Both variants worked this out for themselves, in
-    the same fifteen lines, from geometry that only this file has. So it lives
-    here and is handed over.
-    """
-    L = json.load(open(layout))
-    k = W / 1536.0
-    curves = []
-    for row in L["rows"]:
-        cy = row["cy"] * k
-        g = min(geo, key=lambda g: abs(0.5 * (g["top"].mean() + g["bot"].mean()) - cy))
-        # top and bot are stored over the ribbon's own column range, so the index
-        # is x - x0 and not x.
-        mid, x0 = 0.5 * (g["top"] + g["bot"]), g["x0"]
-        curves.append(lambda x, mid=mid, x0=x0:
-                      float(mid[int(np.clip(round(x) - x0, 0, len(mid) - 1))]))
-    return curves
-
-
-def load_overlays(spec):
-    """Import the overlay modules named on the command line, from the caller.
-
-    This is the seam that keeps one animator. Micro and Exercise
-    each had their own fork of this file - 77 and 152 lines apart - and the whole
-    of both differences was: import a module, add its flags, build a plan, draw it
-    on the finished frame. So the animator now does those four things for any
-    module that offers three functions, and neither variant needs a copy.
-
-        add_arguments(parser)   optional, its own flags
-        build(args, ctx)        returns whatever it wants to draw with, or None
-        draw(frame, plan, t)    on the finished frame, t in seconds
-
-    Modules are imported from the directory the command was run in, which is the
-    variant's own folder.
-    """
-    if not spec:
-        return []
-    sys.path.insert(0, os.getcwd())
-    mods = []
-    for name in spec.split(","):
-        name = name.strip()
-        if name:
-            mods.append(importlib.import_module(name))
-    return mods
 
 
 def autocrop(img, thresh=24):
@@ -696,8 +640,7 @@ def main():
     p.add_argument("--gap", type=int, default=20, help="vertical hole that still counts as body")
     p.add_argument("--pad", type=int, default=3)
     p.add_argument("--autocrop", action="store_true")
-    p.add_argument("--mask", default=str(_HERE / "ribbon_mask.png"),
-                   help="use this mask file instead of detecting the ribbons")
+    p.add_argument("--mask", help="use this mask file instead of detecting the ribbons")
     p.add_argument("--base", help="base layer without the guide circles")
     p.add_argument("--anchored", help="the base with the circles, so leftovers can be removed")
     p.add_argument("--halo", type=int, default=1,
@@ -713,14 +656,6 @@ def main():
     p.add_argument("--anchor-r-x", dest="anchor_r_x", type=float, default=1270)
     p.add_argument("--save-mask", help="write the detected mask here for reuse")
     p.add_argument("--mask-only", action="store_true")
-    p.add_argument("--overlay", help="comma-separated modules in the calling folder that "
-                                     "draw on top of each finished frame")
-    # Two passes: the overlay has to be imported before it can add its own flags,
-    # and it is named by one of the flags.
-    overlays = load_overlays(p.parse_known_args()[0].overlay)
-    for m in overlays:
-        if hasattr(m, "add_arguments"):
-            m.add_arguments(p)
     args = p.parse_args()
 
     img = Image.open(args.poster).convert("RGB")
@@ -967,16 +902,6 @@ def main():
     n1, n2 = striations(H)
     mask3 = mask[:, :, None]
 
-    plans = []
-    if overlays:
-        ctx = dict(W=W, H=H, fps=args.fps, seconds=args.seconds, frames=frames,
-                   layout=args.layout, geo=geo, base=base, mask=mask,
-                   curves=wave_centre_curves(geo, args.layout, W) if args.layout else None)
-        for m in overlays:
-            pl = m.build(args, ctx)
-            if pl:
-                plans.append((m, pl))
-
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(args.fps),
            "-i", "-", "-c:v", "libx264", "-preset", "slow", "-crf", "16",
@@ -1005,10 +930,6 @@ def main():
         if drops:
             draw_droplets(out, drops, (drop_cycles * t) % 1.0)
         out[protect] = base[protect]
-        # Last, and outside the protect pass: an overlay draws on the finished
-        # frame, so nothing in the liquid pipeline has to know it exists.
-        for m, pl in plans:
-            m.draw(out, pl, f / args.fps)
         ff.stdin.write(np.clip(out, 0, 255).astype(np.uint8).tobytes())
 
     ff.stdin.close()
