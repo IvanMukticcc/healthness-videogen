@@ -40,7 +40,9 @@ This is its own git repository — `healthness-videogen`, private, branch `main`
    Describe what is missing and what you would change. Do not edit `engine/`, do
    not copy a tool into your folder to edit it there, and do not work around it
    with a patch script. Almost always the answer is an overlay module in your own
-   `work/` - `engine/README.md` describes the seam - and when it genuinely is not,
+   `work/`, and there are two seams for it: `build` and `draw` put something on
+   top of the finished frames, and `refine_art` corrects what the animator thinks
+   is artwork. `engine/README.md` describes both. When it is genuinely neither,
    the engine change is made from the root, by whoever is looking after all three.
 
 4. **If you are working in `engine/`, you are changing all three variants.**

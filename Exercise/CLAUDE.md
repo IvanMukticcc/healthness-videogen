@@ -28,5 +28,6 @@ from in here is a change made to two clips nobody asked you to touch.
 
 If this variant needs something the engine does not do, **say so and stop**: name
 what is missing and what you would change. Do not edit `engine/`, do not copy a
-tool in here to edit it, and do not patch around it. The seam meant for this is
-`--overlay`, described in `engine/README.md`. See `../CLAUDE.md` rule 3.
+tool in here to edit it, and do not patch around it. The seams meant for this are
+`--overlay` with `build` and `draw`, and `refine_art` when the animator has
+misread what is artwork. Both are in `engine/README.md`. See `../CLAUDE.md` rule 3.
