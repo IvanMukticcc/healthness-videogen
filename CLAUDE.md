@@ -56,8 +56,11 @@ This is its own git repository — `healthness-videogen`, private, branch `main`
    clips made after it, never backwards. Nothing already in an `OUTPUT/<DD.MM>/`
    folder is rebuilt because a later clip does it better. Do not offer to.
 
-6. **Every clip ships with sound.** The silent pass is an intermediate and is
-   rendered to `/tmp`. Only the `_sfx` cut is written into `OUTPUT/`.
+6. **Every clip ships with sound.** The silent pass is an intermediate: keep it
+   in `work/` or in `/tmp`, whichever your render script does - both variants'
+   `render.sh` need it on disk to probe its duration before muxing. What matters
+   is that it **never lands in `OUTPUT/`**, where it is only something to mistake
+   for the finished clip later.
 
 7. **`INPUT/` holds base images and nothing else.** The base is the one file a
    person opens - it gets attached to the prompt. Its clean copy and its layout

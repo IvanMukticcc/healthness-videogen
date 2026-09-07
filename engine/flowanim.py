@@ -700,6 +700,9 @@ def main():
                    help="use this mask file instead of detecting the ribbons")
     p.add_argument("--base", help="base layer without the guide circles")
     p.add_argument("--anchored", help="the base with the circles, so leftovers can be removed")
+    p.add_argument("--art-cap", type=float, default=0.25,
+                   help="how much of a row's wave the artwork search may claim by "
+                        "connectivity before it is treated as a repainted wave")
     p.add_argument("--halo", type=int, default=1,
                    help="seal the feathered ring the generator leaves inside the circles")
     p.add_argument("--halo-edge", type=float, default=15,
@@ -888,7 +891,34 @@ def main():
             blob = lab_a == j
             if blob.sum() > 800:
                 art |= blob
-        art = ndimage.binary_dilation(art, np.ones((41, 41))) & cand
+        # Growing the seed back over the overlap by a fixed 41x41 reaches the
+        # glass along the ribbon's two edges and stops short of its middle - the
+        # centre of the band is ~74px from the nearest seed at 1080 wide. So a
+        # slice of bowl rim lying across the middle of the wave is left unmarked,
+        # is read as liquid surface, and the advection carries it downstream: it
+        # surfaces about 0.2s in and travels at the wave's own speed. Measured on
+        # two posters and ten rows, that slice is 6.5% to 8.3% of the row's wave.
+        #
+        # Connectivity inside cand reaches all of it, because the rim is one blob
+        # with the bowl. What connectivity risks is the case the fixed dilation
+        # was defending against: a poster whose wave the generator repainted,
+        # where the whole ribbon is in cand and one component would swallow it.
+        # So the growth is taken per row and only if it claims less than art-cap
+        # of that row's wave - 6.5-8.3% against a cap of 25% is not a close call,
+        # and a repainted wave is not a small one.
+        fixed = ndimage.binary_dilation(art, np.ones((41, 41))) & cand
+        grown = ndimage.binary_propagation(art, mask=cand)
+        wave_px = mask > 0.4
+        art = fixed | (grown & ~wave_px)
+        lab_w, n_w = ndimage.label(wave_px)
+        for j in range(1, n_w + 1):
+            w = lab_w == j
+            add = (grown & w & ~fixed).sum()
+            if add <= args.art_cap * w.sum():
+                art |= grown & w
+            else:
+                print(f"    row {j}: connectivity would claim {100 * add / w.sum():.0f}% of "
+                      f"the wave, over the {100 * args.art_cap:.0f}% cap - kept the fixed growth")
         art = ndimage.binary_dilation(art, np.ones((5, 5)))
         # Artwork is solid, so a hole inside it is still artwork. Everything
         # above finds artwork by how far it is from the base or by how much
@@ -899,7 +929,21 @@ def main():
         # stripe it sat on. It is enclosed by the artwork around it, though, and
         # that is enough to know what it is - the same argument as the white bowl
         # on a pale stripe, which detail caught and colour did not.
-        art = ndimage.binary_fill_holes(art)
+        # Bounded, because binary_fill_holes fills any enclosed region and the
+        # mask already contains both guide circles and all ten caption bars: if a
+        # poster's artwork ever bridged the two circles of a row, the wave
+        # between them would be an enclosed hole and would be filled - frozen,
+        # silently. A hole worth filling is a patch inside one piece of artwork,
+        # so it is smaller than a guide circle; the cap is the same fraction of a
+        # row's wave that the growth above uses.
+        holes = ndimage.binary_fill_holes(art) & ~art
+        lab_h, n_h = ndimage.label(holes)
+        if n_h:
+            cap = args.art_cap * float(np.median([(lab_w == j).sum() for j in range(1, n_w + 1)]))
+            for j in range(1, n_h + 1):
+                h = lab_h == j
+                if h.sum() <= cap:
+                    art |= h
 
         # The bowl and the organ always sit on the guide circles - that is what
         # the circles are for. Where one covers the wave, the liquid underneath is
