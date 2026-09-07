@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""
+body_overlay.py - the body on the right of every row, and the muscle igniting on it.
+
+`bodymap.py` draws the figure; this decides where it sits, which way it faces,
+and what happens on the frame a badge lands. It is the half of the idea that the
+badges alone do not carry: a ball saying LATS is a word, and a word is read once.
+The same red arriving on the back of a figure at the same instant is a place, and
+a place is what the next row is compared against.
+
+The disc under it is the guide circle the base already draws - the one the bowl
+used to sit in - filled with the row's own background colour. Without it the
+ghost is a translucent figure standing on a glossy wave and the two read as one
+smeared shape; with it the wave ends where the organ used to end it, and the
+figure has a ground that is the same on every row whatever colour the row is.
+
+The ignition is a flash and then a settle, on the badge's own cue: white-hot for
+about a tenth of a second, then down onto the tier colour with a low glow left
+around it. A muscle that simply appears is a state; a muscle that flares is an
+event, and it is the same event as the badge landing and the hit sounding.
+"""
+import json
+import os
+
+import numpy as np
+from PIL import Image, ImageFilter
+
+import bodymap
+import muscles
+from muscle_overlay import blend
+
+FLASH = 0.13        # seconds of white-hot
+SETTLE = 0.34       # and how long it takes to come down onto the colour
+GLOW = 0.55         # how far the bloom reaches, as a fraction of the muscle
+LIFT = 0.62         # how far towards white the flash goes
+
+
+def _disc(r, rgb, light, feather=2.0):
+    """The ground the figure stands on: the row's colour, a touch away from it,
+    with a rim. Not the row's exact colour - a disc that matches its background
+    perfectly is invisible, and the point is to end the wave somewhere."""
+    D = int(round(r * 2))
+    yy, xx = np.mgrid[0:D, 0:D]
+    d = np.hypot(xx - (D - 1) / 2.0, yy - (D - 1) / 2.0)
+    a = np.clip((r - 1 - d) / feather, 0, 1)
+    shift = -16 if not light else 14
+    body = np.clip(np.float32(rgb) + shift, 0, 255)
+    rim = np.clip((d - (r - 3.0)) / 2.0, 0, 1) * np.clip((r - 1 - d) / feather, 0, 1)
+    edge = np.clip(np.float32(rgb) + (52 if not light else -44), 0, 255)
+    col = body[None, None, :] * (1 - rim[:, :, None]) + edge[None, None, :] * rim[:, :, None]
+    return np.dstack([col, a * 255.0 * 0.97]).astype(np.float32)
+
+
+def plan(rows, layout, W, H, times, stagger=0.09, base=None, scale=2.20,
+         dy=0.0, disc=True):
+    """One entry per row: the disc, the figure, and one plane per muscle with the
+    instant it lights.
+
+    `scale` is the figure's height as a multiple of the circle's radius. At 2.20
+    the head and the feet run a little past the disc, which is what stops the
+    figure reading as a sticker inside a button.
+    """
+    L = json.load(open(layout)) if isinstance(layout, str) else layout
+    k = W / 1536.0
+    out = []
+    for i, (names, row) in enumerate(zip(rows, L["rows"])):
+        if not names:
+            continue
+        t0 = times[i] if i < len(times) else times[-1]
+        r = row["r"] * k
+        cx = L["anchor_r"] * k
+        cy = row["cy"] * k + dy * k
+        light = bool(row["light"])
+        view = muscles.view_for(names)
+
+        bg = (30, 34, 42)
+        if base is not None:
+            # The row's own colour, read where nothing is ever drawn: the left
+            # margin of the stripe. Sampling near the circle picks up the wave.
+            a, b = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
+            bg = tuple(np.median(base[a + 8:b - 8, 4:20].reshape(-1, 3), axis=0))
+
+        # `scale` is the figure's HEIGHT against the radius, not against the
+        # diameter: at 2.20 the figure stands 296px tall in a 275px circle, so
+        # the head and the feet run about ten pixels past it. Read as a diameter
+        # this is 4.4r and the arms hang a quarter of the poster out either side.
+        size = int(round(r * scale))
+        tiers = {m: t for m, t in names}
+        fig, planes = bodymap.layers(view, size, tiers, light=light,
+                                     height=size * 0.98, top=size * 0.01)
+
+        muscle = []
+        for j, (m, tier) in enumerate(names):
+            p = planes.get(m)
+            if p is None:
+                # Nothing of it shows from this side. The badge still lands and
+                # still sounds - but it is a dead beat on the body, so say so
+                # rather than letting it pass unnoticed in a finished cut.
+                print(f"    r{i + 1}: {muscles.label(m)} does not show from the "
+                      f"{view} - its badge lands over an unlit body")
+                continue
+            g = Image.fromarray(np.clip(p, 0, 255).astype(np.uint8), "RGBA") \
+                     .filter(ImageFilter.GaussianBlur(size * 0.035))
+            muscle.append(dict(plane=p, glow=np.array(g).astype(np.float32),
+                               t=t0 + j * stagger, name=m, tier=tier))
+
+        out.append(dict(cx=cx, cy=cy, r=r, size=size, view=view, fig=fig,
+                        muscle=muscle, light=light,
+                        disc=_disc(r, bg, light) if disc else None))
+    return out
+
+
+def paint(frame, pl, secs):
+    """The body is there from the first frame; only the muscles are timed. A
+    figure that fades in with its first badge leaves the right third of the
+    poster empty for a second, and a feed's first frame is the whole audition."""
+    for b in pl:
+        if b["disc"] is not None:
+            d = b["disc"]
+            blend(frame, d, 1.0,
+                  int(round(b["cx"] - d.shape[1] / 2.0)),
+                  int(round(b["cy"] - d.shape[0] / 2.0)))
+        x0 = int(round(b["cx"] - b["size"] / 2.0))
+        y0 = int(round(b["cy"] - b["size"] / 2.0))
+        blend(frame, b["fig"], 1.0, x0, y0)
+        for m in b["muscle"]:
+            s = secs - m["t"]
+            if s < 0:
+                continue
+            # Up in a couple of frames, then the flash decays. Squared, so most
+            # of the white is gone before the badge has finished its overshoot
+            # and the two events read as one.
+            up = min(1.0, s / 0.05)
+            f = max(0.0, 1.0 - max(0.0, s - FLASH) / SETTLE) ** 2
+            pl_ = m["plane"]
+            if f > 0.02:
+                lit = pl_.copy()
+                lit[:, :, :3] = lit[:, :, :3] * (1 - LIFT * f) + 255.0 * (LIFT * f)
+                blend(frame, lit, up, x0, y0)
+            else:
+                blend(frame, pl_, up, x0, y0)
+            g = 0.30 + 0.70 * f
+            if g > 0.02:
+                blend(frame, m["glow"], up * g * GLOW, x0, y0)
+
+
+def cues(pl):
+    """The instants a muscle lights, for anything that has to agree with them."""
+    return sorted(m["t"] for b in pl for m in b["muscle"])

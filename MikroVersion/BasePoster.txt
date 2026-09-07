@@ -1,0 +1,52 @@
+THE BASE POSTER - what the liquid layer has to satisfy so the animation is
+identical every time.
+
+The idea: the liquid is drawn ONCE and never regenerated. Every future poster
+reuses that exact layer; only the bowls, the organs and the labels change. The
+animation tool then needs no detection at all - the mask is authored once from
+this image and loaded from a file.
+
+
+WHAT MUST BE TRUE OF THE LIQUID
+
+1. CONNECTED. One unbroken ribbon per row. It starts inside the bowl and ends
+   inside the organ, touching both. Nothing floating: no droplets, no splash
+   crown, no spray, no thin fingers off the tip.
+2. IDENTICAL IN ALL FIVE ROWS. The same wave, the same thickness, the same
+   start and end points, only mirrored in colour. Copy one row four times.
+3. THICK ENOUGH. At least 60 px of height at 1080 wide, everywhere along its
+   length. Thin necks are what break up under any deformation.
+4. NO OVERLAP WITH TYPE. Keep at least 40 px of clear space between the lowest
+   point of the ribbon and the top of the label underneath it. In the current
+   poster two rows have 4 and 6 px, and that alone forced half the complexity.
+5. FLAT ROW BACKGROUNDS. One solid colour per row, edge to edge. No gradient.
+6. INTERNAL DETAIL IS WELCOME. Long highlights and shading along the ribbon are
+   what the eye follows when the surface flows. A perfectly smooth ribbon
+   animates correctly but reads as calmer - it is the one row in the current
+   poster that looks weaker than the rest.
+
+
+THE WORKFLOW THAT KEEPS IT CONSISTENT
+
+Do not regenerate the whole poster each time. Build it in layers:
+
+  layer 1   background stripes + the five liquid ribbons   <- FROZEN, reused
+  layer 2   bowls, organs, labels, title, logo             <- changes per topic
+
+Export layer 1 once at 1080x1920. Everything after that is compositing, so the
+liquid is pixel-identical by construction rather than by luck. This is also what
+removes the model's inconsistency from the loop entirely: the part that has to
+be perfect is never regenerated.
+
+
+IMAGE PROMPT FOR THE BASE LAYER
+
+Flat vector infographic poster, 9:16 vertical, five equal horizontal rows.
+In every row a single smooth liquid ribbon runs from the left edge to the right
+edge of the row, in one continuous S-curve of even thickness, with clean sharp
+edges and a soft lengthwise highlight along its centre. The ribbon is one solid
+connected band: nothing detached, no droplets, no splash, no spray, no thin
+tips. Each row has one flat matte background colour, edge to edge, no gradient.
+The five ribbons are the same shape in every row, differing only in colour.
+Leave the left third and the right quarter of each row empty. No text, no bowls,
+no icons, no logo - only the backgrounds and the five ribbons.

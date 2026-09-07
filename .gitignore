@@ -1,0 +1,35 @@
+# What git carries here is the engine and the recipes. Everything else in these
+# folders is either something the generator handed back or something a tool can
+# make again in seconds, and neither belongs in history.
+
+.venv/
+__pycache__/
+work/
+.DS_Store
+
+# the generated posters, and the finished videos
+*.jpeg
+*.jpg
+*.mp4
+OUTPUT/
+INPUT/
+
+# derived: base_<topic>.png and its two companions come out of one
+# recolor_base.py call whose palette is written down in Prompts.txt
+base_*.png
+*_clean.png
+*_labelled.png
+*_layout.json
+
+# except the engine's own, which are authored and cannot be derived from anything
+!engine/base_layer.png
+!engine/ribbon_mask.png
+!engine/ribbon_rgba.png
+!engine/source_wave_poster.jpeg
+
+# checkpoints are commits now. The folders stay on disk; only their reasoning
+# is worth carrying, and the copies of the engine inside them are not
+CHECKPOINT_*/*
+!CHECKPOINT_*/README.md
+OldCheckpoints/*/*
+!OldCheckpoints/*/README.md
