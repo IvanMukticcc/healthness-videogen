@@ -7,9 +7,15 @@ same idea, one engine underneath them.
 
 Every variant has the same three, and only two of them are yours:
 
-    INPUT/     the poster the image generator hands back. Drop it here
-    OUTPUT/    the finished clip, in a folder for the day. Take it from here
-    work/      everything else
+    INPUT/     the base image for the topic, and nothing else. Take it from here
+               and attach it to the prompt
+    OUTPUT/    the finished clip, in a folder for the day. Take it from here too
+    work/      everything else, including the poster that comes back
+
+`INPUT/` holds `base_<topic>.png` and no other kind of file. Its clean copy and
+its layout are working files that only the tools read, so `recolor_base.py
+--work` leaves them in `work/` however the base is addressed. A folder with one
+kind of thing in it needs no reading.
 
 The prompt is not a file. It is written in the terminal for the topic at hand,
 because it changes with every poster and a saved copy of it goes stale in an

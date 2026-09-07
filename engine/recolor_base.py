@@ -11,6 +11,7 @@ untouched here, so ribbon_mask.png still fits: one mask covers every palette.
                             -o base_bloodflow.png
 """
 import argparse
+import os
 from pathlib import Path
 import json
 import numpy as np
@@ -22,6 +23,20 @@ from scipy import ndimage
 # is run from. A variant folder calls ../engine/ without keeping a copy of them,
 # and a copy is how the tools drifted into three different generations at once.
 _HERE = Path(__file__).resolve().parent
+
+
+
+def _work_path(args, suffix):
+    """Where a derived file goes: beside --out unless --work says otherwise.
+
+    The base image is the one file a person opens - it is attached to the prompt
+    and nothing else - so INPUT holds it and only it. Its clean copy and its
+    layout are working files that only the tools ever read, and they belong in
+    work/ however the base is addressed.
+    """
+    stem = os.path.basename(args.out).rsplit(".", 1)[0]
+    d = args.work if args.work else os.path.dirname(args.out)
+    return os.path.join(d, stem + suffix)
 
 
 def hexes(s):
@@ -112,6 +127,10 @@ def main():
     p.add_argument("-m", "--mask", default=str(_HERE / "ribbon_mask.png"))
     p.add_argument("-l", "--layer", default=str(_HERE / "ribbon_rgba.png"))
     p.add_argument("-o", "--out", required=True)
+    p.add_argument("--work", default=None,
+                   help="where the two working files go. The base itself is the only "
+                        "thing a person ever opens, so it goes to INPUT on its own and "
+                        "its clean copy and its layout stay behind in work/")
     p.add_argument("--rows", required=True, help="two colours: dark rows, light rows")
     p.add_argument("--waves", required=True, help="five colours, top to bottom")
     p.add_argument("--title", help="drawn into the base at a fixed height")
@@ -269,10 +288,10 @@ def main():
         # never covers them completely, and what is left reads as a translucent
         # second shape lying under the liquid. The animator needs this copy to
         # paint them out.
-        clean_path = args.out.rsplit(".", 1)[0] + "_clean.png"
+        clean_path = _work_path(args, "_clean.png")
         Image.fromarray(dith(clean_out)).save(clean_path)
         print(f"wrote {clean_path} (no circles - this is the one flowanim.py wants)")
-    lay = args.out.rsplit(".", 1)[0] + "_layout.json"
+    lay = _work_path(args, "_layout.json")
     json.dump(layout, open(lay, "w"), indent=1)
     print(f"wrote {lay} (the geometry, so the other tools do not have to guess)")
 
