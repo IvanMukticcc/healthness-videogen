@@ -1,0 +1,80 @@
+SUPERFOODS — attach base_superfoods9.png (the one WITH the faint circles)
+=========================================================================
+
+Generate at 1536 x 2752. Put the returned poster back as INPUT/superfoods9_poster.png.
+
+Filled from ImageSwap.txt by make_prompt.py, so it is the template as it stands,
+not a copy of an older one.
+
+Title:    'SUPERFOODS'
+Subtitle: 'FOR VITAL ORGANS'
+Palette:  rows #241A14 / #F4EEE2, waves #CC2A1B, #3A1C3E, #9FB84E, #A8752E, #F2795A
+
+Captions (go on afterwards, not in the prompt):
+  'CHILLI|SINUSES,BLACKBERRIES|VEINS,PISTACHIOS|PINEAL,FLAXSEED|OVARIES,SALMON|TEARS'
+
+Badges:
+  'C,Beta-carotene,B6;Polyphenols,Fiber,Manganese;Potassium,Protein,Lutein;Omega-3,Magnesium,B1;D,B12,Selenium'
+
+Part 9. Fifteen badges, no repeats - the first poster in the series where every badge is different.
+
+=== THE PROMPT ===
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the bowls or the organs, nothing at all. Text is added later, outside the generator.
+
+EACH ROW HAS TWO FAINT CIRCLES and, under each circle, A FAINT BAR. THE CIRCLES AND THE BARS ARE ALIGNMENT MARKS, NOT ARTWORK. They are not part of the design and they must not appear in the finished image in any form. Place the bowl centred in the left circle and the organ centred in the right circle, each large enough to cover its mark completely.
+
+DO NOT REPLACE A CIRCLE WITH ANYTHING ROUND. Do not paint a disc, a plate, a panel, a badge, a sticker background, a lighter patch, a halo or a vignette behind the bowl or behind the organ. Wherever the bowl or the organ does not reach, the row's flat background colour must show through unchanged, exactly the colour it is in the attached image, right up to the edge of the food and the edge of the organ.
+
+The bars are reserved for text that is added later: keep them completely clear, do not cover them with the bowl, the organ or anything else, and do not draw on them.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster.
+
+Every one of the five bowls is a clear, colourless glass bowl, and every one is shot from a low three-quarter angle. Not one of them is seen from above, and not one of them is ceramic, opaque, painted or coloured.
+
+Every one of the five organs is three-dimensional, like the bowls: a render with real volume and a visible near side, lit from the same direction as the bowl, turned slightly towards the viewer. Not one of them is a flat medical diagram, a textbook cross-section drawing or a line illustration, and not one of them is an object or a model - each is living tissue, part of a body.
+
+Row 1: a clear glass bowl of fresh red chilli peppers, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: the sinus cavities inside the face, in the living tissue behind the nose and the cheekbones, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 2: a clear glass bowl of ripe blackberries, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a vein running through living tissue, with its one-way valve inside, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 3: a clear glass bowl of shelled pistachios, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: the pineal gland deep in the middle of the brain, the brain tissue around it, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 4: a clear glass bowl of golden flaxseed, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: an ovary with a ripening follicle, beside the uterus, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 5: a clear glass bowl of raw salmon fillets, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: the tear gland above the eye, under the upper eyelid, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+The liquid leaves each bowl at its near rim on the right-hand side. The bowls and organs are photorealistic and cleanly cut out, with no glow and no cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+=== END OF PROMPT ===
+
+
+NEGATIVE PROMPT, if the tool offers a separate field:
+
+text, letters, caption, label, title, top-down view, overhead shot, flat lay,
+bowl seen from above, ceramic bowl, opaque bowl, coloured bowl, flat
+illustration, medical diagram, textbook drawing, line art, 2D icon, changed
+liquid, redrawn wave, different wave shape, moved wave, recoloured wave, extra
+liquid, droplets, splash, spray, particles, sparkles, glow, halo, drop shadow,
+changed background colour, changed logo, watermark, white circle behind the
+bowl, circular backdrop, round plate behind the food, light disc, badge
+background, sticker background, vignette
+
+
+WHEN THE POSTER COMES BACK, from work/
+
+    ../.venv/bin/python ../../engine/check_base.py ../INPUT/superfoods9_poster.png \
+        --base base_superfoods9.png
+
+    ../.venv/bin/python ../../engine/add_labels.py ../INPUT/superfoods9_poster.png \
+        -l base_superfoods9_layout.json -o superfoods9_labelled.png \
+        --labels 'CHILLI|SINUSES,BLACKBERRIES|VEINS,PISTACHIOS|PINEAL,FLAXSEED|OVARIES,SALMON|TEARS'
+
+    ./render.sh superfoods9 superfoods9_labelled.png \
+        'C,Beta-carotene,B6;Polyphenols,Fiber,Manganese;Potassium,Protein,Lutein;Omega-3,Magnesium,B1;D,B12,Selenium'

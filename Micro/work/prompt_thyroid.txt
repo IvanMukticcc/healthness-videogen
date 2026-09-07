@@ -1,0 +1,86 @@
+THYROID RESET — attach base_thyroid.png (the one WITH the faint circles)
+========================================================================
+
+Generate at 1536 x 2752. Put the returned poster back in this folder as
+INPUT/thyroid_poster.png.
+
+Second pass. The first came back with a bright disc painted over every guide
+circle and the bowl standing on it - the mark was gone and a plate had taken its
+place, which is what "no part of the circle is still visible" allows. The circles
+are now named as alignment marks, and the replacement is forbidden by name.
+
+Palette:  rows #2B1B33 / #F1EAF0 — deep plum, the first the series has used
+          waves #2ED9C3, #E8552F, #FFC93C, #7B2FBF, #FF6FA5
+
+Captions (go on afterwards, not in the prompt):
+  'SEAWEED|THYROID FUEL,BRAZIL NUTS|HORMONE SHIELD,PUMPKIN SEEDS|ENERGY
+   SUPPORT,EGGS|STEADY METABOLISM,GREEK YOGURT|DAILY IODINE'
+
+Badges: the thyroid is the one organ that is literally built out of
+micronutrients, which is why this topic and not another. Iodine makes the
+hormone, selenium converts it, zinc and iron let the conversion happen at all.
+
+
+=== THE PROMPT ===
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the bowls or the organs, nothing at all. Text is added later, outside the generator.
+
+EACH ROW HAS TWO FAINT CIRCLES and, under each circle, A FAINT BAR. THE CIRCLES AND THE BARS ARE ALIGNMENT MARKS, NOT ARTWORK. They are not part of the design and they must not appear in the finished image in any form. Place the bowl centred in the left circle and the organ centred in the right circle, each large enough to cover its mark completely.
+
+DO NOT REPLACE A CIRCLE WITH ANYTHING ROUND. Do not paint a disc, a plate, a panel, a badge, a sticker background, a lighter patch, a halo or a vignette behind the bowl or behind the organ. Wherever the bowl or the organ does not reach, the row's flat background colour must show through unchanged, exactly the colour it is in the attached image, right up to the edge of the food and the edge of the organ.
+
+The bars are reserved for text that is added later: keep them completely clear, do not cover them with the bowl, the organ or anything else, and do not draw on them.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster.
+
+Every one of the five bowls is shot from a low three-quarter angle. Not one of them is seen from above.
+
+Row 1: a bowl of torn sheets of dried nori seaweed, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a whole anatomical human thyroid gland, butterfly shaped, with both lobes and the isthmus.
+
+Row 2: a bowl of shelled brazil nuts, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a human thyroid gland wrapped around the top of the trachea, the tracheal rings visible below it.
+
+Row 3: a bowl of green pumpkin seeds, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a close-up of thyroid follicles, round follicles filled with colloid.
+
+Row 4: a bowl of whole eggs with cracked yolks, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a cross-section through a human thyroid gland, its internal tissue visible.
+
+Row 5: a bowl of thick greek yogurt, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a human thyroid gland seen from behind, with the four small parathyroid glands on it.
+
+The liquid leaves each bowl at its near rim on the right-hand side. The bowls and organs are photorealistic and cleanly cut out, with no glow and no cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+=== END OF PROMPT ===
+
+
+NEGATIVE PROMPT, if the tool offers a separate field:
+
+text, letters, caption, label, title, top-down view, overhead shot, flat lay,
+bowl seen from above, changed liquid, redrawn wave, different wave shape, moved
+wave, recoloured wave, extra liquid, droplets, splash, spray, particles,
+sparkles, glow, halo, drop shadow, changed background colour, changed logo,
+watermark, white circle behind the bowl, circular backdrop, round plate behind
+the food, light disc, badge background, sticker background, vignette
+
+
+WHEN THE POSTER COMES BACK
+
+    .venv/bin/python check_base.py INPUT/thyroid_poster.png --base INPUT/base_thyroid.png
+
+    .venv/bin/python add_labels.py INPUT/thyroid_poster.png \
+        -l INPUT/base_thyroid_layout.json -o INPUT/thyroid_labelled.png \
+        --labels 'SEAWEED|THYROID FUEL,BRAZIL NUTS|HORMONE SHIELD,PUMPKIN SEEDS|ENERGY SUPPORT,EGGS|STEADY METABOLISM,GREEK YOGURT|DAILY IODINE'
+
+    ./render.sh thyroid INPUT/thyroid_labelled.png \
+        'Iodine,Iron,Folate;Selenium,Magnesium,E;Zinc,Magnesium,Iron;Selenium,B12,D;Iodine,Calcium,Protein'
+
+The badges are given by hand rather than with `auto:` because the file's answer
+for greek yogurt is protein and probiotics, which is true and beside the point
+on a thyroid video. `auto:` would give:
+
+    seaweed  Iodine Iron Folate | brazil nut  Selenium Magnesium E
+    pumpkin seed  Magnesium Zinc Iron | egg  B12 D Selenium
+    greek yogurt  Protein Calcium Probiotics

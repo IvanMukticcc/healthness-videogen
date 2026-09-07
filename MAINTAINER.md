@@ -82,6 +82,13 @@ files you touched, by name.
   `engine/impact.py` reproduces `muscle_audio.py`'s hits bit for bit; when its
   agent is free, that file should call the engine's and keep only its bed. Until
   then the two are identical and nothing is at risk, but it is a copy.
+- **The prompt template is the third thing that exists in three copies.** After
+  the tools and the badge synthesis, `ImageSwap.txt` is now forked across Foods,
+  Micro and Exercise, and it drifts the same way: Micro measured three faults on
+  part 11 and fixed its own copy, and Foods had every one of them. Ported by
+  hand this time. The shared half - the circles, the bars, the safe area, the no
+  text rule, the glass bowls - is most of the file; the variant half is the five
+  rows. Worth splitting before it is fixed by hand a third time.
 - **`check_base.py`'s label check is unreliable** and only prints a note. Look at
   the poster before animating.
 - **The guide circles are never fully covered.** A faint halo survives behind

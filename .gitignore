@@ -4,8 +4,19 @@
 
 .venv/
 __pycache__/
-work/
 .DS_Store
+
+# work/ holds each variant's own code and docs, so it is carried. What is
+# ignored is what a tool makes inside it. This was the other way round once -
+# work/ was excluded wholesale, from when it really was scratch - and the
+# reorganisation that moved every variant's source in there recorded the lot as
+# deleted. Nothing was lost, but for an afternoon the repository held the engine
+# and nothing else.
+*_silent.mp4
+*_pops.wav
+*_hits.wav
+*_cues.txt
+*_sheet.png
 
 # the generated posters, and the finished videos
 *.jpeg

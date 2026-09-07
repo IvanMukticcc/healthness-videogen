@@ -1,0 +1,155 @@
+ADDING A TOPIC TO base_<topic>.png
+==================================
+
+The base layer already contains everything that must never change: the five row
+background stripes, the five liquid waves, the title and the Healthness logo.
+The waves are the animated part, and the animation reads them from
+ribbon_mask.png, which was authored from this exact geometry. If a wave moves by
+even a few pixels, the mask no longer fits and the video breaks.
+
+In the food version the generator drew both ends of every row: a bowl on the
+left and an organ on the right. Here it draws ONLY THE LEFT: the lift being
+performed. The right circle holds the body with its working muscles lit, and
+that is drawn by bodymap.py rather than asked for.
+
+That is the one structural difference between the two versions, and it is not a
+convenience. Five rows whose bodies disagree about where the lats are is five
+different bodies, and the comparison the whole clip is about - this lift hits
+that, the next one hits this - does not survive it. An image model cannot draw
+the same anatomy twice, so it is not asked to, for the same reason it is not
+asked to redraw the wave.
+
+So the generator's job is only to ADD the athlete on the left of every row. No
+text of any kind - the title is drawn into the base and the row captions go on
+afterwards with add_labels.py.
+
+Attach the base for the topic (base_<topic>.png, not base_layer.png) and use the
+prompt below.
+
+
+GEOMETRY OF THE BASE LAYER  (1536 x 2752)
+
+  waves span x 229-1289          = 15% to 84% of the width
+  row 1 wave  y  491- 702        row stripes start at 412, 825, 1238, 1649, 2063
+  row 2 wave  y  904-1115        each stripe 413 tall
+  row 3 wave  y 1317-1527
+  row 4 wave  y 1729-1940
+  row 5 wave  y 2142-2353
+  title                          y ~160-368, drawn into the base
+  logo                           y ~2494-2576, centred
+
+  guide circles   r 137, centred x 250 and x 1270, one per row over each wave tip
+  caption bars    380 x 78, centred under each circle, 20px below it
+
+  Both tips of the wave sit on a circle centre, within a pixel, so a figure that
+  fills the left circle takes the liquid out of the lift at its middle.
+
+  LEFT circle   a filled disc in the colour of that row's own wave, drawn into
+                the base by left_disc.py. The athlete stands in it, and the
+                liquid then leaves a circle of its own colour - which is what
+                the bowl does in the food version. The generator only adds the
+                athlete; the circle is not its to draw, recolour or replace.
+  RIGHT circle  the body map. Drawn by bodymap.py over a disc that covers the
+                circle exactly. LEAVE IT ALONE.
+  caption bars  add_labels.py writes into them. Leave them alone.
+
+  The safe area in the prompt is one FOURTEENTH of the width, not one tenth.
+  The circles reach x 112 and x 1408, and one tenth is 154 - so a tenth tells the
+  model to keep the athlete out of the very circle it is told to fill, and it
+  obeys the sentence rather than the mark. A fourteenth is 110, just outside them.
+
+
+=== THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the athletes, nothing at all. Text is added later, outside the generator.
+
+EACH ROW HAS A FILLED COLOURED CIRCLE ON THE LEFT, a faint circle on the right, and under each of them A FAINT BAR. Add one thing per row and one only: the athlete, standing INSIDE the filled coloured circle on the left, his body filling it and cropped by its edge, the way food sits in a bowl. THE COLOURED CIRCLE IS ALREADY FINISHED ARTWORK: keep its colour and its size exactly as they are, do not recolour it, do not resize it, do not put a white or black photo background behind the athlete, and do not draw a second circle anywhere. THE RIGHT CIRCLE IS ALREADY FINISHED ARTWORK. Do not draw anything in the right circle, do not put a person, a body, a diagram, a dumbbell or any object there, and do not draw anything in the empty space around it. The bars under the circles are reserved for text that is added later: keep them completely clear and do not draw on them.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster.
+
+Every one of the five athletes is photographed from a low three-quarter angle, at the hardest moment of the rep, with the working muscle visibly under load. Not one of them is seen flat from the side, and not one of them is standing still between reps.
+
+Row 1: an athlete performing <LIFT 1>, seen from a low three-quarter angle, caught at the hardest point of the rep, the working muscle under visible tension, the equipment fully in frame.
+
+Row 2: an athlete performing <LIFT 2>, seen from a low three-quarter angle, caught at the hardest point of the rep, the working muscle under visible tension, the equipment fully in frame.
+
+Row 3: an athlete performing <LIFT 3>, seen from a low three-quarter angle, caught at the hardest point of the rep, the working muscle under visible tension, the equipment fully in frame.
+
+Row 4: an athlete performing <LIFT 4>, seen from a low three-quarter angle, caught at the hardest point of the rep, the working muscle under visible tension, the equipment fully in frame.
+
+Row 5: an athlete performing <LIFT 5>, seen from a low three-quarter angle, caught at the hardest point of the rep, the working muscle under visible tension, the equipment fully in frame.
+
+The athletes are photorealistic and cleanly cut out, in plain dark training kit, with no gym background, no floor, no glow and no cast shadow. The liquid leaves each athlete at the right-hand side. Keep every wave fully visible between the athlete and the right circle.
+
+=== END OF PROMPT ===
+
+
+WHY THE PROMPT LOOKS REPETITIVE
+
+Most of it was paid for once, by the food version, and against the same
+generator behaviours.
+
+- The camera angle is stated twice: once for all five athletes, then again
+  inside every row. Said only at the top it holds for the first row or two and
+  the rest drift. Said only in the rows it is ignored as decoration.
+- "caught at the hardest point of the rep, the working muscle under visible
+  tension" is the same instruction made checkable, the way "its rim an ellipse
+  and the side of the bowl clearly visible" was for the bowls. A dynamic pose is
+  a phrase the model can nod at; the bottom of a squat is a thing it either
+  draws or does not.
+- The no-text rule is split in two - the title, then everything else. Combined in
+  one paragraph the model reads it as being about the heading only and still puts
+  a word under each figure.
+- The bars are described in the same breath as the circles, because they are the
+  same kind of mark: one to fill, one to leave alone.
+- The right circle is called FINISHED ARTWORK rather than "empty". The circles
+  work as instructions because the model fills what it can see, which is exactly
+  why an empty one on the right is a standing invitation. Naming it as already
+  done, and then listing what not to put there, is the strongest form available
+  without redrawing the base.
+
+  There is a safety net underneath it, and it was measured rather than assumed.
+  flowanim.py restores the right circle to the clean base wherever the poster
+  still matches, then paints the body's disc over the full circle radius at 0.97
+  alpha. Rendering a poster with a white blob filling every right circle, and
+  diffing it against the same poster without them:
+
+      inside the circle      3-13 levels of residual, 25 px above 15 in all
+      at the circle's edge   up to 40 levels, on about 180 px
+
+  So a stray organ INSIDE the circle is gone - three per cent of it survives, and
+  three per cent of white on a near-black row is a couple of levels. Something
+  straddling the EDGE is not: it survives where it overhangs, and it also shifts
+  the wave's tip a little, because the ribbon geometry and the pinned-artwork
+  pass are both computed from the poster. That case is a regeneration.
+
+
+NEGATIVE PROMPT, if the tool offers a separate field:
+
+text, letters, caption, label, title, second person, figure on the right, body
+on the right, recoloured circle, white circle behind the athlete, black circle
+behind the athlete, second circle, resized circle, anatomy diagram, muscle chart, object in the right circle, gym
+background, floor, mirror, weight rack, changed liquid, redrawn wave, different
+wave shape, moved wave, recoloured wave, extra liquid, droplets, splash, spray,
+particles, sparkles, glow, halo, drop shadow, changed background colour, changed
+logo, watermark
+
+
+AFTER GENERATING
+
+Check the wave before animating:
+
+    .venv/bin/python check_base.py new_poster.png --base base_<topic>.png
+
+It reports how far each wave has drifted from the base layer. Under about two
+pixels the authored mask still fits. Above that, regenerate rather than animate:
+the animation cannot correct a wave the generator has redrawn.
+
+Then look at the right circles by eye. The wave check does not cover them, and
+what the safety net can and cannot absorb is the paragraph above.

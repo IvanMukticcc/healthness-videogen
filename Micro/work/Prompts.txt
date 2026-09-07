@@ -1,0 +1,669 @@
+READY PROMPTS - paste with base_layer.png attached
+==================================================
+
+Each one is the template from ImageSwap.txt with the five rows filled in. The
+opening paragraph is the part that matters and is identical every time: it tells
+the model the waves are finished. Do not shorten it.
+
+
+-------------------------------------------------------------------------------
+1. EYE HEALTH
+-------------------------------------------------------------------------------
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already
+drawn and are final: do not move them, do not redraw them, do not restyle them,
+do not change their shape, their length, their thickness, their colour or their
+gloss, and do not extend or shorten them. The five row background colours and
+the Healthness logo at the bottom are also final and stay exactly as they are.
+Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no
+particles anywhere in the image.
+
+Add only these, composited on top:
+
+TITLE, in the empty area across the top fifth of the poster, centred, heavy bold
+condensed uppercase white type:
+  Title:    'EYE HEALTH'
+  Subtitle: 'FOODS FOR SCREEN-TIRED EYES'
+
+In each of the five rows, add three things: a clear glass bowl of food on the left, large enough to cover the left tip of that row's wave; an organ illustration on the right, large enough to cover the right tip of that row's wave; and two short labels along the bottom of that row, one under the bowl and one under the organ, in heavy bold condensed uppercase, white on the dark rows and near-black on the light rows, clear of the wave.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing - no bowl, no organ, no letter of any label, no part of the title - may come closer than one tenth of the width to the left or the right edge of the poster. A vertical social feed crops the sides, and anything in that strip is lost.
+
+  Row 1:  bowl of whole eggs with cracked yolks
+          organ: anatomical eyeball cross-section
+          labels 'EGG YOLKS' and 'MACULAR PROTECTION'
+  Row 2:  bowl of whole carrots
+          organ: simple eye with a calm night sky in the iris
+          labels 'CARROTS' and 'NIGHT VISION'
+  Row 3:  bowl of curly kale leaves
+          organ: eye beside a plain shield shape
+          labels 'KALE' and 'BLUE LIGHT FILTERING'
+  Row 4:  bowl of sliced sweet potato
+          organ: cornea cross-section
+          labels 'SWEET POTATO' and 'CORNEA HEALTH'
+  Row 5:  bowl of raw salmon fillets
+          organ: eye with one plain drop at the corner
+          labels 'SALMON' and 'DRY EYE RELIEF'
+
+The bowls and organs are photorealistic and cleanly cut out, with no glow and no
+cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+
+-------------------------------------------------------------------------------
+2. KIDNEY HEALTH
+-------------------------------------------------------------------------------
+
+[same opening paragraph and same layout instructions - copy them verbatim]
+
+  Title:    'KIDNEY HEALTH'
+  Subtitle: 'FOODS THAT FLUSH YOUR FILTERS'
+
+  Row 1:  bowl of red cranberries      organ: kidney
+          labels 'CRANBERRIES' and 'URINARY DEFENSE'
+  Row 2:  bowl of watermelon cubes     organ: bladder
+          labels 'WATERMELON' and 'NATURAL FLUSH'
+  Row 3:  bowl of parsley sprigs       organ: kidney cross-section
+          labels 'PARSLEY' and 'KIDNEY CLEANSE'
+  Row 4:  bowl of blueberries          organ: adrenal glands on a kidney
+          labels 'BLUEBERRIES' and 'ADRENAL SUPPORT'
+  Row 5:  bowl of lemon slices         organ: kidney with mineral crystals
+          labels 'LEMONS' and 'STONE PREVENTION'
+
+
+-------------------------------------------------------------------------------
+3. BRAIN POWER
+-------------------------------------------------------------------------------
+
+[same opening paragraph and same layout instructions - copy them verbatim]
+
+  Title:    'BRAIN POWER'
+  Subtitle: 'FOODS THAT FEED YOUR MIND'
+
+  Row 1:  bowl of raw salmon cubes     organ: neuron with a myelin sheath
+          labels 'SALMON' and 'NERVE MYELIN'
+  Row 2:  bowl of blackberries         organ: hippocampus inside a brain outline
+          labels 'BLACKBERRIES' and 'MEMORY CENTER'
+  Row 3:  bowl of roasted coffee beans organ: brain with the prefrontal cortex lit
+          labels 'COFFEE' and 'SHARP FOCUS'
+  Row 4:  bowl of turmeric root slices organ: amygdala in a brain cross-section
+          labels 'TURMERIC' and 'MOOD BALANCE'
+  Row 5:  bowl of sage and rosemary    organ: synapse with neurotransmitters
+          labels 'SAGE & ROSEMARY' and 'RECALL SPEED'
+
+
+-------------------------------------------------------------------------------
+4. GUT HEALTH        (attach base_gut.png)
+-------------------------------------------------------------------------------
+
+[same opening paragraph and same layout instructions - copy them verbatim]
+
+  Title:    'GUT HEALTH'
+  Subtitle: 'FOODS THAT FEED YOUR MICROBIOME'
+
+  Row 1:  bowl of kimchi                organ: stomach
+          labels 'KIMCHI' and 'GUT FLORA'
+  Row 2:  bowl of red cabbage sauerkraut organ: colon
+          labels 'SAUERKRAUT' and 'COLON BALANCE'
+  Row 3:  bowl of ginger root slices    organ: stomach cross-section
+          labels 'GINGER' and 'CALM DIGESTION'
+  Row 4:  bowl of asparagus spears      organ: small intestine with villi
+          labels 'ASPARAGUS' and 'PREBIOTIC FUEL'
+  Row 5:  bowl of kefir                 organ: intestinal lining close-up
+          labels 'KEFIR' and 'GUT BARRIER'
+
+  Palette: rows #1C2A12 / #F2EFE0, waves #FF5F3D, #7A2E6E, #FFC233, #1E6B4F, #6FD3C8
+
+
+-------------------------------------------------------------------------------
+5. LIVER RESET        (attach base_liver.png)
+-------------------------------------------------------------------------------
+
+Entries 1-4 above still show the title and the labels inside the prompt. Both
+moved out of it since: the title is drawn into the base by recolor_base.py and
+the captions go on afterwards with add_labels.py. This one is the current shape
+of the prompt - copy it, not them.
+
+  Title:    'LIVER RESET'
+  Subtitle: 'FOODS YOUR LIVER LOVES'
+
+  Row 1:  mixed leafy greens, rocket and dandelion leaves
+          Organ: whole anatomical human liver
+  Row 2:  raw beetroot chunks
+          Organ: liver with the gallbladder attached
+  Row 3:  fresh turmeric root slices
+          Organ: liver cross-section
+  Row 4:  raw broccoli florets
+          Organ: liver with its bile duct tree
+  Row 5:  roasted coffee beans
+          Organ: liver lobule close-up
+
+  Each row carries the bowl description in full - 'seen from a low three-quarter
+  angle in perspective, its rim an ellipse and the side of the bowl clearly
+  visible, the food heaped above the rim'. See ImageSwap.txt for why.
+
+  Captions: 'LEAFY GREENS|FAT BREAKDOWN,BEETROOT|BILE FLOW,TURMERIC|REPAIR
+            SUPPORT,BROCCOLI|DETOX ENZYMES,COFFEE|LOWER LIVER FAT'
+
+  Palette: rows #122238 / #EFE6D2
+           waves #3FE07F, #A8123F, #FFC21F, #0F6F5C, #FF6A2A
+
+
+-------------------------------------------------------------------------------
+6. BREATHE EASY        (attach base_lungs.png)
+-------------------------------------------------------------------------------
+
+  Title:    'BREATHE EASY'
+  Subtitle: 'FOODS FOR HEALTHY LUNGS'
+
+  Row 1:  red apples
+          Organ: pair of human lungs
+  Row 2:  peeled garlic cloves
+          Organ: bronchial tree
+  Row 3:  pumpkin cubes
+          Organ: cluster of alveoli, close-up
+  Row 4:  shelled walnuts
+          Organ: diaphragm muscle
+  Row 5:  loose green tea leaves
+          Organ: airway lining with cilia, close-up
+
+  Captions: 'APPLES|LUNG FUNCTION,GARLIC|CLEAR AIRWAYS,PUMPKIN|TISSUE REPAIR,
+            WALNUTS|EASIER BREATHING,GREEN TEA|CALM INFLAMMATION'
+
+  Palette: rows #0E3038 / #E6EFF2
+           waves #FF5147, #1E5FA8, #5AD9FF, #7A2FA8, #6BF0A0
+
+
+-------------------------------------------------------------------------------
+7. BLOOD SUGAR        (attach base_bloodsugar.png)
+-------------------------------------------------------------------------------
+
+First topic to ask for glass bowls and 3D organs in the rows - see ImageSwap.txt.
+
+  Title:    'BLOOD SUGAR'
+  Subtitle: 'FOODS THAT KEEP IT STEADY'
+
+  Row 1:  cinnamon sticks
+          Organ: pancreas
+  Row 2:  rolled oats
+          Organ: stomach
+  Row 3:  chia seeds
+          Organ: small intestine
+  Row 4:  whole almonds
+          Organ: blood vessel cut open, red blood cells inside
+  Row 5:  thick Greek yoghurt
+          Organ: pancreatic islet, close-up
+
+  Captions: 'CINNAMON|INSULIN RESPONSE,OATS|STEADY RELEASE,CHIA SEEDS|SLOWER
+            ABSORPTION,ALMONDS|FLATTER SPIKES,GREEK YOGHURT|BETA CELLS'
+
+  Palette: rows #1F2333 / #F1E9DC
+           waves #FFB020, #6D1E8F, #22D3C6, #B03A1E, #FF4F81
+
+
+-------------------------------------------------------------------------------
+8. HEART HEALTH        (attach base_heart.png)
+-------------------------------------------------------------------------------
+
+First topic whose waves are the colours of their foods, and whose captions are
+short enough to be drawn large: 46px, against 32px for the blood sugar set.
+
+  Title:    'HEART HEALTH'
+  Subtitle: 'FOODS THAT KEEP IT STRONG'
+
+  Row 1:  raw salmon fillets            wave: salmon coral #F4795C
+          Organ: whole human heart
+  Row 2:  pomegranate seeds             wave: deep ruby #A5102F
+          Organ: coronary arteries wrapped around the heart
+  Row 3:  fresh spinach leaves          wave: leaf green #5FC93A
+          Organ: aorta arching off the heart
+  Row 4:  black beans                   wave: dark plum #432B40
+          Organ: heart valve, open
+  Row 5:  golden olive oil              wave: olive gold #E0B93C
+          Organ: heart muscle fibres, close-up
+
+  Captions: 'SALMON|HEARTBEAT,POMEGRANATE|ARTERIES,SPINACH|BLOOD FLOW,
+            BLACK BEANS|CHOLESTEROL,OLIVE OIL|GOOD FATS'
+
+  Palette: rows #1E2126 / #F2EDE3 - neutral on purpose, so the five food colours
+           carry the poster
+           waves #F4795C, #A5102F, #5FC93A, #432B40, #E0B93C
+
+  Pale foods on the dark rows, dark foods on the light ones: salmon, spinach and
+  oil on 1/3/5, pomegranate and black beans on 2/4.
+
+
+-------------------------------------------------------------------------------
+9. SUPERFOODS FOR VITAL ORGANS, part 5        (attach base_superfoods5.png)
+-------------------------------------------------------------------------------
+
+The series is not a topic. Five unrelated foods, each to a different organ, under
+a fixed heading - so the right-hand caption is one word, the organ, which is why
+the series carries the largest type of anything here (60px this time).
+
+Spent in parts 1-4, and never repeated: turmeric, cherries, watermelon, walnuts,
+broccoli, carrots, blueberries, yoghurt, seaweed, oats, ginger, beetroot,
+sardines, lentils, pumpkin seeds - to liver, heart, kidneys, brain, lungs, eyes,
+skin, gut, thyroid, pancreas, stomach, spleen, bones, muscles, bladder.
+
+Named `base_superfoods5` rather than `base_vital6`: the old `base_vitalN` numbers
+drifted from the clip numbers - there are five vital bases and four clips,
+because part 4 is part 2 regenerated with 3D bowls.
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  pineapple chunks              wave: pale gold #F5D33C
+          Organ: knee joint showing its cartilage
+  Row 2:  ripe tomatoes                 wave: tomato red #C4231C
+          Organ: a branching artery
+  Row 3:  cheese cubes                  wave: cream white #F2E9D2
+          Organ: a row of healthy teeth with gums
+  Row 4:  whole eggs with cracked yolks  wave: yolk amber #D98A0F
+          Organ: a hair follicle rooted in the scalp
+  Row 5:  avocado halves                wave: avocado green #7FB03A
+          Organ: a bundle of nerve fibres with myelin sheaths
+
+  Captions: 'PINEAPPLE|JOINTS,TOMATOES|ARTERIES,CHEESE|TEETH,EGGS|HAIR,
+            AVOCADO|NERVES'
+
+  Palette: rows #1B2440 / #F4EAD6 - deep navy, the one dark the series has not
+           used; parts 1 and 3 were maroon and plum, 2 and 4 forest green
+           waves #F5D33C, #C4231C, #F2E9D2, #D98A0F, #7FB03A
+
+  Pale foods on the dark rows: pineapple, cheese and avocado on 1/3/5, tomatoes
+  and egg yolk on 2/4.
+
+
+-------------------------------------------------------------------------------
+10. SUPERFOODS FOR VITAL ORGANS, part 6        (attach base_superfoods6.png)
+-------------------------------------------------------------------------------
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  red bell peppers              wave: pepper red #E23B2A
+          Organ: a lymph node with its vessels
+  Row 2:  dried prunes                  wave: prune plum #5B2F3A
+          Organ: the colon
+  Row 3:  globe artichokes              wave: artichoke sage #9DBF6A
+          Organ: a gallbladder on its own
+  Row 4:  shelled brazil nuts           wave: nut brown #8A5B33
+          Organ: a pair of adrenal glands on their own
+  Row 5:  runny honey                   wave: honey amber #F0A81C
+          Organ: the throat, pharynx and larynx
+
+  Captions: 'RED PEPPERS|IMMUNITY,PRUNES|COLON,ARTICHOKES|GALLBLADDER,
+            BRAZIL NUTS|ADRENALS,HONEY|THROAT' - 48px, set by 'GALLBLADDER'
+
+  Palette: rows #2A2118 / #F2E9D6 - warm charcoal, the fifth dark the series has
+           used; it flatters honey, nuts and artichoke
+           waves #E23B2A, #5B2F3A, #9DBF6A, #8A5B33, #F0A81C
+
+  Each organ is asked for as part of a body rather than by name alone. Part 5's
+  'a row of healthy human teeth with gums' came back as a full denture - the only
+  thing on that poster that reads as an object instead of anatomy.
+
+
+-------------------------------------------------------------------------------
+ABOUT COLOURS
+-------------------------------------------------------------------------------
+
+The wave colours and the row background colours are not in the prompt, because
+they are already in base_layer.png and the prompt's job is to leave them alone.
+
+**A wave is the colour of the food that pours it.** Yoghurt white, beetroot
+magenta, ginger amber, lentils brown, seaweed teal, carrots orange. The row says
+"this food feeds this organ", and the liquid is the food; a colour picked for the
+palette instead breaks that where the eye is looking. Only the two background
+colours are free, and they are what makes one topic look different from the last.
+
+For a different palette, recolour the base layer rather than asking the
+generator for it. The same ribbon_mask.png still applies: the mask is geometry,
+and recolouring does not move a single pixel. So one mask covers every colour
+scheme you ever make, and each palette is one base layer file.
+
+
+-------------------------------------------------------------------------------
+11. THYROID RESET        (attach INPUT/base_thyroid.png)
+-------------------------------------------------------------------------------
+
+The first topic built in MikroVersion, so the first one with badges. Chosen for
+them: the thyroid is the one organ literally built out of micronutrients -
+iodine makes the hormone, selenium converts it, zinc and iron let the conversion
+happen at all - so the badges carry the content rather than decorating it.
+
+  Title:    'THYROID RESET'
+  Subtitle: 'FOODS YOUR THYROID NEEDS'
+
+  Row 1:  torn sheets of dried nori seaweed
+          Organ: whole anatomical thyroid, butterfly shaped
+  Row 2:  shelled brazil nuts
+          Organ: thyroid around the top of the trachea
+  Row 3:  green pumpkin seeds
+          Organ: thyroid follicles close-up
+  Row 4:  whole eggs with cracked yolks
+          Organ: thyroid cross-section
+  Row 5:  thick greek yogurt
+          Organ: thyroid from behind, with the parathyroids
+
+  Captions: 'SEAWEED|THYROID FUEL,BRAZIL NUTS|HORMONE SHIELD,PUMPKIN SEEDS|
+            ENERGY SUPPORT,EGGS|STEADY METABOLISM,GREEK YOGURT|DAILY IODINE'
+
+  Badges:   'Iodine,Iron,Folate;Selenium,Magnesium,E;Zinc,Magnesium,Iron;
+             Selenium,B12,D;Iodine,Calcium,Protein'
+
+  Palette: rows #2B1B33 / #F1EAF0 - deep plum, the first the series has used;
+           the darks so far were olive, navy, teal, charcoal and warm charcoal
+           waves #2ED9C3, #E8552F, #FFC93C, #7B2FBF, #FF6FA5
+
+  The full prompt, ready to paste, is INPUT/prompt_thyroid.txt.
+
+
+-------------------------------------------------------------------------------
+12. HAIR & NAILS        (attach INPUT/base_hair.png)
+-------------------------------------------------------------------------------
+
+First topic filled by make_prompt.py rather than typed, and the first to follow
+"the wave takes the colour of its food" from the start. Hair and nails are the
+clearest case in the series of a body part that is nothing but its inputs.
+
+  Title:    'HAIR & NAILS'
+  Subtitle: 'FOODS THAT REBUILD THEM'
+
+  Row 1:  whole eggs with cracked yolks
+          Organ: one hair follicle inside a cutaway of living skin
+  Row 2:  clear golden bone broth
+          Organ: fingertip cut away, nail matrix under the skin
+  Row 3:  raw cashew nuts
+          Organ: living fingernail, nail plate, lunula, cuticle
+  Row 4:  fresh spinach leaves
+          Organ: hair root and bulb with the dermal papilla
+  Row 5:  raw salmon fillets
+          Organ: single hair shaft, cuticle scales raised
+
+  Captions: 'EGGS|STRONG STRANDS,BONE BROTH|HARDER NAILS,CASHEWS|NAIL GROWTH,
+            SPINACH|LESS SHEDDING,SALMON|SCALP HEALTH'
+
+  Badges:   'Biotin,Protein,Selenium;Collagen,Protein,Calcium;
+             Zinc,Copper,Magnesium;Iron,Folate,C;Omega-3,D,B12'
+
+  Palette: rows #331821 / #F7EDE8 - deep wine, the first the series has used;
+           the darks so far were olive, navy, teal, charcoal, warm charcoal and
+           plum
+           waves #FFC233 yolk, #C8873A broth, #EDD9B0 cashew, #2E8B45 spinach,
+           #FF8A6B salmon - each one its food made liquid
+
+  The row order is the palette's, not the topic's. Cashew cream and egg yolk are
+  pale and sit on the dark rows; broth amber and spinach green are mid-dark and
+  sit on the light ones. The nails pair ends up in rows 2 and 3 as a result,
+  which is fine - a pale wave on a pale row is not.
+
+  Biotin was not in the badge catalogue and was built for this topic, with B7.
+
+  Rebuild the prompt with make_prompt.py rather than editing INPUT/prompt_hair.txt,
+  so it picks up whatever ImageSwap.txt says today.
+
+
+-------------------------------------------------------------------------------
+13. SUPERFOODS FOR VITAL ORGANS, part 7        (attach ../INPUT/base_superfoods7.png)
+-------------------------------------------------------------------------------
+
+The first part of the series shot in this variant, so the first with badges on
+it. Parts 1-6 are in `Foods/work/Prompts.txt`; the series rule is that a food and
+an organ are spent once and never come back, so the list below is what part 8
+has to avoid.
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  golden bone broth             wave: broth gold #DFA53F
+          Organ: the Achilles tendon joining calf muscle to heel bone
+  Row 2:  slices of fresh beef liver    wave: liver maroon #6E2A2E
+          Organ: red bone marrow inside the opened end of a thigh bone
+  Row 3:  shucked oysters on the shell  wave: oyster pearl #CFC8B8
+          Organ: the prostate gland beneath the bladder
+  Row 4:  deep green spirulina powder   wave: spirulina teal #1C6357
+          Organ: red blood cells travelling inside a small vessel
+  Row 5:  ripe papaya chunks            wave: papaya coral #F4874B
+          Organ: the oesophagus running down to the stomach
+
+  Captions: 'BONE BROTH|TENDONS,BEEF LIVER|MARROW,OYSTERS|PROSTATE,
+            SPIRULINA|BLOOD,PAPAYA|OESOPHAGUS' - 50px, set by 'OESOPHAGUS'
+
+  Badges:   'auto:BONE BROTH,BEEF LIVER,OYSTERS,SPIRULINA,PAPAYA'
+            Collagen,Protein,Calcium; A,B12,Iron; Zinc,B12,Copper;
+            Protein,Iron,B2; C,Beta-carotene,Folate
+
+  Palette: rows #0E3A3C / #F0E9DA - deep teal, the sixth dark the series has
+           used; parts 1 and 3 were maroon and plum, 2 and 4 forest green, 5
+           navy, 6 warm charcoal
+           waves #DFA53F, #6E2A2E, #CFC8B8, #1C6357, #F4874B
+
+  A liquid cannot be heaped, so row 1 supplied its own rim clause through
+  make_prompt.py's third field: 'filling the bowl to just under the rim'.
+  Bone broth already ran in HAIR & NAILS at #C8873A - the series had not spent
+  it, and a topic outside the series does not spend one.
+
+  Spent by the series after this part, and never repeated:
+    foods   turmeric, cherries, watermelon, walnuts, broccoli, carrots,
+            blueberries, yoghurt, seaweed, oats, ginger, beetroot, sardines,
+            lentils, pumpkin seeds, pineapple, tomatoes, cheese, eggs, avocado,
+            red peppers, prunes, artichokes, brazil nuts, honey, bone broth,
+            beef liver, oysters, spirulina, papaya
+    organs  liver, heart, kidneys, brain, lungs, eyes, skin, gut, thyroid,
+            pancreas, stomach, spleen, bones, muscles, bladder, joints,
+            arteries, teeth, hair, nerves, lymph, colon, gallbladder, adrenals,
+            throat, tendons, marrow, prostate, blood, oesophagus
+
+
+-------------------------------------------------------------------------------
+14. SUPERFOODS FOR VITAL ORGANS, part 8        (attach ../INPUT/base_superfoods8.png)
+-------------------------------------------------------------------------------
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  halved kiwi fruit             wave: kiwi green #9BC53C
+          Organ: the thymus gland behind the breastbone
+  Row 2:  chia seeds                    wave: chia taupe #4A423A
+          Organ: an intervertebral disc between two lumbar vertebrae
+  Row 3:  creamy white kefir            wave: kefir cream #F2ECDF
+          Organ: the appendix on the caecum
+  Row 4:  raw mackerel fillets          wave: mackerel steel #35566B
+          Organ: the cochlea of the inner ear
+  Row 5:  peeled orange segments        wave: orange #F58A1F
+          Organ: the gums, with the roots of the front teeth in them
+
+  Captions: 'KIWI|THYMUS,CHIA SEEDS|DISCS,KEFIR|APPENDIX,MACKEREL|INNER EAR,
+            ORANGES|GUMS' - 58px, set by 'CHIA SEEDS'. The largest type the
+            series has carried; one-word organs are what buy it
+
+  Badges:   'C,K,Potassium;Omega-3,Fiber,Magnesium;Probiotics,Calcium,Protein;
+             D,B12,Selenium;C,Folate,Fiber' - chosen by hand rather than auto:,
+            so that of the fifteen only C and Fiber repeat. auto: would have put
+            Omega-3 on both chia and mackerel and B12 on both kefir and mackerel
+
+  Palette: rows #251E4A / #EDEBE0 - deep indigo, the seventh dark the series has
+           used and the first violet one; the others are maroon, plum, forest
+           green, navy, warm charcoal and deep teal
+           waves #9BC53C, #4A423A, #F2ECDF, #35566B, #F58A1F
+
+  Kefir is a liquid, so row 3 supplied its own rim clause, as bone broth did in
+  part 7.
+
+  **The gums came back as a denture again.** Part 5 asked for 'a row of healthy
+  human teeth with gums' and got one; this asked for 'the gums in the jaw, with
+  the roots of the front teeth held in them' and got the same arch floating on
+  its own. Naming the surrounding tissue is not enough for a mouth - it needs
+  the thing the tissue is inside, seen from outside: an open mouth with lips and
+  a tongue behind the teeth. Anything in the mouth is worth being careful with;
+  every other organ this series has asked for came back as tissue.
+
+  First clip rendered after the engine's rim fix (c5c5734): no sliver of bowl
+  travels down the wave. 5 698 px of feathered edge sealed against part 7's 539,
+  which is the connectivity growth doing its work; no row hit the 25% cap.
+
+  Spent by the series after this part, and never repeated:
+    foods   + kiwi, chia seeds, kefir, mackerel, oranges  (35 in all)
+    organs  + thymus, spinal discs, appendix, inner ear, gums  (35 in all)
+
+
+-------------------------------------------------------------------------------
+15. SUPERFOODS FOR VITAL ORGANS, part 9        (attach ../INPUT/base_superfoods9.png)
+-------------------------------------------------------------------------------
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  fresh red chilli peppers      wave: chilli red #CC2A1B
+          Organ: the sinus cavities inside the face
+  Row 2:  ripe blackberries             wave: blackberry #3A1C3E
+          Organ: a vein with its one-way valve
+  Row 3:  shelled pistachios            wave: pistachio green #9FB84E
+          Organ: the pineal gland in the middle of the brain
+  Row 4:  golden flaxseed               wave: flax amber #A8752E
+          Organ: an ovary with a ripening follicle, beside the uterus
+  Row 5:  raw salmon fillets            wave: salmon coral #F2795A
+          Organ: the tear gland above the eye
+
+  Captions: 'CHILLI|SINUSES,BLACKBERRIES|VEINS,PISTACHIOS|PINEAL,FLAXSEED|OVARIES,
+            SALMON|TEARS' - 46px, set by 'BLACKBERRIES'. The series' largest type
+            was 58px in part 8; one long food name costs the other nine
+
+  Badges:   'C,Beta-carotene,B6;Polyphenols,Fiber,Manganese;Potassium,Protein,
+             Lutein;Omega-3,Magnesium,B1;D,B12,Selenium' - fifteen badges, no
+            repeats, the first poster in the series where every one differs.
+            auto: would have put Omega-3 on both flax and salmon and B6 on both
+            chilli and pistachios
+
+  Palette: rows #241A14 / #F4EEE2 - espresso, the eighth dark and the first brown
+           one; browner and darker than part 6's warm charcoal #2A2118
+           waves #CC2A1B, #3A1C3E, #9FB84E, #A8752E, #F2795A
+
+  First clip with the engine's impact under the badges rather than Micro's own
+  pop: the pops track measures -19.4 LUFS at -0.5 dBFS, to the decimal what
+  Exercise's hits measure, and the finished cut -18.0 LUFS at -1.3 dBTP.
+  POP_GAIN went 0.60 -> 0.62 with it; measured, the cut lands on -18.0 either way.
+
+  **The organs came back on plates**, the failure flow.md describes: a pale disc
+  the size of the guide circle, painted behind each organ. Measured in the ring
+  at 0.80-0.99 of the circle radius, rows 1, 3 and 5 sit 104-129 levels off the
+  base with 44-66% of pixels over 120; the same ring on part 8 was 29-39. The
+  waves were untouched (0.0px) and the clip was rendered and shipped as it is -
+  the user's call, and shipped is shipped. Removing a plate afterwards has been
+  tried four ways and every one of them eats into the organ.
+
+  What changed because of it: `ImageSwap.txt` now names the organ in the
+  anti-plate paragraph rather than only the bowl ("The organ is not an
+  illustration inside a circle... if it will not read without a backing, draw it
+  smaller - never on a plate"), and the negative prompt gained 'white circle
+  behind the organ', 'pale disc around the organ', 'roundel' and 'medallion'.
+  The old wording named the bowl three times and the organ once, and the plates
+  came back behind the organs.
+
+  Spent by the series after this part, and never repeated:
+    foods   + chilli, blackberries, pistachios, flaxseed, salmon  (40 in all)
+    organs  + sinuses, veins, pineal gland, ovaries, tear glands  (40 in all)
+
+
+-------------------------------------------------------------------------------
+16. SUPERFOODS FOR VITAL ORGANS, part 10        (attach ../INPUT/base_superfoods10.png)
+-------------------------------------------------------------------------------
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  sliced ripe banana            wave: banana yellow #F0CE4E
+          Organ: the diaphragm under the lungs
+  Row 2:  fresh cranberries             wave: cranberry crimson #A81C2E
+          Organ: the ureter from the kidney down to the bladder
+  Row 3:  whole shelled almonds         wave: almond tan #D3A87A
+          Organ: a fingernail on its fingertip
+  Row 4:  curly kale leaves             wave: kale green #2F6B2A
+          Organ: the four parathyroid glands behind the thyroid
+  Row 5:  clear coconut water           wave: coconut cream #E7E2C8
+          Organ: the sweat glands coiled in the skin
+
+  Captions: 'BANANA|DIAPHRAGM,CRANBERRIES|URETERS,ALMONDS|NAILS,KALE|PARATHYROID,
+            COCONUT|SWEAT' - 48px, set by 'PARATHYROID'
+
+  Badges:   'Potassium,B6,Fiber;C,Polyphenols,Manganese;E,Magnesium,Healthy fats;
+             K,Calcium,Lutein;Electrolytes,Potassium,Phosphorus' - one repeat,
+            potassium on rows 1 and 5, which is what both foods are known for
+
+  Palette: rows #1A1E24 / #F1EDE4 - graphite, the ninth dark and the first
+           neutral one; the other eight all carry a hue, and these five foods are
+           yellow, crimson, tan, green and cream, so the poster did not need one
+           waves #F0CE4E, #A81C2E, #D3A87A, #2F6B2A, #E7E2C8
+
+  Coconut water is a liquid, so row 5 supplied its own rim clause.
+
+  **The plates did not come back.** The organs are cut out on the flat row
+  colour, edge to edge, after part 9 came back with a pale disc behind every one
+  of them. What changed between the two posters was one paragraph and eleven
+  words in the negative prompt - the organ named where only the bowl had been.
+  The ring measurement that caught part 9 does not confirm it here (78-96 against
+  part 9's 104-129) because these organs are larger and fill the ring with their
+  own artwork; the eye is the check for this one, and the eye is clear.
+
+  Second clip on the engine's impact: -18.0 LUFS, -1.3 dBTP, audit 3px.
+
+  Spent by the series after this part, and never repeated:
+    foods   + banana, cranberries, almonds, kale, coconut water  (45 in all)
+    organs  + diaphragm, ureters, nails, parathyroids, sweat glands  (45 in all)
+
+
+-------------------------------------------------------------------------------
+17. SUPERFOODS FOR VITAL ORGANS, part 11        (attach ../INPUT/base_superfoods11.png)
+-------------------------------------------------------------------------------
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  fresh whole milk              wave: milk white #F2EFE6
+          Organ: the growth plate in a growing thigh bone
+  Row 2:  dark chocolate                wave: cocoa #4A2A1C
+          Organ: a capillary bed branching through tissue
+  Row 3:  lemons, whole and halved      wave: lemon yellow #F5DC3C
+          Organ: the parotid salivary gland in the cheek
+  Row 4:  ripe purple figs              wave: fig #5B2E45
+          Organ: the uterus with its lining
+  Row 5:  raw peeled shrimp             wave: shrimp pink #F49A83
+          Organ: the tongue inside an open mouth
+
+  Captions: 'MILK|BONE GROWTH,CHOCOLATE|CAPILLARIES,LEMONS|SALIVA,FIGS|UTERUS,
+            SHRIMP|TONGUE' - 46px, set by 'BONE GROWTH'
+
+  Badges:   'Calcium,D,B12;Polyphenols,Magnesium,Iron;C,Potassium,Folate;
+             Fiber,Manganese,K;Protein,Selenium,Iodine' - fifteen, none repeated
+
+  Palette: rows #17323F / #F2EDE3 - petrol, the tenth dark; bluer and greyer than
+           part 7's teal and colder than part 5's navy. The five foods are all
+           warm, so the dark row is the only cold thing on the poster
+           waves #F2EFE6, #4A2A1C, #F5DC3C, #5B2E45, #F49A83
+
+  Milk is a liquid, so row 1 carries its own rim clause. **The mouth finally came
+  back as a mouth**: 'the tongue inside an open mouth, its surface covered in
+  taste buds' produced lips, teeth and a tongue, where part 5 and part 8 both got
+  a floating denture from an organ named on its own. Say the container.
+
+  **The generator drew everything bigger and it cost the captions.** Measured on
+  the ten reserved bars, artwork covers 25% of them on average and 34% at worst;
+  parts 9 and 10 measured 0.0% on the same test. Row 2 is the visible one - loose
+  chocolate shards outside the bowl sit on top of the word CHOCOLATE. The safe
+  area went with it: artwork reaches x 51 on the left and x 1497 on the right,
+  against a safe area of 110 to 1426 (parts 9 and 10 were 91/1403 and 79/1435).
+  Shipped as it is.
+
+  What changed because of it, in `ImageSwap.txt`: the bar clause now says the
+  bowl and the organ END ABOVE THE BAR and are drawn smaller if they will not
+  fit; a new paragraph says ALL THE FOOD IS INSIDE THE BOWL, since a shard on the
+  row lands on the bar the caption needs; and the safe area is now given in
+  pixels - x=110 and x=1426 at 1536 wide - because "one fourteenth of the width"
+  is a fraction the generator has to work out and has now missed three times.
+
+  Spent by the series after this part, and never repeated:
+    foods   + milk, dark chocolate, lemons, figs, shrimp  (50 in all)
+    organs  + growth plate, capillaries, salivary glands, uterus, tongue  (50)
