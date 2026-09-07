@@ -48,6 +48,19 @@ This is its own git repository — `healthness-videogen`, private, branch `main`
    person opens - it gets attached to the prompt. Its clean copy and its layout
    are working files: `recolor_base.py --work` keeps them in `work/`.
 
+9. **A poster that came back wrong is regenerated, not reconstructed.** If the
+   generator moved a wave, drew an organ half outside its circle, or invented
+   something that is not on disk anywhere, ask for another poster.
+   `check_base.py` says so and it is right: the animation cannot correct a wave
+   the generator redrew.
+
+   The one thing that is allowed is putting **base** pixels back. The row
+   stripe, the wave, the guide circle and the caption bars exist on disk at
+   pixel-exact geometry, and copying a region of the base over a poster that
+   scribbled on it is the same trade the whole design makes everywhere else:
+   what must be identical is never regenerated. Restoring is fine.
+   Reconstructing is not.
+
 8. **The prompt is not a file.** It is written in the terminal for the topic at
    hand and handed over whole, ready to paste. A saved copy goes stale in an
    afternoon.
