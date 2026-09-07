@@ -19,6 +19,7 @@ thumb.
 """
 import json
 import os
+import sys
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -206,3 +207,64 @@ def _ring(frame, b, p):
     m = np.array(im).astype(np.float32)[:, :, None] / 255.0 * a
     src = np.dstack([np.full((side, side, 3), 255.0, np.float32), m[:, :, 0] * 255.0])
     _blend(frame, src, 1.0, int(round(b["cx"] - c)), int(round(b["cy"] - c)))
+
+
+# ---------------------------------------------------------------------------
+# The seam into engine/flowanim.py --overlay micro_overlay
+#
+# Everything above is this variant's own. These three functions are the whole of
+# what the animator needs to know about it, and they are why there is no fork of
+# flowanim.py here any more: it was 77 lines apart from the engine, and all 77
+# were an import, some flags, a plan and a paint call.
+# ---------------------------------------------------------------------------
+
+def add_arguments(p):
+    p.add_argument("--micro", help="badges per row: 'A,C;Iron,Zinc;...' (';' between "
+                                   "rows), or 'auto:FOOD,FOOD,...' to look each food "
+                                   "up in nutrients.json")
+    p.add_argument("--micro-times", default="1,2,4,5.5,7",
+                   help="when each row's badges land, in seconds")
+    p.add_argument("--micro-d", type=float, default=210.0, help="badge diameter at 1536 wide")
+    p.add_argument("--micro-gap", type=float, default=22.0)
+    p.add_argument("--micro-stagger", type=float, default=0.09,
+                   help="delay between badges of the same row")
+    p.add_argument("--micro-dy", type=float, default=0.0,
+                   help="nudge off the row centre line, at 1536 wide")
+    p.add_argument("--micro-fade", type=float, default=0.0,
+                   help="seconds of fade-out at the end; 0 leaves them up, which is "
+                        "what the clip ships with - a badge fading out passes through "
+                        "a stretch where it is a soft coloured smudge, and that is the "
+                        "frame a feed freezes on")
+    p.add_argument("--micro-ring", type=int, default=1, help="0 drops the shock ring")
+    p.add_argument("--micro-follow", type=int, default=1,
+                   help="1 sits the badges on the wave's own centre line, 0 on the row's")
+    p.add_argument("--micro-dir", default=MICRO_DIR)
+    p.add_argument("--micro-cues", help="write the landing times here, for the SFX")
+
+
+def build(args, ctx):
+    if not args.micro:
+        return None
+    if not ctx["layout"]:
+        sys.exit("--micro needs --layout: the badges sit on the row the layout describes")
+    times = [float(t) for t in args.micro_times.split(",")]
+    pl = plan(resolve(args.micro), ctx["layout"], ctx["W"], ctx["H"], times,
+              curves=ctx["curves"] if args.micro_follow else None,
+              diameter=args.micro_d, gap=args.micro_gap, stagger=args.micro_stagger,
+              dy=args.micro_dy, micro_dir=args.micro_dir, seconds=ctx["seconds"],
+              fade=args.micro_fade)
+    cues = pop_times(pl)
+    print(f"  {len(pl)} micronutrient badges land at "
+          f"{', '.join(f'{t:.2f}' for t in cues)}s")
+    if args.micro_cues:
+        with open(args.micro_cues, "w") as fh:
+            fh.write(",".join(f"{t:.3f}" for t in cues) + "\n")
+    _RING[0] = bool(args.micro_ring)
+    return pl
+
+
+_RING = [True]
+
+
+def draw(frame, pl, secs):
+    paint(frame, pl, secs, ring=_RING[0])

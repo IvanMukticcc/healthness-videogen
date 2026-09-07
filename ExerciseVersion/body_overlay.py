@@ -147,3 +147,38 @@ def paint(frame, pl, secs):
 def cues(pl):
     """The instants a muscle lights, for anything that has to agree with them."""
     return sorted(m["t"] for b in pl for m in b["muscle"])
+
+
+# ---------------------------------------------------------------------------
+# The seam into engine/flowanim.py. Named before muscle_overlay on --overlay:
+# the body is drawn first, so a badge is never behind it.
+# ---------------------------------------------------------------------------
+
+def add_arguments(p):
+    p.add_argument("--body", type=int, default=1,
+                   help="0 leaves the right circle empty, for a poster that fills it itself")
+    p.add_argument("--body-scale", type=float, default=2.20,
+                   help="figure height as a multiple of the guide circle's radius; over "
+                        "2.0 the head and feet run past the disc, which is what stops it "
+                        "reading as a sticker inside a button")
+    p.add_argument("--body-disc", type=int, default=1,
+                   help="0 stands the figure straight on the wave")
+
+
+def build(args, ctx):
+    if not args.muscles or not args.body:
+        return None
+    import muscle_overlay
+    times = [float(t) for t in args.muscle_times.split(",")]
+    # The same rows and the same times as the badges: a muscle lights on the frame
+    # its badge lands. The clean base lets each row's disc take that row's own
+    # background colour instead of one grey for all five.
+    pl = plan(muscle_overlay.resolve(args.muscles), ctx["layout"], ctx["W"], ctx["H"],
+              times, stagger=args.muscle_stagger, base=ctx["base"],
+              scale=args.body_scale, dy=args.muscle_dy, disc=bool(args.body_disc))
+    print("  bodies: " + ", ".join(f"r{i + 1} {x['view']}" for i, x in enumerate(pl)))
+    return pl
+
+
+def draw(frame, pl, secs):
+    paint(frame, pl, secs)

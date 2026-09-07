@@ -33,9 +33,9 @@ done
 mkdir -p "OUTPUT/$DAY" work
 
 echo "== liquid and badges"
-.venv/bin/python flowanim.py "$POSTER" \
+.venv/bin/python ../engine/flowanim.py "$POSTER" \
     --width 1080 --seconds 8 \
-    --mask ribbon_mask.png \
+    --overlay micro_overlay \
     --base "$DIR/base_${TOPIC}_clean.png" \
     --anchored "$DIR/base_${TOPIC}.png" \
     --layout "$DIR/base_${TOPIC}_layout.json" \

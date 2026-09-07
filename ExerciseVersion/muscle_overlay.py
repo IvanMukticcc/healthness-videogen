@@ -24,6 +24,7 @@ three chances for one of them to be a frame out.
 """
 import json
 import os
+import sys
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -222,3 +223,67 @@ def _ring(frame, b, p):
     m = np.array(im).astype(np.float32)[:, :, None] / 255.0 * a
     src = np.dstack([np.full((side, side, 3), 255.0, np.float32), m[:, :, 0] * 255.0])
     blend(frame, src, 1.0, int(round(b["cx"] - c)), int(round(b["cy"] - c)))
+
+
+# ---------------------------------------------------------------------------
+# The seam into engine/flowanim.py --overlay body_overlay,muscle_overlay
+#
+# Everything above is this variant's own. These functions are the whole of what
+# the animator needs to know about it, and they are why there is no fork of
+# flowanim.py here any more: it was 152 lines apart from the engine, and all of
+# that was an import, some flags, a plan and two paint calls.
+#
+# The body is a separate module and is named first on --overlay, because it ends
+# the wave where the organ used to end it and a badge is never behind it.
+# ---------------------------------------------------------------------------
+
+def add_arguments(p):
+    p.add_argument("--muscles", help="muscles per row: 'Chest:p,Triceps:s;Lats:p,...' "
+                                     "(';' between rows), or 'auto:LIFT,LIFT,...' to "
+                                     "look each lift up in exercises.json")
+    p.add_argument("--muscle-times", default="1,2,4,5.5,7",
+                   help="when each row's badges land, in seconds")
+    p.add_argument("--muscle-d", type=float, default=210.0, help="badge diameter at 1536 wide")
+    p.add_argument("--muscle-gap", type=float, default=22.0)
+    p.add_argument("--muscle-stagger", type=float, default=0.09,
+                   help="delay between badges of the same row")
+    p.add_argument("--muscle-dy", type=float, default=0.0,
+                   help="nudge off the row centre line, at 1536 wide")
+    p.add_argument("--muscle-fade", type=float, default=0.0,
+                   help="seconds of fade-out at the end; 0 leaves them up, which is "
+                        "what the clip ships with - a badge fading out passes through "
+                        "a stretch where it is a soft coloured smudge, and that is the "
+                        "frame a feed freezes on")
+    p.add_argument("--muscle-ring", type=int, default=1, help="0 drops the shock ring")
+    p.add_argument("--muscle-follow", type=int, default=1,
+                   help="1 sits the badges on the wave's own centre line, 0 on the row's")
+    p.add_argument("--muscle-dir", default=MUSCLE_DIR)
+    p.add_argument("--muscle-cues", help="write the landing times here, for the SFX")
+
+
+def build(args, ctx):
+    if not args.muscles:
+        return None
+    if not ctx["layout"]:
+        sys.exit("--muscles needs --layout: the badges sit on the row the layout "
+                 "describes, and the body sits in its circle")
+    times = [float(t) for t in args.muscle_times.split(",")]
+    pl = plan(resolve(args.muscles), ctx["layout"], ctx["W"], ctx["H"], times,
+              curves=ctx["curves"] if args.muscle_follow else None,
+              diameter=args.muscle_d, gap=args.muscle_gap, stagger=args.muscle_stagger,
+              dy=args.muscle_dy, muscle_dir=args.muscle_dir, seconds=ctx["seconds"],
+              fade=args.muscle_fade)
+    cues = pop_times(pl)
+    print(f"  {len(pl)} muscle badges land at {', '.join(f'{t:.2f}' for t in cues)}s")
+    if args.muscle_cues:
+        with open(args.muscle_cues, "w") as fh:
+            fh.write(",".join(f"{t:.3f}" for t in cues) + "\n")
+    _RING[0] = bool(args.muscle_ring)
+    return pl
+
+
+_RING = [True]
+
+
+def draw(frame, pl, secs):
+    paint(frame, pl, secs, ring=_RING[0])
