@@ -7,6 +7,11 @@ app, and there is no `scripts/` folder.
 
 This is its own git repository — `healthness-videogen`, private, branch `main`.
 
+**Started at the root rather than inside a variant?** Then the engine is yours
+and so is deciding what belongs in it: read `MAINTAINER.md` after this. Started
+inside `Foods/`, `Micro/` or `Exercise/`? That folder is your whole remit - see
+rule 3 - and `MAINTAINER.md` is not addressed to you.
+
 ## The shape
 
     engine/                the five tools, three authored wave assets, sfx/
