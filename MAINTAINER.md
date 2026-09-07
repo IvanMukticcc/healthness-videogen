@@ -78,6 +78,10 @@ files you touched, by name.
 - **`refine_art` has no user yet.** It was added for Exercise's black-singlet
   case; if a second variant needs the same correction, that is the signal to
   promote it into the animator.
+- **Exercise still carries its own copy of the strike synthesis.**
+  `engine/impact.py` reproduces `muscle_audio.py`'s hits bit for bit; when its
+  agent is free, that file should call the engine's and keep only its bed. Until
+  then the two are identical and nothing is at risk, but it is a copy.
 - **`check_base.py`'s label check is unreliable** and only prints a note. Look at
   the poster before animating.
 - **The guide circles are never fully covered.** A faint halo survives behind

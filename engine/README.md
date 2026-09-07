@@ -105,3 +105,20 @@ usually the one you were given with something added.
 
 A variant may define `refine_art` without defining `build` and `draw`, and the
 other way round.
+
+## impact.py
+
+The sound a badge makes when it lands, synthesised: a click, a body whose pitch
+falls by a factor of three in 30 ms, a sub an octave below that carries the
+weight, and 35 ms of air. The note climbs one pentatonic degree per row and two
+semitones per badge inside a row, so five of them read as a list being counted
+rather than as a machine.
+
+    import impact
+    track = impact.build(cues, seconds, per_row, root=420.0)
+
+It is here because both variants make the same sound. Micro had its own, thinner
+one - no sub, root at 760 - and the two drifted the way every other copy in this
+repository drifted. A variant that wants a different sound passes a different
+`root`; one that wants a genuinely different instrument writes its own and says
+why in the file.
