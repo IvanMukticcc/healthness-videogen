@@ -21,5 +21,12 @@ The body is drawn at render time rather than baked into the poster, because a
 muscle has to light on the frame its badge lands and a baked body cannot do
 anything on a frame.
 
-Yours to change: everything in `Exercise/`. Not yours: `engine/`, `Foods/`,
-`Micro/`. See `../CLAUDE.md`.
+**Yours to change: everything in `Exercise/`, and nothing else.** Not `Foods/`, `Micro/`,
+which other agents are in at the same time. Not `engine/` - the animator, the
+wave assets and the tools are shared by all three variants, and a change made
+from in here is a change made to two clips nobody asked you to touch.
+
+If this variant needs something the engine does not do, **say so and stop**: name
+what is missing and what you would change. Do not edit `engine/`, do not copy a
+tool in here to edit it, and do not patch around it. The seam meant for this is
+`--overlay`, described in `engine/README.md`. See `../CLAUDE.md` rule 3.

@@ -20,8 +20,15 @@ micro_overlay` calls. There was once a `micro_patch.py` here that grafted the
 badge layer onto a copy of the animator; the hook replaced it. Do not bring it
 back, and do not copy an engine file into this folder.
 
-Yours to change: everything in `Micro/`. Not yours: `engine/`, `Foods/`,
-`Exercise/`. See `../CLAUDE.md`.
+**Yours to change: everything in `Micro/`, and nothing else.** Not `Foods/`, `Exercise/`,
+which other agents are in at the same time. Not `engine/` - the animator, the
+wave assets and the tools are shared by all three variants, and a change made
+from in here is a change made to two clips nobody asked you to touch.
+
+If this variant needs something the engine does not do, **say so and stop**: name
+what is missing and what you would change. Do not edit `engine/`, do not copy a
+tool in here to edit it, and do not patch around it. The seam meant for this is
+`--overlay`, described in `engine/README.md`. See `../CLAUDE.md` rule 3.
 
 `work/make_prompt.py` fills the current template for a topic. That is compatible
 with rule 8: it reads `ImageSwap.txt` as it stands now rather than keeping a copy

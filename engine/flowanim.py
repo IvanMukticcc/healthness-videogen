@@ -890,6 +890,16 @@ def main():
                 art |= blob
         art = ndimage.binary_dilation(art, np.ones((41, 41))) & cand
         art = ndimage.binary_dilation(art, np.ones((5, 5)))
+        # Artwork is solid, so a hole inside it is still artwork. Everything
+        # above finds artwork by how far it is from the base or by how much
+        # detail it carries, and a black singlet on a near-black row has
+        # neither: on PULL DAY the athlete's disc was found, his skin was found,
+        # and the liquid was then painted across his chest, because that patch
+        # differed from the row by less than the threshold and was as flat as the
+        # stripe it sat on. It is enclosed by the artwork around it, though, and
+        # that is enough to know what it is - the same argument as the white bowl
+        # on a pale stripe, which detail caught and colour did not.
+        art = ndimage.binary_fill_holes(art)
 
         # The bowl and the organ always sit on the guide circles - that is what
         # the circles are for. Where one covers the wave, the liquid underneath is

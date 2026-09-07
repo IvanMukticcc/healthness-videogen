@@ -29,13 +29,26 @@ This is its own git repository — `healthness-videogen`, private, branch `main`
    `engine/flowanim.py --overlay <module>` calls three functions in a module of
    yours - `add_arguments`, `build`, `draw`. See `engine/README.md`.
 
-3. **Work only in your own variant.** Do not edit a sibling variant's folder.
-   Other people and other agents are in them at the same time.
+3. **Change only your own variant.** If you were started in `Foods/`, `Micro/`
+   or `Exercise/`, that folder is the whole of what you may edit. Not the other
+   two - other people and other agents are in them at the same time. **And not
+   `engine/`**, no matter how small or how obviously right the change looks.
+   A variant is not the place from which the thing all three variants run gets
+   changed.
 
-4. **Changing anything in `engine/` changes all three variants.** Before
-   committing such a change, re-render one clip in each and compare it against
-   what it produced before. A difference is fine when it is the fix arriving -
-   say which fix, and how large the difference is.
+   When a variant needs something the engine does not do: **say so and stop.**
+   Describe what is missing and what you would change. Do not edit `engine/`, do
+   not copy a tool into your folder to edit it there, and do not work around it
+   with a patch script. Almost always the answer is an overlay module in your own
+   `work/` - `engine/README.md` describes the seam - and when it genuinely is not,
+   the engine change is made from the root, by whoever is looking after all three.
+
+4. **If you are working in `engine/`, you are changing all three variants.**
+   Before committing, re-render one clip in each and compare it against what it
+   produced before. A difference is fine when it is the fix arriving - say which
+   fix, and how large the difference is, in pixels and clusters, not in
+   adjectives. `./engine-status.sh` must still say every variant calls the engine
+   and keeps no copy.
 
 5. **Shipped is shipped.** A rule found halfway through a day applies to the
    clips made after it, never backwards. Nothing already in an `OUTPUT/<DD.MM>/`

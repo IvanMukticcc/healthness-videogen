@@ -12,8 +12,15 @@ the organ it feeds on the right.
 prompt, `check_base.py`, `add_labels.py`, the animation, the sound, the audit.
 Its **what is already known to break** section is not background reading.
 
-Yours to change: everything in `Foods/`. Not yours: `engine/`, `Micro/`,
-`Exercise/`. See `../CLAUDE.md` for why.
+**Yours to change: everything in `Foods/`, and nothing else.** Not `Micro/`, `Exercise/`,
+which other agents are in at the same time. Not `engine/` - the animator, the
+wave assets and the tools are shared by all three variants, and a change made
+from in here is a change made to two clips nobody asked you to touch.
+
+If this variant needs something the engine does not do, **say so and stop**: name
+what is missing and what you would change. Do not edit `engine/`, do not copy a
+tool in here to edit it, and do not patch around it. The seam meant for this is
+`--overlay`, described in `engine/README.md`. See `../CLAUDE.md` rule 3.
 
 The prompt template is `work/ImageSwap.txt` and the filled ones are in
 `work/Prompts.txt` - but the prompt handed to the user is always written out
