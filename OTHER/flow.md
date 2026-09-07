@@ -9,23 +9,28 @@ is never asked to. Only the food, the organs, the title and the palette change.
 ## Where things live
 
     ShortPrompt/
-      OTHER/     the tools, the bases, the mask, the generated posters, this file
+      engine/    the five tools and the three authored assets. Read its README
+      OTHER/     this variant: the bases, the generated posters, the prompts, this file
+      MikroVersion/ ExerciseVersion/   other variants, worked on by others
       ASSETS/    water SFX, both CC0
       OUTPUT/    finished videos, one folder per day (`07.09/`), sound on every one
 
-Run everything from inside `OTHER/`; `ASSETS` and `OUTPUT` are one level up.
+Run everything from inside `OTHER/`, calling `../engine/<tool>.py`; `ASSETS` and
+`OUTPUT` are one level up. **Never keep a copy of an engine file here** - that is
+how the same five tools ended up at three different generations at once.
+`../engine-status.sh` reports what each variant is actually running.
 
 ## Files that carry the design
 
 | file | what it is |
 | --- | --- |
-| `base_layer.png` | the reference base: five row stripes, five identical waves, logo. 1536×2752 |
-| `ribbon_mask.png` | where the waves are. Authored from `base_layer.png`, **geometry only** |
-| `base_<topic>.png` | one per topic: `base_layer.png` recoloured. Same geometry, so the same mask fits |
-| `flowanim.py` | the animator |
-| `recolor_base.py` | makes a new palette |
-| `check_base.py` | did the generator leave the waves alone? |
-| `make_base.py` | rebuilds `base_layer.png` from a freshly generated wave poster. Rarely needed |
+| `../engine/base_layer.png` | the reference base: five row stripes, five identical waves, logo. 1536×2752 |
+| `../engine/ribbon_mask.png` | where the waves are. Authored from `base_layer.png`, **geometry only** |
+| `base_<topic>.png` | one per topic, made here: the base recoloured. Same geometry, so the same mask fits |
+| `../engine/flowanim.py` | the animator |
+| `../engine/recolor_base.py` | makes a new palette |
+| `../engine/check_base.py` | did the generator leave the waves alone? |
+| `../engine/make_base.py` | rebuilds the base layer from a freshly generated wave poster. Rarely needed |
 | `../OUTPUT/<DD.MM>/` | the day's finished clips, `_sfx` only |
 | `../ASSETS/` | water SFX, 8 s, normalised to -18 LUFS |
 
