@@ -921,6 +921,18 @@ def main():
                     art |= np.hypot(xx - cx, yy - cy) < r + 12 * k
                     hw = args.caption_w * k / 2 + 12 * k
                     art |= ((np.abs(xx - cx) < hw) & (yy > cap0 - 12 * k) & (yy < cap1 + 12 * k))
+        # The last word on what counts as artwork belongs to the variant, if it
+        # wants it. What the two tests above find is a difference from the base or
+        # a patch of detail, and both can miss: a white bowl on a pale stripe was
+        # one case, a black singlet on a near-black row is the other, and the
+        # liquid then paints across the front of something it should have run
+        # behind. What the miss looks like, and what fixes it, is particular to
+        # what a variant puts in its circles - so the mask is offered to the
+        # overlay modules rather than guessed at harder here.
+        for m in overlays:
+            if hasattr(m, "refine_art"):
+                art = m.refine_art(art, dict(W=W, H=H, layout=args.layout, mask=mask,
+                                             base=bgsrc, poster=arr, args=args))
         clean = ~art
         print(f"  background read from {args.base}"
               f"  ({100 - clean.mean() * 100:.0f}% of the frame is new artwork)")

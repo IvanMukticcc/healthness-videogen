@@ -81,3 +81,27 @@ down first so a badge is never behind it.
 The sound shelf, shared. `flow_soft_8s.m4a` under the food clips,
 `lift_bed_8s.m4a` under the exercise ones, both normalised to -18 LUFS, both CC0
 with the sources in `LICENCES.md`.
+
+### refine_art, the other half of the seam
+
+`draw` runs at the end of every frame. There is one earlier point a variant may
+also want, and it is the only other one: **what counts as artwork.**
+
+    refine_art(art, ctx) -> art
+
+`art` is the boolean mask of everything the liquid must not be painted over - the
+bowls, the organs, the guide circles, the caption bars. The animator finds it by
+difference from the base and by local detail, and both tests can miss. A white
+bowl on a pale stripe is nearly the colour the base already had there; a black
+singlet on a near-black row has neither colour nor texture to give it away. When
+they miss, the liquid is painted across the front of something it should have run
+behind, and pale fragments of it are sampled into the wave's texture and travel
+downstream.
+
+What the miss looks like depends on what a variant puts in its circles, so the
+mask is handed over rather than guessed at harder in here. `ctx` carries `W`,
+`H`, `layout`, `mask`, `base`, `poster` and `args`. Return the mask you want -
+usually the one you were given with something added.
+
+A variant may define `refine_art` without defining `build` and `draw`, and the
+other way round.
