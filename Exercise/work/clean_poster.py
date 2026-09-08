@@ -40,6 +40,40 @@ import json
 import numpy as np
 from PIL import Image
 
+# Is this poster even ours? grab.py takes the newest 1536x2752 file out of
+# Downloads and cannot know which variant generated it, and on 8 September 2026
+# Biohacks grabbed an Exercise poster and every geometric check passed it: all
+# four variants are built on the same base, so the waves are in the same places
+# and check_base.py had nothing to object to.
+#
+# What does not cross variants is the title. recolor_base.py draws it into the
+# base and every prompt forbids touching it, so the band it occupies is the one
+# region that identifies WHICH base a poster came from.
+#
+# check_base.py carries this test now (28fc3be) and runs before this file, so
+# what follows is a second line rather than the guard. The tolerance is the
+# engine's 8 and deliberately not a number of our own: on three Exercise posters
+# it looked as though anything from 10 to 60 would do, and over 37 posters and
+# 1332 mismatched pairs it does not - a poster reads up to 3.2 against its own
+# base and the closest mismatch in the repository is 2.41, so no threshold
+# separates every pair and the widest safe one is small.
+#
+# It finds a foreign BASE, not a foreign TOPIC. Two topics that share a title
+# read alike - Micro measures 5.4 between SUPERFOODS 7 and SUPERFOODS 12 - so
+# this does not catch last topic's poster being cleaned against this topic's
+# base. Here every title so far is unique, which is luck rather than protection.
+# The band is y 191-392 of a 1536x2752 poster and is scaled by height rather than
+# hard-coded, the way check_base.py does it: this file only ever sees full-size
+# posters, but a fixed slice would be silently wrong the day it does not, and the
+# two copies of one test should not differ even where the difference cannot bite.
+# It is a mean over the band, channels included - the same statistic the engine
+# prints, which is why the two agree to the decimal on the same pair. Biohacks
+# measured max-across-channels against the same printed 8 and their tolerance was
+# really a 5.4: an identical number is worse than a different one when the
+# definition under it differs, because a different number invites the comparison.
+TITLE_BAND = (191 / 2752, 392 / 2752)
+TITLE_TOL = 8.0
+
 
 def restore(out, pos, base, a):
     """Blend the base back in under a soft mask, and say how much was covering it."""
@@ -70,6 +104,16 @@ def main():
     if pos.shape != base.shape:
         raise SystemExit(f"poster is {pos.shape[1]}x{pos.shape[0]}, base is "
                          f"{base.shape[1]}x{base.shape[0]} - resize before cleaning")
+    ty0, ty1 = int(pos.shape[0] * TITLE_BAND[0]), int(pos.shape[0] * TITLE_BAND[1])
+    seen = float(np.abs(pos[ty0:ty1] - base[ty0:ty1]).mean())
+    if seen > TITLE_TOL:
+        raise SystemExit(
+            f"the title band differs by {seen:.1f} against {args.base} (a poster of "
+            f"ours reads 0.0-3.2 there). This poster was generated for a different base - most "
+            f"likely another variant's, picked up by grab.py from the same "
+            f"Downloads folder. Cleaning it would restore the wrong base into it.")
+    print(f"  title band {seen:.1f} - this poster was generated from {args.base}")
+
     L = json.load(open(args.layout))
     H, W = pos.shape[:2]
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)

@@ -370,6 +370,93 @@ rediscover them.
   finished cut nobody has heard yet - the numbers go to the root, the gain does
   not come back in here.
 
+- **A dark wave on a light row can come back washed out, and `check_base.py`
+  will pass it.** On KETTLEBELL, 8 September 2026, the generator repainted both
+  light rows: row 2's wave went from (28,200,89) to (192,239,122) and row 4's
+  from (14,160,68) to (218,240,168), the left discs with them. Measured as how
+  far the wave stands off its own row stripe, row 2 lost 58% of its contrast and
+  row 4 lost 81% - 138.6 down to 27.0. The geometry never moved, so the wave
+  check says *safe to animate*, and it is right: that check measures whether the
+  mask still fits. Restyling is a different fault and nothing measures it.
+
+  It animates. Averaged over eight windows the pale rows flow as much as any
+  other - row 2 at 10356 moving px against WEEK ONE's 11924 - so this is a
+  design fault rather than a broken clip, and the user shipped it. What the
+  poster cannot do is be repaired: the wave right of x 450 is clear of the
+  athlete and could be restored from the base exactly, but the same repaint hit
+  the left disc, and the athlete stands *inside* that disc. A restored wave
+  beside a pale disc is a row contradicting itself, so the choice is the poster
+  as it came or another generation.
+
+  **Naming the rows in the prompt fixed it, first try.** One paragraph - the
+  waves on rows 2 and 4 are dark green on a light background, that contrast is
+  deliberate, do not lighten them or tint them towards the background, do not
+  harmonise the image, and the filled circle keeps its colour too - and the
+  regeneration kept 100, 99, 100, 99 and 101% of each wave's contrast against
+  its row. The generic "do not restyle them" in the opening paragraph had not
+  been enough on its own; the rows had to be named. Suspected trigger, still one
+  data point: deep green against a near-white row. MACHINES ONLY carried #7422FF
+  on a light row untouched, so it is not simply dark-on-light.
+
+  What the pale version looked like is worth keeping, because it is how this
+  fault announces itself: not a uniformly pale row but **two greens in one row**,
+  a deep moving band with a hard edge against a pale static one. The animator
+  reads the liquid's colour from the base and refuses to paint over what it
+  scores as artwork, so a repainted wave puts those two rules against each
+  other - the base-coloured liquid it does paint slides through the generator's
+  paint, ending always at the right circle's edge and wandering at the other end.
+  On the pale row 2 only 6.9% of the repainted pixels ever moved, against 8.5% on
+  an untouched row at the same instant.
+
+- **An athlete drawn far larger than the disc gets his legs cut off by the
+  caption bar.** `clean_poster.py` restores the bar because `add_labels.py`
+  picks its ink from whether the ROW is light or dark, which is wrong over a
+  photograph - that part is right and stays. But on KETTLEBELL row 4 the
+  generator drew the athlete at roughly twice the disc, legs running well past
+  the bar, and taking the bar back cut her shins and left both shoes floating
+  under it: 3533 px restored, and the two orphans read as debris rather than as
+  something standing behind the bar. It has been harmless until now because what
+  crossed the bar was a foot or a skipping rope, small enough to read as
+  occlusion.
+
+  `--bars 0` leaves the generator's bar and avoids the cut, at the price the bar
+  restoration was built to avoid. The cheap fix is upstream and it works: "the
+  athlete is sized to the circle and cropped by it: he does not stand through it,
+  and no part of him - no foot, no shoe, no hand, no kettlebell - appears below
+  the circle or beyond it on any side" took the overhang on that row from 3533 px
+  to 279. It is not free either. The athletes come back visibly smaller in their
+  discs, because the sentence that keeps the feet out also keeps the whole figure
+  in, so use it when a poster has already overhung rather than by default.
+
+- **Every geometric check passes another variant's poster.** `grab.py` takes the
+  newest 1536×2752 file out of Downloads and cannot know who generated it. On
+  8 September 2026 Biohacks grabbed an Exercise poster by accident, and nothing
+  caught it: all four variants are built on the same base, so the waves are in
+  the same places and `check_base.py` reported four rows ok and one repainted.
+  Both tools were right about what they measure and both were looking at the
+  wrong picture.
+
+  What does not cross variants is the title, because `recolor_base.py` draws it
+  into the base and every prompt forbids touching it. Measured over three topics
+  here: against its own base a poster reads 1.9-2.6 mean difference in the title
+  band, against another topic's 72-88. `check_base.py` carries the test now
+  (28fc3be, `--title-tol 8`) and runs before anything of ours, and the accident
+  that started it refuses at 85.4. `clean_poster.py` keeps a second copy of it,
+  at the engine's tolerance rather than one of its own.
+
+  Two things about it are worth more than the check. **Thirty times apart on
+  three posters was not the general case**: over 37 posters and 1332 mismatched
+  pairs the root measured own-base up to 3.2 and the closest mismatch at 2.41, so
+  no threshold separates every pair and 8 is near the top of what is safe. Three
+  readings were enough to be right about the cause and not enough to be right
+  about the number, which is the third time a variant has managed exactly that.
+
+  And **it finds a foreign base, not a foreign topic.** Two topics sharing a
+  title read alike - Micro measures 5.4 between SUPERFOODS 7 and SUPERFOODS 12 -
+  so the older hazard, last topic's poster cleaned against this topic's base, is
+  not closed by it. Every Exercise title so far is unique, which is luck and not
+  protection: reuse one and this check goes quiet.
+
 - **The circle is drawn, not asked for.** Three days, three answers: an opaque
   white disc on a dark row, a near-black one on a light row, and then — after the
   prompt said not to draw a disc — a cut-out athlete standing on the row with
