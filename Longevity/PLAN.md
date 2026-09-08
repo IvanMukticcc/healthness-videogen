@@ -147,14 +147,20 @@ ending is **how far it got**: arithmetic, not a claim.
 ### The hook, and it is the honest one
 
 The most repeated sentence about fasting on the internet is that 16:8 gives you
-autophagy. **It does not, on the app's own thresholds** — 16:8 stops at fat
-burning, two stages short, and nothing the app ships reaches autophagy.
+autophagy. **None of the six protocols the app ships reaches the 24 h mark where
+the app places autophagy** — 16:8 ends at hour 16, eight hours short of it.
 
 So the poster's strongest image and its most responsible one are the same image:
-the row everybody has been told they reach, drawn dim, beyond where their
-protocol stops, carrying *research is ongoing*. Contrarian, sourced, and safer
-than the myth it corrects — which is the only kind of viral this category is
-allowed to want.
+the row everybody has been told they reach, drawn dim, beyond where their own
+protocol stops, carrying the app's *research is ongoing* unchanged.
+
+**And the caption adds no verdict the app declined to give.** What the thresholds
+support is that the fast stops before the app's own mark. They do not support
+"16:8 does not give you autophagy" as a statement about biology — the app's row
+says research is ongoing, and a poster that turns *ongoing* into *no* has made
+exactly the kind of claim this category exists to avoid, only in the direction
+that feels safe. Biohacks' correction, and the sharper half of the finding: the
+dim row shows where a protocol ends, not what the science concluded.
 
 ## The rows do not alternate, and that is the third break
 
