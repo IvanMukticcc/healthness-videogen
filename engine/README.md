@@ -109,6 +109,80 @@ usually the one you were given with something added.
 A variant may define `refine_art` without defining `build` and `draw`, and the
 other way round.
 
+### cues and finale, the third half of the seam
+
+    cues(plan) -> [seconds]
+    finale(plan, t0, ctx)
+
+Both optional, both about one instant: the end.
+
+The clip counts. A badge lands, a muscle lights, a note climbs one degree of a
+pentatonic, and five rows later the ear is waiting for something that never
+arrives - the last cue lands at 7.18s of an 8s clip and the remaining 0.82s
+carries nothing new. `--finale` is that arrival, and the whole of what the engine
+does about it is decide **when**. What lights up is the variant's, because what
+is in the circles is the variant's.
+
+`--finale auto` collects `cues(plan)` from every overlay that has it, takes the
+last one and adds `--finale-lead` (0.60s: enough to clear the 0.42s pop that cue
+started and the 0.47s flash on the body, so the finale begins on ground nothing
+else is still moving on). `--finale <number>` sets it outright, for a variant
+with no cues at all. Then `finale(plan, t0, ctx)` hands the instant to every
+overlay that wants it, and `--finale-cue <file>` writes it for the SFX step. One
+number, computed once, in the same file-passing way `--micro-cues` already
+works - typed twice it drifts by a frame and reads as a sync fault.
+
+**There is no room for it at the shipped rhythm.** `1,2,4,5.5,7` leaves 0.35s
+between the last thing moving and the last frame. The finale needs about 1.8s
+after the last row's cue - 0.65 for the row to settle, 0.8 for the finale, and
+0.4 of hold, because the last frame is the one a feed freezes on. So the rows
+move earlier: `1,2,3.2,4.4,5.6` puts the last badge at 5.78, the finale at 6.38
+and leaves 0.8s of settled hold.
+
+**And it is not bought with seconds.** The surface travels a whole number of
+ribbon lengths over the clip - that is what makes the loop seamless - so the
+speed is `ribbon / seconds` and nothing else. Measured: 8s gives 92px/s, 9s
+gives 82, 10s gives 74, 12s gives 61. There is no `--speed` that returns 92px/s
+at 9 seconds; the next available value is 165, at two traversals. The clip is
+8 seconds.
+
+## --surge
+
+The light that runs the length of every wave at the finale. It is light and
+nothing else: the loop is that whole number of traversals, so the one thing a
+finale may not do is push the liquid faster.
+
+    --surge 0.30 --surge-dur 0.42 --surge-stagger 0.06 --surge-width 0.10
+
+A band travelling each ribbon's own arc length, so it runs *with* the curve
+instead of cutting across it - the same coordinate the streaks use. One row at a
+time, 0.06s apart, top to bottom: simultaneous reads as a flash frame, and a
+cascade this short still reads as one gesture while giving the eye a direction.
+
+It never touches the artwork (`clean`, like every other paint pass) and it is
+gone `--surge-clear` pixels before it reaches a guide circle. That second one is
+measured: **22.7% of the wave lies inside a circle and is never painted at all**,
+so a highlight that simply stopped at the circle's edge would draw ten hard
+edges, one at every bowl and every organ. Verified over the whole window at
+1080 wide: 0 px changed outside the wave mask, 0 px changed inside a circle.
+
+**On its own it is nearly invisible in two of the three variants.** Of the wave,
+22.7% is behind a bowl or an organ and 71.1% of what is left is behind a badge -
+a badge is 210px across and the wave is 94 - so only 22.3% of the liquid is
+visible at all once the overlays have drawn. The band showing through the gaps is
+not the effect. The effect is the badges lighting as it passes them, and that is
+variant work, so the engine publishes what the variant would otherwise have to
+guess:
+
+    ctx["finale"]        the instant
+    ctx["surge"]["at"]   at(row, x) -> seconds, when the crest passes column x
+                         of that row. Rows are numbered top to bottom, the order
+                         the layout lists them in
+
+For the Micro layout at 6.38s that reads: row 1's bowl at 6.46, its three badges
+at 6.53, 6.59, 6.65, its organ at 6.72; row 5's organ at 6.96. Half a second,
+diagonally across the poster.
+
 ## impact.py
 
 The sound a badge makes when it lands, synthesised: a click, a body whose pitch
@@ -125,3 +199,23 @@ one - no sub, root at 760 - and the two drifted the way every other copy in this
 repository drifted. A variant that wants a different sound passes a different
 `root`; one that wants a genuinely different instrument writes its own and says
 why in the file.
+
+    track = impact.finale(t0, seconds, root=420.0, lead=0.26)
+
+The other sound in there: 260ms of noise climbing into a chord, laid at the
+finale's instant. The rows climb a pentatonic one degree at a time and leave the
+ear counting; this is the cadence that answers it - the five rows' own notes
+spread across three octaves so no two of them cluster, struck once. Not five
+strikes on the same frame: that is a stack of clicks and a peak the limiter
+flattens.
+
+The riser is the only sound in the clip that says something is *about* to
+happen; everything else is heard after it has already landed. It is what buys
+the watch.
+
+Measured in a finished cut, with the bed ducked 2.9dB under it: the finale's
+half second is the loudest passage in the clip by mean (-19.4dB against -20.8
+for a badge row) while its peak sits at -5.1dB, 3.4dB under the limiter's
+ceiling. Dense rather than peaky is the whole point - and the tail is cut to
+what is left of the clip and faded, because a chord still ringing on the last
+sample is a click on every lap of the loop.

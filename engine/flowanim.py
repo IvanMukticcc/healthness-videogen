@@ -658,6 +658,100 @@ def render_reach(out, arr, solid, g, front):
     out[y0:y1] = band
 
 
+def plan_surge(mask, clean, u, layout, W, H, t0, dur, stagger, width, clear, amount):
+    """The highlight that runs the length of every wave at the finale.
+
+    It is light and nothing else. The clip loops because the surface travels a
+    whole number of ribbon lengths over it, so the one thing a finale may not do
+    is push the liquid faster: the loop would come apart at the seam. What it can
+    do is put more light in the liquid, and move that light.
+
+    Two things decide where it may fall. `clean` keeps it off the artwork, the
+    way every other paint pass here is kept off it. The gate keeps it clear of
+    the guide circles, and that one is measured: 22.7% of the wave lies inside a
+    circle and is never painted at all, so a highlight that simply stopped at the
+    circle's edge would draw ten hard edges - one at every bowl and every organ.
+    Fading it out over `clear` pixels before it arrives is also what the picture
+    wants. The light leaves the bowl, crosses the row, and is gone by the time
+    the organ lights: what happens inside the circle belongs to the variant.
+    """
+    lab, n = ndimage.label(mask > 0.5)
+    if not n:
+        return None
+    cy_of = ndimage.center_of_mass(mask > 0.5, lab, range(1, n + 1))
+    order = [i + 1 for i, _ in sorted(enumerate(cy_of), key=lambda q: q[1][0])]
+
+    L = json.load(open(layout)) if isinstance(layout, str) else layout
+    k = W / 1536.0
+    yy, xx = np.mgrid[0:H, 0:W]
+    gate = np.ones((H, W), np.float32)
+    cl = max(1.0, clear * k)
+    for row in L["rows"]:
+        for cx0 in (L["anchor_l"], L["anchor_r"]):
+            d = np.hypot(xx - cx0 * k, yy - row["cy"] * k) - row["r"] * k
+            gate = np.minimum(gate, np.clip(d / cl, 0.0, 1.0).astype(np.float32))
+
+    keep = (mask > 0.5) & clean if clean is not None else (mask > 0.5)
+    rows = []
+    for r, comp in enumerate(order):
+        idx = np.nonzero((lab == comp) & keep)
+        if len(idx[0]) < 64:
+            continue
+        uu = u[idx]
+        span = float(uu.max() - uu.min())
+        # Arc length per column, so "when does the band reach x" can be answered
+        # for anything sitting on this row. A badge is 210px across and the wave
+        # is 94: the overlays cover 71% of the liquid the band travels, so the
+        # band showing through the gaps is not the effect - the badges lighting
+        # as it passes them is. They can only do that if they can ask.
+        cols = np.bincount(idx[1], minlength=W).astype(np.float32)
+        usum = np.bincount(idx[1], weights=uu, minlength=W)
+        seen = cols > 0
+        u_col = np.zeros(W, np.float32)
+        u_col[seen] = (usum[seen] / cols[seen]).astype(np.float32)
+        xs = np.nonzero(seen)[0]
+        u_col[:xs[0]], u_col[xs[-1] + 1:] = u_col[xs[0]], u_col[xs[-1]]
+        rows.append(dict(idx=idx, u=uu, gate=gate[idx], span=span,
+                         u0=float(uu.min()), u1=float(uu.max()), u_col=u_col,
+                         sigma=max(4.0, width * span), t=t0 + r * stagger))
+    if not rows:
+        return None
+    return dict(rows=rows, dur=max(1e-3, dur), amount=amount)
+
+
+def surge_arrivals(sp, W):
+    """`at(row, x) -> seconds`: when the highlight's crest passes column x of a row.
+
+    Rows are numbered top to bottom, the order the layout lists them in. Handed
+    over rather than left to be re-derived, for the same reason `curves` is: it
+    is arc length along a ribbon, and only this file has it.
+    """
+    def at(row, x):
+        r = sp["rows"][int(np.clip(row, 0, len(sp["rows"]) - 1))]
+        s = r["sigma"]
+        a, b = r["u0"] - 3 * s, r["u1"] + 3 * s
+        uu = float(r["u_col"][int(np.clip(round(x), 0, W - 1))])
+        return r["t"] + sp["dur"] * float(np.clip((uu - a) / max(b - a, 1e-6), 0.0, 1.0))
+    return at
+
+
+def draw_surge(out, sp, secs):
+    """One band per row, travelling its own arc length. `u` is arc length along
+    the ribbon, so the band runs *with* the curve instead of cutting across it -
+    the same coordinate the streaks use."""
+    for r in sp["rows"]:
+        p = (secs - r["t"]) / sp["dur"]
+        if not 0.0 <= p <= 1.0:
+            continue
+        s = r["sigma"]
+        a, b = r["u0"] - 3 * s, r["u1"] + 3 * s
+        uc = a + (b - a) * p
+        # Sine, so the band is never switched on: it arrives and leaves.
+        env = np.sin(np.pi * p) ** 0.5
+        g = np.exp(-0.5 * ((r["u"] - uc) / s) ** 2) * r["gate"] * (sp["amount"] * env)
+        out[r["idx"]] *= (1.0 + g)[:, None]
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("poster")
@@ -718,6 +812,32 @@ def main():
     p.add_argument("--mask-only", action="store_true")
     p.add_argument("--overlay", help="comma-separated modules in the calling folder that "
                                      "draw on top of each finished frame")
+    p.add_argument("--finale", default="off",
+                   help="the instant everything the clip has been counting arrives at "
+                        "once. 'auto' takes the last cue the overlays report and adds "
+                        "--finale-lead; a number sets it outright, for a variant with no "
+                        "cues; 'off' is the default and changes nothing")
+    p.add_argument("--finale-lead", type=float, default=0.60,
+                   help="seconds after the last cue. The default clears the pop that cue "
+                        "started (0.42s) and the flash on the body (0.47s), so the finale "
+                        "begins on ground nothing else is still moving on")
+    p.add_argument("--finale-cue", help="write the finale instant here, for the SFX")
+    p.add_argument("--surge", type=float, default=0.0,
+                   help="a highlight running the length of every wave at the finale, as a "
+                        "fraction of the liquid's own brightness. 0 is off. Light only: "
+                        "the flow's speed never changes, because the loop is a whole "
+                        "number of traversals and would come apart at the seam")
+    p.add_argument("--surge-dur", type=float, default=0.42,
+                   help="seconds for the highlight to travel one wave")
+    p.add_argument("--surge-stagger", type=float, default=0.06,
+                   help="delay per row, top to bottom. Simultaneous reads as a flash "
+                        "frame; a cascade this short still reads as one gesture but "
+                        "gives the eye a direction")
+    p.add_argument("--surge-width", type=float, default=0.10,
+                   help="the band's length, as a fraction of the wave's arc")
+    p.add_argument("--surge-clear", type=float, default=40.0,
+                   help="how far before a guide circle the highlight is already gone, at "
+                        "1536 wide")
     # Two passes: the overlay has to be imported before it can add its own flags,
     # and it is named by one of the flags.
     overlays = load_overlays(p.parse_known_args()[0].overlay)
@@ -1043,6 +1163,59 @@ def main():
             if pl:
                 plans.append((m, pl))
 
+    # One number, worked out once. The animator, the overlays and the sound all
+    # have to agree on when the finale is, and the way they agree is the way the
+    # badge landings already agree: it is computed here from the cues the
+    # overlays report, published to them, and written out for the SFX step.
+    # Typed twice, it drifts by a frame and reads as a sync fault.
+    t_fin = None
+    if args.finale != "off":
+        if args.finale == "auto":
+            cues = [t for m, pl in plans if hasattr(m, "cues") for t in (m.cues(pl) or [])]
+            if not cues:
+                sys.exit("--finale auto needs an overlay that reports cues(plan); pass a "
+                         "number instead for a variant that has none")
+            t_fin = max(cues) + args.finale_lead
+        else:
+            t_fin = float(args.finale)
+        if t_fin >= args.seconds:
+            sys.exit(f"the finale lands at {t_fin:.2f}s of a {args.seconds:.2f}s clip")
+        print(f"  finale at {t_fin:.2f}s, {args.seconds - t_fin:.2f}s of clip after it")
+        if args.seconds - t_fin < 0.8:
+            print("    under 0.8s left: the finale has to have settled before the last "
+                  "frame, which is the one a feed freezes on", file=sys.stderr)
+    surge = None
+    if args.surge > 0:
+        if t_fin is None:
+            sys.exit("--surge needs --finale: the highlight runs on the finale's instant")
+        if not args.layout:
+            sys.exit("--surge needs --layout: it has to know where the guide circles are "
+                     "to be gone before it reaches them")
+        surge = plan_surge(mask, clean, u, args.layout, W, H, t_fin, args.surge_dur,
+                           args.surge_stagger, args.surge_width, args.surge_clear,
+                           args.surge)
+        if surge:
+            last = surge["rows"][-1]["t"] + surge["dur"]
+            print(f"  surge {args.surge:+.0%} over {len(surge['rows'])} rows, "
+                  f"{t_fin:.2f}-{last:.2f}s, clear of the circles by "
+                  f"{args.surge_clear:.0f}px at 1536")
+            if last > args.seconds:
+                print(f"    the last row is still lit at {last:.2f}s of a "
+                      f"{args.seconds:.2f}s clip - it will be cut mid-sweep, which is "
+                      f"the one thing a loop cannot hide", file=sys.stderr)
+
+    if t_fin is not None:
+        if plans:
+            ctx["finale"] = t_fin
+            ctx["surge"] = (dict(t0=t_fin, dur=args.surge_dur, stagger=args.surge_stagger,
+                                 at=surge_arrivals(surge, W)) if surge else None)
+            for m, pl in plans:
+                if hasattr(m, "finale"):
+                    m.finale(pl, t_fin, ctx)
+        if args.finale_cue:
+            with open(args.finale_cue, "w") as fh:
+                fh.write(f"{t_fin:.3f}\n")
+
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(args.fps),
            "-i", "-", "-c:v", "libx264", "-preset", "slow", "-crf", "16",
@@ -1070,6 +1243,10 @@ def main():
             out = base * (1.0 - mask3) + np.clip(base * factor, 0, 255) * mask3
         if drops:
             draw_droplets(out, drops, (drop_cycles * t) % 1.0)
+        if surge:
+            draw_surge(out, surge, f / args.fps)
+        # Before the protect pass, not after: a label lying under the wave is
+        # pinned to the base, and the highlight has no business lighting type.
         out[protect] = base[protect]
         # Last, and outside the protect pass: an overlay draws on the finished
         # frame, so nothing in the liquid pipeline has to know it exists.

@@ -96,6 +96,24 @@ files you touched, by name.
   the poster carries it, which matters if a still is ever published.
 - **`Micro/work/make_prompt.py`** tells the user to put the returned poster in
   `INPUT/`, which rule 7 forbids. Flagged to its agent; it is their file.
+- **The finale is half built.** The engine decides *when* it is (`--finale`,
+  `cues`/`finale` on the seam) and runs the light through the liquid
+  (`--surge`); what lights up inside the circles is each variant's and neither
+  has written it yet. Two things go with it, both variant work: the row cues
+  move from `1,2,4,5.5,7` to `1,2,3.2,4.4,5.6`, because the shipped rhythm
+  leaves 0.35s between the last thing moving and the last frame; and the badges
+  have to light as the highlight passes them, because only 22.3% of the liquid
+  is visible once the overlays have drawn - 22.7% of the wave is behind a bowl
+  or an organ and 71.1% of the rest is behind a badge. `ctx["surge"]["at"]`
+  answers when the crest reaches any column, so neither variant has to guess it.
+  Until they are written, `--surge` shows properly only in Foods, where nothing
+  covers the wave.
+- **Micro's organs have no grammar yet.** Exercise's body reacts to every badge
+  from the first second, so a finale there is a summary of something the viewer
+  has been taught. Micro's organs do not move at all for eight seconds, so a
+  finale would be the first thing an organ ever does - and a first time in the
+  last second reads as a fault, not a climax. The small per-badge response comes
+  before the finale, not after it.
 
 ## Where the record is
 
