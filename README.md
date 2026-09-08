@@ -30,7 +30,7 @@ generated from a prompt three revisions old.
 
 ## The engine
 
-    engine/      six tools, three authored wave assets, and the sound shelf
+    engine/      seven tools, three authored wave assets, and the sound shelf
 
 `engine/README.md` is the one to read before changing anything in there. The
 short version: **a variant never keeps a copy of an engine file.** It calls

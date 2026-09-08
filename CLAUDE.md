@@ -15,7 +15,7 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
 
 ## The shape
 
-    engine/                the six tools, three authored wave assets, sfx/
+    engine/                the seven tools, three authored wave assets, sfx/
     Foods/ Micro/ Exercise/ Biohacks/   four variants, three folders each:
         INPUT/             base_<topic>.png, and nothing else
         OUTPUT/            finished clips, a folder per day
