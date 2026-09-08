@@ -12,13 +12,36 @@ rather than an opinion.
                   |poster - base| over the title band is near zero for a poster
                   of ours and enormous for anyone else's.
 
-                  This is first because it is the check that invalidates all the
-                  others, and because nothing else catches it: `grab.py` takes
-                  the newest 1536x2752 file in Downloads and cannot know which
-                  variant it belongs to, and every variant is built on the same
-                  base geometry - so an Exercise poster passed check_base.py's
-                  wave test AND all four checks below. Measured: 4.0 mean for
-                  ours, 86.4 for the one that was not.
+                  This was first because it was the check that invalidated all
+                  the others: `grab.py` takes the newest 1536x2752 file in
+                  Downloads and cannot know which variant it belongs to, and
+                  every variant is built on the same base geometry - so an
+                  Exercise poster passed check_base.py's wave test AND all four
+                  checks below.
+
+                  **`engine/check_base.py` does this now** (`--title-tol`, 8 by
+                  default, refusing before every other test), so this is a
+                  second line of defence rather than the only one. It is kept
+                  because it runs on the poster this folder is about to label
+                  and render, and a check that costs one subtraction is not
+                  worth removing to save it.
+
+                  **And it finds a foreign BASE, not a foreign topic.** Two
+                  posters gave 4.0 for ours against 86.4 for a stranger's, and
+                  that separation is an artefact of a sample of two. The root
+                  widened it to 37 posters and 1332 mismatched pairs: own base
+                  runs 0.0-3.2 and the best mismatch is 2.41, which is *below*
+                  the worst legitimate match - so no threshold separates the ten
+                  pairs that share a title. `liver` and `lungs` exist in two
+                  variants each, and Micro's superfoods run is one title across
+                  many topics. Had the poster that started this happened to
+                  share a title with the one it was meant to be, everything here
+                  would have passed it.
+
+                  Nothing in this folder collides today - `5 FREE BIOHACKS`,
+                  `YOUR FIRST HOUR`, `BLOOD SUGAR` are ours alone across 49
+                  bases - but that is a fact about today's titles, not a
+                  property of the test.
 
     1. MARKS      is the LEFT circle painted over, or did the generator paint the
                   photograph around it and leave it standing? A flat disc has
@@ -66,7 +89,12 @@ from PIL import Image
 # mark measures 24-79. Both ends measured on the two firsthour posters, so the
 # line between them is drawn where there is nothing near it.
 OURS_DIFF = 25.0            # mean |poster - base| over the title band. Ours
-                            # measures 4.0, another variant's poster 86.4
+                            # measures 0.0-3.2 over 37 posters; a foreign base
+                            # with a different title, 38-88. Anywhere from 10 to
+                            # 60 does the same job, which is the sign the test is
+                            # on something real rather than tuned - but see the
+                            # limit in the header: a foreign base with the SAME
+                            # title reads 2.41 and nothing here catches it
 TITLE = (191, 392)          # where recolor_base.py draws the title, at 1536
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
