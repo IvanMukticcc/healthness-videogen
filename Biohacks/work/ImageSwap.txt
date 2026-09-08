@@ -132,18 +132,6 @@ a row or two and then drifts, which is what happened to the camera angle in the
 food version and is written down there.
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
-
-text, letters, numbers, caption, label, title, clock, watermark, logo, ring,
-dial, gauge, chart, infographic, diagram, object in the right circle, circle
-around the subject, disc behind the subject, grey circle, grey bar, faint
-circle left visible, plain disc, blurred patch, frame, border, vignette, collage,
-split screen, illustration, 3d render, cartoon, changed liquid, redrawn wave,
-restyled wave, wave as splash, wave as spray, droplets, mist, particles,
-sparkles, glow around the liquid, halo, drop shadow, reflection, moved wave,
-recoloured wave, changed title, changed logo, anything below the bottom row
-
-
 AFTER GENERATING
 
     ../../.venv/bin/python ../../engine/grab.py <topic>

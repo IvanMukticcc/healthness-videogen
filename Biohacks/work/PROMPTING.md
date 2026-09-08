@@ -60,6 +60,36 @@ Worth knowing, because prompt length is not free and these cost nothing:
   every band needs its own paragraph, and each row line has to say what is along
   its bottom edge — a smooth table edge, an even paving tone, a plain floor.
 
+## No negative prompt
+
+There is no negative field in `ImageSwap.txt` any more and there should not be
+one. The user reported the generator deleting things it had been told to keep,
+the caption strips among them, and the negative list is what confuses it.
+
+**This folder is where the mechanism is easiest to see, because its list was the
+longest.** It opened `text, letters, numbers, caption, label, title, clock,
+watermark, logo` — while the body of the same prompt says `THE TITLE AT THE TOP
+AND THE LOGO AT THE BOTTOM ARE FINAL. Do not redraw, move or restyle either.`
+Handed both, a model can read the negative field as permission to remove exactly
+what the base drew and the body just protected. `logo`, bare, against *the logo
+is final*.
+
+It is the purest form of the mistake the first sentence of this file warns
+about. A negative field is a list of nouns with all the context stripped off,
+describing the same image as the body — and on the nouns they share, **the one
+with less context wins**. The body says what a thing *is* and what happens to
+it; the list says only that the word is unwelcome.
+
+Nothing was lost by dropping it. Every case the list was carrying is already in
+the body, stated as a consequence rather than as a word to suppress: `grey
+circle, grey bar, faint circle left visible, plain disc, blurred patch` is the
+paragraph about the alignment marks, which is also where this folder already
+records that naming them was not enough — it took saying the photograph is
+painted over them *and* listing what may not replace them.
+
+If a failure the list was holding back comes back, that is a finding to report,
+not a reason to restore the block.
+
 ---
 
 ## The join, which is the whole difference between good and finished
