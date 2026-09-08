@@ -76,6 +76,11 @@ done
 # it, at import time, before any of them can report anything. engine/copy.py did
 # exactly that to all four variants on 9 September and it took somebody noticing
 # a render that would not start. This is the check that was missing.
+#
+# Test it in a throwaway tree, never by planting a file in a live work/. The
+# obvious way to check a check is to trigger it where it runs, and here that
+# takes down every session importing scipy for as long as the file exists -
+# which is the very failure being tested for.
 shadow=$(python3 - "$ROOT" "${VARIANTS[@]}" <<'PYEOF'
 import sys, os, glob
 root, variants = sys.argv[1], sys.argv[2:]
