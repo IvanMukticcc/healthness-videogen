@@ -21,7 +21,8 @@ loop every other variant here follows and this folder is not an exception to it:
     1. build base_<topic>.png       recolor_base.py
     2. write the prompt             ImageSwap.txt filled for the topic, handed
                                     over whole in the terminal - never a file,
-                                    never a diff, never offered
+                                    never a diff, never offered. PROMPTING.md
+                                    is why it says what it says
     3. the user returns the image   grab.py, then check_base, check_scene
     4. caption it and render        add_labels.py, then ./render.sh with the
                                     poster as the third argument

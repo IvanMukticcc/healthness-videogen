@@ -27,9 +27,12 @@ belong to one day.
 | `dial_overlay.py` | the right circle - when the ring sweeps and the number counts. **Owns the finale's timing** |
 | `day_overlay.py` | the chip on the liquid and the day bar under the poster - the two elements that are about the viewer rather than about a row |
 | `biohack_audio.py` | the bed, the counter's tick train, and the assembly. Imports `engine/impact.py`; does not reproduce it |
-| `check.py` | the four things that must be true before a clip is delivered |
+| `check.py` | what must be true of the finished clip |
+| `check_scene.py` | what must be true of a returned poster, before a render is spent on it |
 | `render.sh` | all of it, once, so the picture and the sound cannot drift |
-| `ImageSwap.txt` | the prompt, for the topics that want photographs instead of glyphs |
+| `ImageSwap.txt` | the prompt template. Filled per topic and handed over whole - never a file the user opens |
+| `PROMPTING.md` | what makes one of these prompts work, measured over eight generations |
+| `Prompts.txt` | every topic that has shipped: its palette, its captions, its hacks, its scenes |
 
 ## Three overlays, and why three
 
@@ -44,19 +47,32 @@ right failure, because two modules owning one flag is two modules that disagree
 about it the first time either changes. They cannot be run separately; `render.sh`
 always passes all three.
 
-## What is drawn rather than generated, and what that buys
+## What is generated and what is drawn
 
-Everything. Both circles.
+**The photograph is generated. Everything else is drawn.** A clip comes back from
+the same round trip every other variant here makes - build the base, hand the
+prompt over, take the image back, caption it, render - and what this variant adds
+on top is drawn at render time and never asked for: the chip in the liquid, the
+counting dial, the day bar, and the light that crosses the row.
 
-The variants next door go: build a base, write a prompt, hand it over, wait,
-fetch the poster out of Downloads, check the waves survived, look at the circles
-by eye, caption it, render. This one goes: build a base, caption it, render.
-`./render.sh firsthour 'auto:...'` and a finished, sounded, checked clip exists.
+That split is the reason the dial can count. An image model cannot draw the same
+ring twice, so it is not asked to; five posters whose dials disagreed about where
+a ring starts would be five instruments, and the comparison the clip is about
+would not survive it. `PROMPTING.md` has the same argument from the other side -
+what the generator is *good* at, and what it will quietly get wrong.
 
-That is not a saving of five minutes. It removes the only step a person has to be
-present for, so the ceiling on how many clips exist in a day stops being a human
-and starts being a laptop. On a feed that is the entire strategy: the format is
-the experiment, and you cannot run an experiment five times a day.
+### The preview, which is not a clip
+
+`./render.sh <topic> 'auto:...'` with no poster draws a lucide glyph in the left
+circle instead of a photograph and writes `work/<topic>_preview.mp4`. It will not
+write to `OUTPUT/`.
+
+It earns its place: a topic can be seen laid out, timed and sounded in about a
+minute, which is where a caption that is too long, two rows sharing a glyph or a
+rhythm that runs past the finale all show up - before a generation is spent on
+any of it. It was briefly mistaken for the shipping path and three previews
+reached `OUTPUT/` on 8 September, which is why the two now go to different
+places.
 
 The cost is that a glyph is not a photograph. For the topics where that matters -
 where the left circle should be a real sunrise through a real window - the prompt

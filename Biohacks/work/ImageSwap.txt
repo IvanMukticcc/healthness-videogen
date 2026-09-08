@@ -108,6 +108,15 @@ Row 5 (dark): <SCENE 5>
 === END OF PROMPT ===
 
 
+WHY THIS PROMPT LOOKS THE WAY IT DOES
+
+`PROMPTING.md`, beside this file. Eight generations, five of them sent back, and
+every paragraph above was paid for by one of the five. Read it before rewriting
+any of this; the short version is that the generator is being asked to paint five
+photographs AROUND five things it must not touch, and an image model has no
+concept of "leave this alone" - only of what the picture looks like.
+
+
 WRITING THE FIVE SCENES
 
 Name the moment, not the category. A hack asked for as a noun comes back as a
