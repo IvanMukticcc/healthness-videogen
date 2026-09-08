@@ -33,8 +33,18 @@ too - then this.
 
 ## Verify before you believe
 
-Both reports from variants so far were right about the cause and wrong about a
-number, and both numbers would have been shipped if taken on trust.
+Every report from a variant so far has been right about the cause and wrong
+about the number, and every one of those numbers would have shipped if taken on
+trust. That is not a fact about variants. It is a fact about sample size, and
+Exercise named it better than this file had: **each of us was confident in
+proportion to our sample rather than to the population.** Biohacks inferred a
+threshold from one poster in each direction; Exercise inferred a range from
+three; the root claimed no stale `work/` prefix existed anywhere on the strength
+of a grep that could not match the form it took. Three readings are enough to be
+right about a cause and never enough to be right about a constant.
+
+So the question to ask of any number arriving from anywhere, including from here:
+how many did they look at, and how many are there?
 
 - Micro proposed capping the artwork growth at 15-20% of a row's wave. Measured,
   the components that touch a seed run to 81% of a wave's area, so that cap would
@@ -45,8 +55,19 @@ number, and both numbers would have been shipped if taken on trust.
   guide circles and all ten caption bars, and a poster bridging them would have
   had its wave filled and frozen without a word.
 
+- Exercise proposed the title band as the discriminator for a poster grabbed by
+  the wrong variant, measured on three posters at 1.9-2.5 against 72-88, and
+  concluded any threshold from 10 to 60 would do. Over 37 posters and 1332
+  mismatched pairs: own base 0.0-3.2, closest mismatch 2.41, which is *below* the
+  worst legitimate match. No threshold separates every pair, and the ten it
+  cannot separate share a title - so the check finds a foreign base and not a
+  foreign topic. The cause was right, the tool is in the engine, and the
+  constant they gave would have hidden its one real limitation.
+
 So: reproduce the claim on a poster of your own before acting on it, and measure
-the constant rather than accepting one.
+the constant rather than accepting one. Widen the sample until it stops moving -
+that is what turned 1.9-vs-72 into an overlap, and it took the whole corpus
+rather than a bigger handful.
 
 ## Verify after you change
 
