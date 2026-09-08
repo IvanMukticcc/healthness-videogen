@@ -119,7 +119,15 @@ OURS_DIFF = 8.0             # mean |poster - base| over the title band, measured
                             # There is no value that separates every pair. The
                             # closest mismatch in the repository is 2.41, BELOW
                             # the worst legitimate match. See the header.
-TITLE = (191, 392)          # where recolor_base.py draws the title, at 1536
+TITLE = (191, 392)          # where recolor_base.py draws the title, in a 2752
+                            # tall poster. Scaled by HEIGHT, the way
+                            # engine/check_base.py:92 scales it, not by the width
+                            # factor everything else in this file uses. On a
+                            # 1536x2752 poster the two are identical and this
+                            # could never bite - which is exactly how a copy of a
+                            # shared test waits: differing from the original in
+                            # the one place the difference is invisible. Exercise
+                            # found the same line in their own copy.
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
 JOIN_DIFF = 40.0            # levels between poster and base at the wave's start.
@@ -150,7 +158,7 @@ def main():
     yy, xx = np.mgrid[0:H, 0:W]
     bad = []
 
-    ty0, ty1 = int(TITLE[0] * k), int(TITLE[1] * k)
+    ty0, ty1 = int(H * TITLE[0] / 2752), int(H * TITLE[1] / 2752)
     # Mean across channels, not max, because that is what
     # engine/check_base.py --title-tol measures and both files carry the number
     # 8. On the same poster max-across-channels reads 3.77 and mean reads 2.57,
@@ -161,7 +169,7 @@ def main():
     print(f"{poster}  {W}x{H}")
     if ours >= OURS_DIFF:
         print(f"\n  THIS IS NOT A POSTER OF base_{a.topic}.png. The title band is "
-              f"{ours:.0f} levels from the base (ours measures ~4).\n"
+              f"{ours:.1f} levels from the base (ours measures 0.0-3.2).\n"
               f"\n  It is almost certainly ANOTHER VARIANT'S, and there is nothing "
               f"wrong with it.\n  Do not regenerate it. Put it back in ~/Downloads "
               f"under its own name so whoever\n  it belongs to can still grab it, "
