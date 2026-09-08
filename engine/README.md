@@ -165,11 +165,35 @@ how much energy the speaker fails to reproduce; the LUFS pair is how much
 quieter it will sound, and K-weighting has already discounted the bottom octaves
 the way an ear does before the high pass gets to them.
 
-Say whether a loudness figure is **gated**, too. The column above is an ungated
-mean over the whole file; ffmpeg's `ebur128` integrated figure is EBU-gated and
-drops the quiet stretches, which on a bed with an authored swell is worth 0.3 to
-1.2dB. Two tables of these numbers were written the same evening and disagreed by
-exactly that, in the same direction, for exactly that reason. `flow_stream` is where
+Say whether a loudness figure is **gated**, and over what **span**. The column
+above is an ungated mean over the whole file; ffmpeg's `ebur128` integrated
+figure is EBU-gated and drops the quiet stretches. On these two beds, warm minus
+soft, the same difference reads three ways and all three are right:
+
+    first 0.9s, ungated     RMS +2.03   K +1.00
+    whole 8s, ungated       RMS +1.63   K +0.43
+    whole 8s, EBU-gated                 K +0.20
+
+0.8dB apart across them, on one pair of files. An integrated figure and a window
+are not the same measurement even of the same file, and two tables written the
+same evening disagreed by exactly that until both said which they were.
+
+### Damping a bed makes it louder
+
+Worth its own line, because it is counter-intuitive and it reproduces on demand:
+shelf the top off any bed, re-normalise, and it comes back **louder in raw energy
+than in perceived energy**. `flow_soft_warm` is `flow_soft` with -10dB from 2kHz,
+and against its source it measures **+1.97dB RMS and +0.95 K-weighted** over the
+same window - twice as much on the meter that counts everything as on the one
+that models hearing.
+
+The mechanism is in the weighting. K-weighting is a +4dB shelf above about
+1.5kHz, and `loudnorm` targets a K-weighted figure, so a file that has just lost
+its top has to come *up* to hold -18 LUFS - and it comes up further in energy
+than in loudness, because the band it is regaining level in is the band the meter
+discounts. Anyone shelving a bed and re-normalising will meet this. It arrived as
+part of a compound figure - a shelf and a gain change measured as one number -
+and only appeared once the two were separated. `flow_stream` is where
 they part: 64% of it lies under 80Hz, so it reads -5.5 by RMS and -1.0 by LUFS,
 and neither is wrong.
 
