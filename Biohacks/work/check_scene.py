@@ -69,21 +69,45 @@ rather than an opinion.
                   add_labels.py picks white or near-black ink from that flag
                   before it has seen the photograph, so a band that flipped
                   loses its caption entirely
-    3. THE JOIN   is the wave's blunt left cut hidden? This is the defect that
-                  shows, and it is measured where it happens: |poster - base| in
-                  the 70px just right of the wave's start, on the wave's own rows.
-                  Something drawn there - a splash, a shoulder, a plume of breath
-                  - reads 49-210. A cut left standing in the open reads 26.
+    3. THE JOIN   printed, never judged. |poster - base| just right of the
+                  wave's start - the seam that shows if the subject does not
+                  cover it. Useful to watch across posters of one topic; not a
+                  pass or a fail, because it does not measure what it looks
+                  like it measures.
 
-                  This replaces two attempts to measure where the SUBJECT is, and
-                  both failed on the same band. Share-of-the-left-third passed a
-                  man standing squarely in the middle at 35% against a 34% floor.
-                  The centroid of the band's detail then flagged a band whose man
-                  WAS at the far left, because his dark trousers are a large flat
-                  area and the lamp and laptop behind him are not: detail
+                  It is dominated by how BRIGHT the scene and the wave are, not
+                  by whether the cut is covered. `sleep` row 5 - a violet wave
+                  emerging from behind a dimmed lamp, the best-integrated band
+                  on the poster - reads 34. `firsthour` row 5 before it was
+                  fixed, the wave's blunt end standing in open dark office air,
+                  read 27. Seven apart, on opposite sides of the only thing the
+                  test is for. And the success it seemed to have - that same
+                  band going 27 to 83 when the lamp moved behind the man's hands
+                  - is confounded: a lamp flare is bright, so the number rose
+                  because the scene got brighter, not because the seam got
+                  covered.
+
+                  Left in because a large drop between two posters of one topic
+                  still says something. Not left in as a verdict: a number that
+                  fires on brightness while claiming to measure coverage is
+                  worse than no number, because it makes a rejection feel
+                  objective when it is not, and it already sent back a poster
+                  that was right.
+
+                  Two earlier attempts to measure the SUBJECT's position failed
+                  the same way and are worth knowing about before a third is
+                  written. Share-of-the-left-third passed a man standing
+                  squarely in the middle at 35% against a 34% floor. The
+                  centroid of the band's detail then flagged a band whose man
+                  WAS at the far left, because his dark trousers are a large
+                  flat area and the lamp and laptop behind him are not - detail
                   measures where a picture is busy, not where its subject is.
-                  What the design actually needs is not the subject at x=16% - it
-                  is the seam covered, and that is one number away
+
+                  Three instruments, three failures, one lesson: where the
+                  subject sits and whether it covers the seam are things the eye
+                  reads instantly and pixel statistics read badly. LOOK AT THE
+                  BAND. The four checks around this one are all things the eye
+                  reads badly, which is why they are the ones that judge
     4. RIGHT      is the right third quiet? Anything drawn there survives past
                   the dial's disc and nudges the wave's tip
     5. FOOTER     is the strip under the last band empty? The day bar goes there
@@ -130,9 +154,8 @@ TITLE = (191, 392)          # where recolor_base.py draws the title, in a 2752
                             # found the same line in their own copy.
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
-JOIN_DIFF = 40.0            # levels between poster and base at the wave's start.
-                            # Measured over five bands that merge well: 49, 100,
-                            # 146, 210. One that does not: 26
+# No JOIN threshold. See the header: the number is printed and not judged,
+# because it tracks the scene's brightness rather than the seam's coverage.
 
 
 def luma(a):
@@ -182,7 +205,7 @@ def main():
               f"`grab.py --keep` copies instead of moving and avoids the whole class.")
         sys.exit(1)
     print(f"  from our base (title band {ours:.1f} levels off, limit {OURS_DIFF:.0f})\n")
-    print("  band  left mark      lightness          the join     right third")
+    print("  band  left mark      lightness         join(fyi)     right third")
     for i, row in enumerate(L["rows"]):
         y0, y1 = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
         band = img[y0:y1]
@@ -212,7 +235,7 @@ def main():
         jy0, jy1 = int((row["cy"] - 60) * k), int((row["cy"] + 60) * k)
         join = float(np.abs(img[jy0:jy1, jx0:jx1]
                             - base[jy0:jy1, jx0:jx1]).max(axis=2).mean())
-        join_ok = join >= JOIN_DIFF
+
 
         for ok, why in ((marks_ok, f"r{i+1} left circle still standing (std "
                                    f"{std:.1f}, want >{MARK_STD:.0f}) - the "
@@ -221,10 +244,6 @@ def main():
                                    f"(luma {lu:.0f}) and the layout says "
                                    f"{'light' if want_light else 'dark'} - the caption "
                                    f"will be drawn in the wrong ink"),
-                        (join_ok, f"r{i+1} the wave's left cut is in the open "
-                                  f"(only {join:.0f} levels of anything drawn over "
-                                  f"it, want {JOIN_DIFF:.0f}) - the subject has to "
-                                  f"overlap the start of the liquid, not sit beside it"),
                         (right_ok, f"r{i+1} right third is busier than the left "
                                    f"({100*right:.0f}% against {100*share:.0f}%)")):
             if not ok:
@@ -233,7 +252,7 @@ def main():
         print(f"   {i+1}    {std:5.1f} {'ok ' if marks_ok else 'NO '}   "
               f"{lu:5.1f} {'light' if lu >= LIGHT_LUMA else 'dark ':<5} "
               f"{'ok ' if light_ok else 'NO '}   "
-              f"{join:5.0f} {'ok ' if join_ok else 'NO '}   "
+              f"{join:5.0f}      "
               f"{100*right:4.0f}% {'ok ' if right_ok else 'NO '}")
 
     # the footer, where the day bar goes
