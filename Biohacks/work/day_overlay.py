@@ -128,45 +128,69 @@ def fit_chip(texts, avail, start=110):
 
 # ------------------------------------------------------------------ the chip
 
-def chips(rows, layout, W, H, times, curves=None, lead=0.08, h_px=CH_H):
+def chips(rows, layout, W, H, times, curves=None, lead=0.08, h_px=CH_H,
+          gap=26.0, stagger=0.09):
+    """One entry per chip. A row may declare more than one and they lay out side
+    by side, centred in the gap between the guide circles.
+
+    **One is the shipped default, and the measurement is the argument.** Over the
+    415 720 px of the wave mask at 1536, one 313x118 chip covers 23.6% of the
+    liquid and leaves 53.7% of it visible; a second takes the cover to about 30%.
+    A second chip earns its place when it says something the first cannot - a
+    dose and the window it works in - and never when it is filling space.
+    """
     L = json.load(open(layout)) if isinstance(layout, str) else layout
     k = W / 1536.0
     x_lo = (L["anchor_l"] + L["rows"][0]["r"]) * k + 20 * k
     x_hi = (L["anchor_r"] - L["rows"][0]["r"]) * k - 20 * k
-    texts = [h["chips"][0] for h in rows]
-    font = fit_chip(texts, (x_hi - x_lo) * 0.62, start=int(round(72 * k)))
-    print(f"  every chip at {font.size}px, the size "
-          f"'{max(texts, key=len)}' fits in")
+    texts = [t for h in rows for t in h["chips"]]
+    most = max(len(h["chips"]) for h in rows)
+    font = fit_chip(texts, (x_hi - x_lo) * 0.62 / most, start=int(round(72 * k)))
+    print(f"  {len(texts)} chips over {len(rows)} rows, every one at "
+          f"{font.size}px - the size '{max(texts, key=len)}' fits in")
 
     ch = h_px * k
+    g = gap * k
     out = []
     for i, (h, row) in enumerate(zip(rows, L["rows"])):
-        text = h["chips"][0]
-        b = font.getbbox(text)
-        cw = (b[2] - b[0]) + 2 * CH_PAD * k
-        cx = (x_lo + x_hi) / 2.0
-        cy = row["cy"] * k
-        if curves is not None and i < len(curves) and curves[i] is not None:
-            # On the liquid's own centre line, not the row's - the wave crosses
-            # the row centre twice and sits on it nowhere, so a chip placed there
-            # floats off the thing it is meant to be riding.
-            lo = row["stripe"][0] * k + ch * 0.5 + 8 * k
-            hi = row["cap_top"] * k - ch * 0.5 - 8 * k
-            cy = float(np.clip(curves[i](cx), lo, hi))
-
-        # Glass: a dark plate, a light rim, and a highlight along the top third.
-        # The rim is what makes it read as a surface rather than a hole - the app
-        # this is for is built in iOS 26's liquid glass and this is the same
-        # material, drawn rather than blurred, because there is nothing behind it
-        # to sample on a frame that has not been composited yet.
-        plate = _rounded(cw, ch, (10, 16, 20), CH_FILL)
-        rim = _outline(cw, ch, (255, 255, 255), 0.30, 2.4 * k)
-        gloss = _rounded(cw - 8 * k, ch * 0.42, (255, 255, 255), 0.10)
-        lab = _label(text, font, (255, 255, 255))
-        out.append(dict(row=i, cx=cx, cy=cy, w=cw, h=ch, text=text,
-                        plate=plate, rim=rim, gloss=gloss, lab=lab,
-                        t=(times[i] if i < len(times) else times[-1]) + lead))
+        widths = [(font.getbbox(t)[2] - font.getbbox(t)[0]) + 2 * CH_PAD * k
+                  for t in h["chips"]]
+        span = sum(widths) + g * (len(widths) - 1)
+        room = x_hi - x_lo
+        if span > room:                            # shrink to fit, never overflow
+            widths = [w * (room - g * (len(widths) - 1)) / sum(widths) for w in widths]
+            span = sum(widths) + g * (len(widths) - 1)
+        x = (x_lo + x_hi) / 2.0 - span / 2.0
+        for j, (text, cw) in enumerate(zip(h["chips"], widths)):
+            cx = x + cw / 2.0
+            x += cw + g
+            cy = row["cy"] * k
+            if curves is not None and i < len(curves) and curves[i] is not None:
+                # On the liquid's own centre line, not the row's - the wave
+                # crosses the row centre twice and sits on it nowhere, so a chip
+                # placed there floats off the thing it is meant to be riding.
+                lo = row["stripe"][0] * k + ch * 0.5 + 8 * k
+                hi = row["cap_top"] * k - ch * 0.5 - 8 * k
+                cy = float(np.clip(curves[i](cx), lo, hi))
+            out.append(_one(text, cx, cy, cw, ch, font, i, k,
+                            (times[i] if i < len(times) else times[-1])
+                            + lead + j * stagger))
     return out
+
+
+def _one(text, cx, cy, cw, ch, font, row, k, t):
+    """Glass: a dark plate, a light rim, and a highlight along the top third.
+
+    The rim is what makes it read as a surface rather than a hole - the app this
+    is for is built in iOS 26's liquid glass and this is the same material, drawn
+    rather than blurred, because there is nothing behind it to sample on a frame
+    that has not been composited yet.
+    """
+    return dict(row=row, cx=cx, cy=cy, w=cw, h=ch, text=text, t=t,
+                plate=_rounded(cw, ch, (10, 16, 20), CH_FILL),
+                rim=_outline(cw, ch, (255, 255, 255), 0.30, 2.4 * k),
+                gloss=_rounded(cw - 8 * k, ch * 0.42, (255, 255, 255), 0.10),
+                lab=_label(text, font, (255, 255, 255)))
 
 
 def _ease(p):
@@ -223,7 +247,7 @@ def paint_chips(frame, cs, secs, ring=True):
 
 # ------------------------------------------------------------------ the day bar
 
-def daybar(rows, W, H, times, seconds, finale_hint=None):
+def daybar(rows, W, H, times, seconds, finale_hint=None, y=BAR_Y):
     """The track, its five stops, and the piecewise map from time to head.
 
     The head is not a linear function of the clip. It is bent so that it arrives
@@ -235,7 +259,7 @@ def daybar(rows, W, H, times, seconds, finale_hint=None):
     """
     k = W / 1536.0
     x0, x1 = BAR_X0 * k, BAR_X1 * k
-    y = BAR_Y * k
+    y = y * k
     h = BAR_H * k
     n = len(rows)
     xs = [x0 + (x1 - x0) * i / (n - 1) for i in range(n)]
@@ -316,6 +340,15 @@ def add_arguments(p):
                    help="1 sits the chip on the wave's own centre line, 0 on the row's")
     p.add_argument("--daybar", type=int, default=1,
                    help="0 drops the day bar and the clip becomes five unrelated rows")
+    p.add_argument("--daybar-y", type=float, default=BAR_Y,
+                   help="the track's centre at 1536. 2530 is the middle of the "
+                        "clear strip the base leaves between the last caption bar "
+                        "(ends 2456) and the logo (starts 2586), and it is the only "
+                        "band wide enough. It is also 92%% of the way down the "
+                        "poster, which is where a feed draws its own caption - the "
+                        "same zone row 5's captions and the logo have always been "
+                        "in, so this is no worse than what ships, but it is where "
+                        "to look first if a platform starts covering it")
     p.add_argument("--chip-cues", help="write the landing times here, for the SFX")
 
 
@@ -337,7 +370,8 @@ def build(args, ctx):
         # The finale is not known yet - it is computed from the cues after every
         # build has run. The bar is told the clip's length now and corrected in
         # `finale`, which is the one place the real instant exists.
-        pl.bar = daybar(rows, ctx["W"], ctx["H"], times, ctx["seconds"])
+        pl.bar = daybar(rows, ctx["W"], ctx["H"], times, ctx["seconds"],
+                        y=args.daybar_y)
         print(f"  day bar {pl.bar['x0']:.0f}-{pl.bar['x1']:.0f} at y {pl.bar['y']:.0f}, "
               f"stops at {', '.join(s['clock'] for s in pl.bar['stops'])}")
     _RING[0] = bool(args.chip_ring)

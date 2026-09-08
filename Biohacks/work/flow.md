@@ -74,6 +74,11 @@ All ten are drawn at one size and the longest sets it. `CAFFEINE AT BED` at
 fifteen characters took every caption down to 34px; `CAFFEINE LEFT` at thirteen
 put them all back to 44. Keep them under fourteen.
 
+**And do not let the left caption say what the chip says.** The `7000 steps`
+entry was captioned `7000 STEPS` with a chip reading `7000 STEPS`, and the row
+spent its whole 0.55 s saying one thing twice. The caption names the hack, the
+chip prices it: `WALK MORE` and `7000 STEPS`.
+
 **4. Render.** One command, because the picture and three sounds have to agree
 about five instants and typing them twice drifts by a frame.
 
@@ -206,6 +211,12 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
   cluster, which is type that got sharper, not something that started moving. The
   first version of `check.py` had a pixel budget and would have failed every
   full-resolution render it was ever pointed at. A cluster does not scale.
+
+- **Two rows with the same glyph is one row the viewer stops reading.**
+  `walk after lunch` and `7000 steps` were both filed as `footprints`, which is
+  the right icon for either of them read on its own and a repeat on a poster that
+  holds both. `scene_overlay.build` now names it on stderr rather than fixing it:
+  which of the two should move is a decision about the topic, not about the code.
 
 - **A chip's shock ring reaches further than the chip.** `own_regions` allowed
   `h * 1.35` where the ring is drawn to `h * 1.30` on a canvas rounded out from

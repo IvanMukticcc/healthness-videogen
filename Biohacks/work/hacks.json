@@ -65,6 +65,26 @@
   "source": "Phillips et al., PNAS 2019: evening room light suppresses melatonin, and the sensitivity spread is enormous - half the people tested lost 50% of their melatonin under less than 30 lux, which is dimmer than most living rooms. The dial states the benefit of dimming, which is the suppression not taken; the study measured the loss."
  },
 
+ "veg first": {
+  "icon": "salad",
+  "clock": "12:30",
+  "chips": ["0 MIN"],
+  "metric": "SUGAR SPIKE",
+  "value": "-29%",
+  "dir": "down",
+  "source": "Shukla et al., Diabetes Care 2015;38:e98: the same meal eaten vegetables-and-protein-first rather than carbohydrate-first cut mean post-meal glucose by 28.6% at 30 min, 36.7% at 60 and 16.8% at 120, and the incremental AUC by 73%. Shukla 2019 (Diab Obes Metab) repeated it in prediabetes. -29% is the 30 min figure, the one a person would feel. The only entry in the table that costs nothing at all - it is an order, not a dose, which is why its chip reads 0 MIN."
+ },
+
+ "7000 steps": {
+  "icon": "person-standing",
+  "clock": "18:00",
+  "chips": ["7000 STEPS"],
+  "metric": "DEATH RISK",
+  "value": "-47%",
+  "dir": "down",
+  "source": "Ding et al., Lancet Public Health 2025 (57 studies, 2014-2025, dose-response meta-analysis): 7000 steps a day against 2000 was associated with 47% lower all-cause mortality and 47% lower cardiovascular mortality. Observational, so association not cause, and the comparator matters - it is against 2000 steps, not against a person who already walks."
+ },
+
  "nose breathing": {
   "icon": "wind",
   "clock": "17:30",

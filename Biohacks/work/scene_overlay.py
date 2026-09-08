@@ -23,6 +23,7 @@ what without a word being spent on it.
 """
 import json
 import os
+import sys
 
 import numpy as np
 from PIL import Image, ImageFilter
@@ -212,9 +213,23 @@ def build(args, ctx):
     print(f"  {len(pl)} glyphs drawn in the left circles, "
           f"lucide {glyphs.licence()} - no generator in the loop")
     for e in pl:
-        print(f"    r{e['row'] + 1}: {e['icon']:<12} in its wave's own "
+        print(f"    r{e['row'] + 1}: {e['icon']:<16} in its wave's own "
               f"({e['colour'][0]:.0f},{e['colour'][1]:.0f},{e['colour'][2]:.0f}), "
               f"lights at {e['t']:.2f}s")
+    # Two rows drawn with the same glyph is a poster the eye reads as four rows
+    # and a repeat. It is easy to walk into - `walk after lunch` and `7000 steps`
+    # were both `footprints`, which is the right icon for each of them read on
+    # its own - and it is invisible in the log unless it is named. Said rather
+    # than fixed: which of the two should move is a decision about the topic.
+    seen = {}
+    for e in pl:
+        seen.setdefault(e["icon"], []).append(e["row"] + 1)
+    for icon, rows_ in seen.items():
+        if len(rows_) > 1:
+            print(f"    rows {', '.join(str(r) for r in rows_)} all draw "
+                  f"'{icon}' - two circles the same is one circle the viewer "
+                  f"stops reading. Give one of them another icon in hacks.json",
+                  file=sys.stderr)
     return pl
 
 
