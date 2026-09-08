@@ -145,6 +145,25 @@ They did not arrive the same way: the water beds are cut from CC0 recordings and
 `Exercise/work/muscle_audio.py --bed`, and is in no licence file because nothing
 was downloaded to make it.
 
+Four more water beds landed on 9 September - `flow_river`, `flow_brook`,
+`flow_stones`, `flow_shore` - because the soft one reads as a tap running
+indoors. Measured here: `flow_soft` puts 39.9% of its energy over 2kHz with a
+2916Hz centroid, which is a spout hitting a basin a foot from the mic; the new
+four run 2.1% to 27.5% and 330 to 2052Hz.
+
+**And one of them will not survive a phone.** The same test that chose the
+finale sound - fourth-order high pass at 500Hz, where a phone speaker gives up -
+run over the whole shelf:
+
+    soft    -0.3 dB      stones  -1.3 dB      stream  -5.1 dB
+    brook   -0.7 dB      river   -1.3 dB      shore   -7.2 dB
+
+`flow_shore` is surf, 30.5% of it under 80Hz, and it loses 7.2dB of itself in a
+feed - the same trap the 40-inch tam-tam set in the finale audition, which lost
+7.6. The most impressive of them on headphones is the weakest of them on a
+phone, and that is twice now, so it is a property of the format rather than a
+coincidence. `flow_stream` has always had it too, at -5.1.
+
 **A bed has no level. It has a level at an instant.** Measured here on the assets
 themselves, momentary R128 every half second across the clip: `lift_bed` spans
 1.5 LU and is quietest at 8.0s, `flow_soft` spans 2.8 LU and is quietest at 7.0s.

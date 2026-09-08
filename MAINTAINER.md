@@ -160,6 +160,22 @@ files you touched, by name.
   last second reads as a fault, not a climax. The small per-badge response comes
   before the finale, not after it.
 
+## When the user sends a variant into engine/
+
+It happened on the 9th: the user asked Micro for new water, Micro said the shelf
+was not its to write to, and the user told it directly to put the files there.
+It did, and then told the root rather than leaving it to be found in
+`git status`. Both halves of that are right. Rule 3 binds agents, not the person
+whose repository it is, and an instruction from them is not a variant reaching
+over the line. What the rule is still owed is the notice, so that whoever is
+holding the engine is not the last to know.
+
+Verify it anyway, the same as any other report. That one checked out: every
+pre-existing asset byte-identical to HEAD, nothing in any variant pointing at
+the new files, and the four bed defaults untouched - so the change could not
+move a clip anywhere, which is rule 4 in the only form available to an agent
+that cannot render in three of the four folders.
+
 ## A fix in code, and the same command stale in prose
 
 Found by Exercise the evening the finale routing was fixed, and it is the
