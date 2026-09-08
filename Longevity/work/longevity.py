@@ -42,8 +42,9 @@ colour carries the stage instead, which is the vocabulary anyway.
 
 ## The summaries are verbatim and must stay that way
 
-`STAGES` below is copied word for word from
-`fitcircle/Sources/Models/Fasting.swift:219-303`, whose own comment reads:
+`STAGES` is not written here at all - `fasting.py` extracts it from
+`fitcircle/Sources/Models/Fasting.swift` and `--verify` re-extracts and
+compares, so a paraphrase cannot survive a check. The app's own comment reads:
 
     Phrased descriptively with "typically" / "commonly" - never as medical
     claims (see privacy policy §11 Health Disclaimer)
@@ -63,8 +64,6 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SOURCE = ("fitcircle/Sources/Models/Fasting.swift", "219-303 and 18-58")
-
 # The colour of a stage. Warm while the body is still on the last meal, cooling
 # as it moves onto its own stores - so the poster reads as one temperature
 # falling rather than as five unrelated hues. Nothing here is the app's palette;
@@ -78,44 +77,20 @@ STAGE_COLOUR = {
     "deep_ketosis": (0x8E, 0x5A, 0xC8),   # beyond 48 h
 }
 
-# Verbatim from Fasting.swift:232-281. `summary` is the app's one-line
-# description; `detail` is its learn-more text. Neither is edited here.
-STAGES = [
-    dict(id="anabolic", name="Anabolic", h0=0, h1=4,
-         summary="Your body is digesting your last meal.",
-         detail="During the first few hours after eating, the body typically "
-                "absorbs nutrients and uses glucose for energy."),
-    dict(id="catabolic", name="Catabolic", h0=4, h1=12,
-         summary="Stored glycogen typically becomes the main fuel.",
-         detail="Once digestion finishes, the body commonly switches to drawing "
-                "on stored glycogen for energy."),
-    dict(id="fat_burning", name="Fat Burning", h0=12, h1=16,
-         summary="Fat stores typically become a primary energy source.",
-         detail="When glycogen reserves run lower, the body commonly increases "
-                "lipolysis — releasing stored fat for fuel."),
-    dict(id="ketosis", name="Ketosis", h0=16, h1=24,
-         summary="Ketones typically rise as a fuel source.",
-         detail="Extended fasting commonly leads to ketone production from fat "
-                "metabolism. Levels vary widely between individuals."),
-    dict(id="autophagy", name="Autophagy", h0=24, h1=48,
-         summary="Cellular clean-up is typically more active.",
-         detail="Longer fasts have been associated with autophagy — the cellular "
-                "process of recycling damaged components. Research is ongoing."),
-    dict(id="deep_ketosis", name="Deep ketosis", h0=48, h1=None,
-         summary="Prolonged ketosis. Consult a clinician for fasts this long.",
-         detail="Fasts beyond 48 hours are advanced and should be undertaken "
-                "only with appropriate guidance."),
-]
-
-# Verbatim from Fasting.swift:18-58.
-PROTOCOLS = [
-    dict(id="13_11", name="13:11", fast=13, eat=11, summary="A gentle starting protocol."),
-    dict(id="14_10", name="14:10", fast=14, eat=10, summary="An easy daily reset."),
-    dict(id="16_8", name="16:8", fast=16, eat=8, summary="The most popular intermittent fast."),
-    dict(id="18_6", name="18:6", fast=18, eat=6, summary="A focused six-hour eating window."),
-    dict(id="20_4", name="20:4", fast=20, eat=4, summary="Advanced — one tight eating window."),
-    dict(id="23_1", name="OMAD (23:1)", fast=23, eat=1, summary="One meal a day."),
-]
+# The stages and the protocols are NOT written here. `fasting.py` extracts them
+# from the app and `fasting.json` holds what it extracted; a literal table in
+# this file would be a second copy of somebody's health thresholds, in a
+# repository that does not build or watch the one they belong to. That is the
+# drift this whole repository is organised against, and here it would drift as a
+# number about a body.
+#
+#     python3 fasting.py --verify     does the JSON still match the app?
+#
+# Run that before a poster, not after.
+_DATA = json.load(open(os.path.join(HERE, "fasting.json"), encoding="utf-8"))
+STAGES = _DATA["stages"]
+PROTOCOLS = _DATA["protocols"]
+SOURCE = (_DATA["source"], "219-303 and 18-58")
 
 _signed = re.compile(r"[%+]|(?<![A-Za-z])-\d")
 
@@ -213,7 +188,14 @@ def rows_for(pid, table=None, rows=5):
             id=s["id"], name=s["name"], stage=s["id"],
             hour=s["h0"], value=f"{int(s['h0'])} H",
             metric=s["name"].upper(), summary=s["summary"],
-            claim="described", reached=s["h0"] < p["fast"],
+            # <=, not <. The app's own stage(forElapsedHours:) is
+            # `safeHours >= startHour && safeHours < endHour`, so at exactly
+            # 16.0 h it returns ketosis - a finished 16:8 IS in ketosis by the
+            # product's own reckoning. Strictly-less lit three rows for a 16:8
+            # and told its user the fast stopped before the hour it ends on,
+            # which contradicts the app on the app's most popular protocol.
+            # EVIDENCE.md rule 5: where we differ from the app, the app wins.
+            claim="described", reached=s["h0"] <= p["fast"],
             colour=STAGE_COLOUR[s["id"]],
             source=f"{SOURCE[0]}:{SOURCE[1]}, verbatim"))))
     return p, out

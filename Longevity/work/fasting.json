@@ -1,0 +1,97 @@
+{
+ "source": "../fitcircle/Sources/Models/Fasting.swift",
+ "stages": [
+  {
+   "id": "anabolic",
+   "name": "Anabolic",
+   "h0": 0.0,
+   "h1": 4.0,
+   "summary": "Your body is digesting your last meal.",
+   "detail": "During the first few hours after eating, the body typically absorbs nutrients and uses glucose for energy."
+  },
+  {
+   "id": "catabolic",
+   "name": "Catabolic",
+   "h0": 4.0,
+   "h1": 12.0,
+   "summary": "Stored glycogen typically becomes the main fuel.",
+   "detail": "Once digestion finishes, the body commonly switches to drawing on stored glycogen for energy."
+  },
+  {
+   "id": "fat_burning",
+   "name": "Fat Burning",
+   "h0": 12.0,
+   "h1": 16.0,
+   "summary": "Fat stores typically become a primary energy source.",
+   "detail": "When glycogen reserves run lower, the body commonly increases lipolysis — releasing stored fat for fuel."
+  },
+  {
+   "id": "ketosis",
+   "name": "Ketosis",
+   "h0": 16.0,
+   "h1": 24.0,
+   "summary": "Ketones typically rise as a fuel source.",
+   "detail": "Extended fasting commonly leads to ketone production from fat metabolism. Levels vary widely between individuals."
+  },
+  {
+   "id": "autophagy",
+   "name": "Autophagy",
+   "h0": 24.0,
+   "h1": 48.0,
+   "summary": "Cellular clean-up is typically more active.",
+   "detail": "Longer fasts have been associated with autophagy — the cellular process of recycling damaged components. Research is ongoing."
+  },
+  {
+   "id": "deep_ketosis",
+   "name": "Deep ketosis",
+   "h0": 48.0,
+   "h1": null,
+   "summary": "Prolonged ketosis. Consult a clinician for fasts this long.",
+   "detail": "Fasts beyond 48 hours are advanced and should be undertaken only with appropriate guidance."
+  }
+ ],
+ "protocols": [
+  {
+   "id": "13_11",
+   "name": "13:11",
+   "fast": 13,
+   "eat": 11,
+   "summary": "A gentle starting protocol."
+  },
+  {
+   "id": "14_10",
+   "name": "14:10",
+   "fast": 14,
+   "eat": 10,
+   "summary": "An easy daily reset."
+  },
+  {
+   "id": "16_8",
+   "name": "16:8",
+   "fast": 16,
+   "eat": 8,
+   "summary": "The most popular intermittent fast."
+  },
+  {
+   "id": "18_6",
+   "name": "18:6",
+   "fast": 18,
+   "eat": 6,
+   "summary": "A focused six-hour eating window."
+  },
+  {
+   "id": "20_4",
+   "name": "20:4",
+   "fast": 20,
+   "eat": 4,
+   "summary": "Advanced — one tight eating window."
+  },
+  {
+   "id": "23_1",
+   "name": "OMAD (23:1)",
+   "fast": 23,
+   "eat": 1,
+   "summary": "One meal a day."
+  }
+ ]
+}
