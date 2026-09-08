@@ -44,7 +44,7 @@ except the base, which goes to `../INPUT/`, and the finished clip, which goes to
 | `muscle_overlay.py` | where the badges go and how they enter. Imported by `flowanim.py` |
 | `muscle_audio.py` | the hit, the chord and the bed. All three synthesised - `../../engine/sfx/lift_bed_8s.m4a` is this file's own `--bed` output, and reproduces from it at waveform correlation 0.999983, so it is generated rather than licensed and could be rebuilt if it were ever lost |
 | `exercises.json` | lift → the muscles it works, prime mover first |
-| `../../engine/grab.py` | takes the newest 1536×2752 image out of Downloads and names it `<topic>.jpeg` |
+| `../../engine/grab.py` | takes the newest 1536×2752 image out of Downloads and names it `<topic>_poster.jpeg` |
 | `clean_poster.py` | puts the base back where the generator drew outside its brief |
 | `left_disc.py` | fills the left circle with that row's wave colour, in the base and its clean copy |
 | `render.sh` | animate, sound, mux. Refuses a poster with empty left circles |
@@ -142,7 +142,7 @@ render, a look, a rewrite and then a generation anyway.
 The generator now fills **only the left circle**. Say so; it is the one thing
 about this version that a prompt copied from the food version gets wrong.
 
-**3. The user returns the generated poster.** It does not have to be moved by hand — `../.venv/bin/python ../../engine/grab.py <topic>` takes the newest file in Downloads whose size is exactly 1536×2752 and renames it `<topic>.jpeg` here. The size is the safety net: a screenshot or a photo is not that, and the generator's own filename changes every time. Then check it before spending time on it:
+**3. The user returns the generated poster.** It does not have to be moved by hand — `../.venv/bin/python ../../engine/grab.py <topic>` takes the newest file in Downloads whose size is exactly 1536×2752 and renames it `<topic>_poster.jpeg` here. The size is the safety net: a screenshot or a photo is not that, and the generator's own filename changes every time. The `_poster` in the name is not decoration: the repository ignores `*.jpeg` wholesale and un-ignores `*_poster.jpeg`, and a poster is the only artefact here that no command can remake - the base, the labels and the clip all come back from a script, and an image model cannot be asked twice for the same picture. Then check it before spending time on it:
 
 ```
 ../.venv/bin/python ../../engine/check_base.py <poster> --base ../INPUT/base_<topic>.png

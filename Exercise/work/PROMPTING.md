@@ -126,8 +126,8 @@ solved.
 
 Run both before spending a render.
 
-    ../.venv/bin/python ../../engine/check_base.py <topic>.jpeg --base ../INPUT/base_<topic>.png
-    ../.venv/bin/python clean_poster.py <topic>.jpeg --base ../INPUT/base_<topic>.png \
+    ../.venv/bin/python ../../engine/check_base.py <topic>_poster.jpeg --base ../INPUT/base_<topic>.png
+    ../.venv/bin/python clean_poster.py <topic>_poster.jpeg --base ../INPUT/base_<topic>.png \
         -l base_<topic>_layout.json -o <topic>_clean.png
 
 `check_base.py` answers the only question that can break the video - did the
