@@ -251,8 +251,23 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
   wave mask: 22.7% of the liquid is inside a guide circle and never painted,
   Micro's three 210 px badges cover another 54.7% and leave **22.6% visible** -
   which is the 22.3% `engine/README.md` arrives at from the other direction. One
-  313x118 chip covers 23.6% and leaves **53.7%**. That is what makes `--surge`
-  read here: next door the finale highlight has almost no wave left to run along.
+  313x118 chip covers 23.6% and leaves **53.7%** (53.8% re-measured on the
+  finished 540-wide render, from the drawn footprints rather than the plan).
+
+  That is what makes `--surge` read here, and it too is measured: the same clip
+  rendered with and without it, mean brightness over the visible liquid, is
+  +0.00 at 6.50s, +2.33 at 6.58, **+5.00 at 6.75**, +1.02 at 6.92 and gone by
+  7.00 - against 0.01 levels of run-to-run difference before the finale. Next
+  door the highlight has almost no wave left to run along, which is why
+  `engine/README.md` gives the badges lighting as the effect instead.
+
+- **Do not measure a render difference per pixel.** x264 at crf 16 has
+  lookahead, so changing what happens at 6.5s changes how frames at 2.0s are
+  reconstructed. Diffing the with-surge and without-surge files pixel by pixel
+  reports 47 693 px of difference on frames before the finale has begun, and
+  every one of them is the encoder. A spatial mean over a fixed region averages
+  it away - the noise floor above is 0.01 levels rather than forty thousand
+  pixels - and that is the shape any measurement of this kind has to take.
 
 ## Invariants worth re-checking if something looks off
 

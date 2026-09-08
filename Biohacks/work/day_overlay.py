@@ -29,9 +29,27 @@ covers 23.6%, and **53.7% is visible here**.
 
 That is not tidiness, it is what makes `--surge` work. The engine's finale
 highlight runs the length of every wave, and next door it is nearly invisible
-because there is almost no wave left to run along - the README says so and gives
-the badges lighting as the effect instead. Here the band itself reads, and the
-liquid is the thing the whole design was built around.
+because there is almost no wave left to run along - `engine/README.md` says so
+and gives the badges lighting as the effect instead. Here the band is the effect,
+and that is measured rather than hoped: rendering the same clip with and without
+`--surge` and taking the mean brightness of the 53.8% of the liquid a viewer can
+actually see,
+
+    6.50s   +0.00      the two clips are the same picture
+    6.58s   +2.33      the band enters row 1
+    6.75s   +5.00      peak
+    6.92s   +1.02
+    7.00s   -0.50      gone
+
+against a run-to-run difference of 0.01 levels (1 sd) over everything before the
+finale. Five levels of mean lift across twenty-seven thousand pixels, 355x the
+noise floor, in a third of a second.
+
+Do not try to measure this per pixel by diffing two renders. x264 at crf 16 has
+lookahead: changing what happens at 6.5s changes how frames at 2s are
+reconstructed, and a per-pixel diff of the two files reports 47 693 px of
+"difference" before the finale has begun. A spatial mean over a fixed region
+averages that away, which is why the noise floor above is 0.01 and not 40 000.
 
 THE DAY BAR. A track under the last row with five stops on it and a head that
 moves the whole time. It does three things no per-row element can:
