@@ -9,7 +9,7 @@
 #
 #     1. build base_<topic>.png          recolor_base.py
 #     2. write the prompt                ImageSwap.txt, filled, handed over whole
-#     3. the user returns the image      grab.py --keep, check_base, check_scene
+#     3. the user returns the image      grab.py, check_base, check_scene
 #     4. caption it and render           add_labels.py, then this
 #
 # Without a poster this script renders a PREVIEW into work/ and refuses to touch

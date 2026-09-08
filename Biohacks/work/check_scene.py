@@ -225,8 +225,12 @@ def main():
               f"file in\n  Downloads and cannot know whose it is - that size "
               f"identifies a poster, not a\n  variant, and every variant generates "
               f"at exactly it. And every variant shares\n  this base geometry, so "
-              f"check_base.py's wave test passes across variants by\n  construction. "
-              f"`grab.py --keep` copies instead of moving and avoids the whole class.")
+              f"check_base.py's wave test passes across variants by\n  construction.\n"
+              f"\n  What catches it is this check, and engine/check_base.py runs the "
+              f"same one\n  before every other test - so the mistake costs a command "
+              f"rather than a render.\n  Its limit, in the same breath: it finds a "
+              f"foreign BASE, not a foreign TOPIC.\n  Two posters that share a title "
+              f"both pass, which is unlikely here and routine\n  for a series.")
         sys.exit(1)
     print(f"  from our base (title band {ours:.1f} levels off, limit {OURS_DIFF:.0f})\n")
     print("  band  left mark      lightness         join(fyi)     right third")

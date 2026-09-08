@@ -22,7 +22,7 @@ loop every other variant here follows and this folder is not an exception to it:
     2. write the prompt             ImageSwap.txt filled for the topic, handed
                                     over whole in the terminal - never a file,
                                     never a diff, never offered
-    3. the user returns the image   grab.py --keep, then check_base, check_scene
+    3. the user returns the image   grab.py, then check_base, check_scene
     4. caption it and render        add_labels.py, then ./render.sh with the
                                     poster as the third argument
 
@@ -113,16 +113,28 @@ Out comes `../OUTPUT/<DD.MM>/<topic>_biohack.mp4` with the bed, the chips, the
 counters and the chord on it. `WIDTH=540 ./render.sh ...` while tuning: identical
 timing, a third of the wait.
 
-**4b. Grab with `--keep`.** `grab.py` moves rather than copies, and on a machine
-where several sessions generate into one Downloads folder that takes somebody
-else's poster away from them - which is exactly what happened here on 8
-September. `--keep` copies. It is not the engine's default and deliberately so:
-a copy removes the loss but re-opens the older accident, where a failed
-generation silently hands back the previous topic's poster instead of failing
-loudly. Move plus the title check is the safer pair; `--keep` is what you reach
-for when you know another session is generating.
+**4b. Grab. Plain, no flags - it takes the image out of Downloads.**
 
-    ../../.venv/bin/python ../../engine/grab.py <topic> --keep
+    ../../.venv/bin/python ../../engine/grab.py <topic>
+
+`--keep` copies rather than moves, and this folder ran it in the routine loop
+for part of 8 September after `grab.py` took an Exercise poster away from that
+session. The user has ruled against it and both halves of the reason are worth
+having.
+
+**An empty Downloads is what makes the newest-file rule safe.** `grab.py` picks
+the newest 1536x2752 file, and that is only unambiguous when there is nothing
+to pick between. A folder filling with copies is exactly the hand work the tool
+exists to remove.
+
+**And the loss it was reached for is caught a step later now.**
+`engine/check_base.py` compares the title band before any other test and
+refuses a poster from another base, so the mistake costs one command instead of
+a render. Prevention moved downstream, which is where it belongs.
+
+`--keep` is still there for the one case its help describes: when another
+session is known to be mid-generation and its file must not disappear from
+under it.
 
 **5. Check before delivering.**
 
