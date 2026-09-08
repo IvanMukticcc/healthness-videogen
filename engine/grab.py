@@ -53,7 +53,8 @@ EXTS = {".jpeg", ".jpg", ".png", ".webp"}
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("topic", help="the poster becomes <topic>.jpeg here")
+    p.add_argument("topic", help="the poster becomes <topic>_poster.jpeg here - "
+                                 "the name the ignore file carries")
     p.add_argument("--dir", default="~/Downloads", help="where the browser puts it")
     p.add_argument("--size", default="x".join(map(str, SIZE)),
                    help="what a poster measures; anything else is refused")
