@@ -161,6 +161,22 @@ Foods and Biohacks carry no such block, so there is nothing to sweep there.
 The general shape: when a fix lands in a script, grep the prose for the same
 command. `grep -rn "amix=inputs" --include='*.md'` is what found these.
 
+And it is worse than a fix leaving prose behind, which is what it looked like at
+first. Micro swept its own file after being told and found four more commands in
+the same block naming engine tools as local files, an interpreter path that
+resolved from the variant root rather than from `work/` so that none of them
+would have started, a step telling the reader to write a labelled poster into
+`INPUT/` against rule 7, and a "where things live" section still describing
+`OTHER/` and `CHECKPOINT_*/`. The block had also stopped tracking the script
+days before it stopped tracking the mix: no `--overlay`, no `--micro-times`, no
+finale. **Prose drifts continuously and silently, not at the moment of a fix**,
+so the sweep is worth running when nothing in particular has happened.
+
+The standard for calling one fixed is Micro's: run the block by hand, command
+for command, and diff its output against the shipped clip. Theirs came out at
+correlation 1.000000 with a byte-identical cue file, which is the only version
+of "the prose now matches" that is worth reporting.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the

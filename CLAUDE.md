@@ -69,6 +69,12 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    is that it **never lands in `OUTPUT/`**, where it is only something to mistake
    for the finished clip later.
 
+   Nor does anything else. A check that *reads* a shipped clip writes its
+   intermediates somewhere it names explicitly: on 8 September a comparison
+   decoded two clips to wav with a loop that put one of them back beside its
+   source, and a day folder held a stray `.wav` until the next listing caught
+   it. A day folder holds finished clips and nothing at all besides.
+
 7. **`INPUT/` holds base images and nothing else.** The base is the one file a
    person opens - it gets attached to the prompt. Its clean copy and its layout
    are working files: `recolor_base.py --work` keeps them in `work/`.
