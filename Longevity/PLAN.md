@@ -156,6 +156,28 @@ protocol stops, carrying *research is ongoing*. Contrarian, sourced, and safer
 than the myth it corrects — which is the only kind of viral this category is
 allowed to want.
 
+## The rows do not alternate, and that is the third break
+
+Every variant's base has five stripes alternating dark, light, dark, light,
+dark - `--rows` takes two colours and rows 1, 3, 5 take the first. Built for
+posters whose five rows are five separate topics, where the alternation separates
+them.
+
+Here it fights the concept outright. A poster whose whole argument is that top to
+bottom is time cannot read as a checkerboard: the eye gets dark, light, dark,
+light, dark, and the night the fast happens in is cut into stripes.
+
+So **both colours are the same** - `--rows '#0B1220,#0B1220'` - and the poster is
+one continuous night. The layout then reports `light: false` on all five rows,
+so every caption is drawn in the light colour, which is what one night wants
+anyway. The five waves carry the whole gradient instead: lamp amber at hour 0,
+evening blue, deep-night violet, the cold cyan of first light, morning gold.
+
+Three breaks now, and they are the same break seen three ways. **Five parallel
+facts become one thing that runs**: the rows stop being separate, the stripes
+stop separating them, and the photograph behind them is one room rather than five
+subjects.
+
 ## The elements
 
     left circle    the hour. A dial that counts to it and locks
