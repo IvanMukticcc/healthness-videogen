@@ -41,7 +41,7 @@ to collide with. Exercise has to keep its waves off red, amber and orange.
 
 
 ================================================================================
-day        5 FREE BIOHACKS / ONE DAY, ZERO COST            glyph
+day        5 FREE BIOHACKS / ONE DAY, ZERO COST            scene
 ================================================================================
 
 ../../.venv/bin/python ../../engine/recolor_base.py \
@@ -55,10 +55,31 @@ day        5 FREE BIOHACKS / ONE DAY, ZERO COST            glyph
   -l base_day_layout.json -o day_labelled.png \
   --labels 'MORNING LIGHT|BEDTIME,COLD FINISH|DOPAMINE,LUNCH WALK|GLUCOSE PEAK,LAST COFFEE|CAFFEINE LEFT,LIGHTS DOWN|MELATONIN'
 
-./render.sh day 'auto:MORNING LIGHT,COLD FINISH,WALK AFTER LUNCH,LAST COFFEE,LIGHTS DOWN'
+./render.sh day 'auto:MORNING LIGHT,COLD FINISH,WALK AFTER LUNCH,LAST COFFEE,LIGHTS DOWN' day_labelled.png
 
 The first one. Clocks come from the table unchanged, which is why they run the
-whole day.
+whole day. The palette needed no rebuild for scene mode - all five already had a
+source in a picture: dawn, water, sunlit leaves, coffee, a violet glow.
+
+**Every one of its five hacks already had a scene in another topic** - three in
+`sleep`, two in `firsthour`, one in `sugar` - so written naively this would have
+been a visual remix of two clips already shot. The framing was made deliberately
+different instead, and that is the whole of the work on this topic:
+
+  1 dark   a person in an open doorway, silhouetted, facing a low amber sun that
+           floods past their shoulders     (not a bedroom window, not a curtain)
+  2 light  two cupped hands under a running tap in a bright white bathroom
+           (not a shoulder in a dark shower - and on the LIGHT band, where
+           firsthour's cold row was dark)
+  3 dark   a shaded path under trees, low sun through the leaves so they glow
+           lime against the dark          (not sugar's open sunlit park)
+  4 light  a hand pushing a half-full cup away across a bright table
+           (not a pour - and pushing it away is what "last" coffee looks like)
+  5 dark   a hand turning a wall dimmer down, the room dropping to violet
+           (not a bedside lamp)
+
+Check the overlap before writing scenes for any new topic. Two topics can share
+a hack without any harm; they cannot share its photograph.
 
 
 ================================================================================

@@ -116,6 +116,23 @@ band.
 
 ---
 
+## Two topics may share a hack. They may not share its photograph.
+
+`day` and `sleep` have three hacks in common, `day` and `firsthour` two. That is
+not a problem - a hack is a fact and it belongs wherever it is true. The
+photograph is not: five images repeated across two clips makes a feed look like
+one clip posted twice.
+
+So before writing scenes, check what has already been shot for those hacks and
+frame them differently. `day` did it this way: morning light became a doorway
+facing the sun rather than a bedroom window; the cold row moved from a dark
+shower to a bright bathroom, changing bands as well as scenes; the walk went
+from an open park to a shaded path lit through leaves; the coffee was pushed
+away rather than poured, which is also what "last" coffee actually looks like;
+and the dimming moved from a bedside lamp to a wall switch.
+
+Cheap to do at writing time and impossible to fix afterwards.
+
 ## Sending one back
 
 Cheap, and cheaper than a render. Say the number, name the row, give the whole
