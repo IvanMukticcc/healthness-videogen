@@ -13,7 +13,7 @@ too - then this.
 
 2. **Decide what is engine and what is variant.** The test that has held so far:
 
-   - Does the miss happen in all three? Engine.
+   - Does the miss happen in all four? Engine.
    - Is it about what *this* variant puts in its circles, or draws on top? The
      variant's own module, through `--overlay` (`build`/`draw`) or `refine_art`.
    - Is it a number another variant might want different? A flag, with the
@@ -50,12 +50,13 @@ the constant rather than accepting one.
 
 ## Verify after you change
 
-Rule 4, in full. Re-render one clip in each of the three variants and compare
+Rule 4, in full. Re-render one clip in each of the four variants and compare
 against what it produced before:
 
     cd Foods/work    && ../.venv/bin/python ../../engine/flowanim.py <poster> ...
     cd Micro/work    && ./render.sh <topic> <topic>_labelled.png 'auto:...'
     cd Exercise/work && ./render.sh <topic> <topic>_labelled.png 'auto:...'
+    cd Biohacks/work && ./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK'
 
 Identical to the frame is what a refactor should produce. A difference is fine
 when it is a fix arriving - then say which fix, and how large, in pixels and
@@ -108,6 +109,24 @@ files you touched, by name.
   answers when the crest reaches any column, so neither variant has to guess it.
   Until they are written, `--surge` shows properly only in Foods, where nothing
   covers the wave.
+- **Biohacks is the fourth variant, and two decisions of its own are settled.**
+  Its bed stays in `Biohacks/work/`, not on the shelf in `engine/sfx/`: the two
+  water beds and the lift bed are assets that were downloaded and licensed, and
+  this one is *derived* - `biohack_audio.py --bed` rebuilds it, seamless by
+  construction, every component a whole number of cycles over the clip. A
+  derived file belongs beside the thing that derives it, and it is not a copy of
+  anything. Do not "tidy" it onto the shelf. Its `--finale-gain 1.00` against
+  the engine's 0.316 is also deliberate and measured: a row there is a chip,
+  sixteen ticks and a lock, so the chord has to arrive over a brighter and
+  busier texture than a badge thudding leaves.
+
+  It is also the variant that answers a question the other three could not. The
+  surge was built and then found to be nearly invisible where three 210px badges
+  cover the wave; one 313x118 chip leaves 53.7% of the liquid open, and there
+  the highlight carries the finale on its own. Verified from this side at 22.0%
+  covered and 55.2% visible, in five clusters. That is the first report from a
+  variant whose number held.
+
 - **Micro's organs have no grammar yet.** Exercise's body reacts to every badge
   from the first second, so a finale there is a summary of something the viewer
   has been taught. Micro's organs do not move at all for eight seconds, so a

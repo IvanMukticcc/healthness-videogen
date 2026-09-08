@@ -1,7 +1,8 @@
 # You are in the engine
 
-Everything here is used by **all three variants**. A change to `flowanim.py`
-changes the food clips, the micronutrient clips and the exercise clips at once.
+Everything here is used by **all four variants**. A change to `flowanim.py`
+changes the food clips, the micronutrient clips, the exercise clips and the
+biohack clips at once.
 That is the point of the folder, and it is also the risk.
 
 ## Before you change anything
@@ -17,12 +18,13 @@ That is the point of the folder, and it is also the risk.
 
 ## After you change anything
 
-Re-render one clip in each of the three variants and compare against what it
+Re-render one clip in each of the four variants and compare against what it
 produced before:
 
     cd ../Foods/work    && ../.venv/bin/python ../../engine/flowanim.py ...
     cd ../Micro/work    && ./render.sh <topic> <topic>_labelled.png 'auto:...'
     cd ../Exercise/work && ./render.sh <topic> <topic>_labelled.png 'auto:...'
+    cd ../Biohacks/work && ./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK'
 
 Identical to the frame is the expected result for a refactor. A difference is
 fine when it is a fix arriving - then say which fix, and how large the difference

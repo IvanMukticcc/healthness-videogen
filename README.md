@@ -1,7 +1,7 @@
 # Healthness Shorts
 
-Vertical clips where a food pours into the organ it feeds. Three variants of the
-same idea, one engine underneath them.
+Vertical clips where something pours along a wave into what it changes. Four
+variants of the same idea, one engine underneath them.
 
 ## The two folders that matter
 
@@ -30,7 +30,7 @@ generated from a prompt three revisions old.
 
 ## The engine
 
-    engine/      five tools, three authored wave assets, and the sound shelf
+    engine/      six tools, three authored wave assets, and the sound shelf
 
 `engine/README.md` is the one to read before changing anything in there. The
 short version: **a variant never keeps a copy of an engine file.** It calls

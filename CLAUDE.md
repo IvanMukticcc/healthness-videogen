@@ -9,13 +9,14 @@ This is its own git repository — `healthness-videogen`, private, branch `main`
 
 **Started at the root rather than inside a variant?** Then the engine is yours
 and so is deciding what belongs in it: read `MAINTAINER.md` after this. Started
-inside `Foods/`, `Micro/` or `Exercise/`? That folder is your whole remit - see
+inside `Foods/`, `Micro/`, `Exercise/` or `Biohacks/`? That folder is your whole
+remit - see
 rule 3 - and `MAINTAINER.md` is not addressed to you.
 
 ## The shape
 
     engine/                the six tools, three authored wave assets, sfx/
-    Foods/ Micro/ Exercise/    three variants, three folders each:
+    Foods/ Micro/ Exercise/ Biohacks/   four variants, three folders each:
         INPUT/             base_<topic>.png, and nothing else
         OUTPUT/            finished clips, a folder per day
         work/              everything else
@@ -34,11 +35,12 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    `engine/flowanim.py --overlay <module>` calls three functions in a module of
    yours - `add_arguments`, `build`, `draw`. See `engine/README.md`.
 
-3. **Change only your own variant.** If you were started in `Foods/`, `Micro/`
-   or `Exercise/`, that folder is the whole of what you may edit. Not the other
-   two - other people and other agents are in them at the same time. **And not
+3. **Change only your own variant.** If you were started in `Foods/`, `Micro/`,
+   `Exercise/` or `Biohacks/`, that folder is the whole of what you may edit.
+   Not the other three - other people and other agents are in them at the same
+   time. **And not
    `engine/`**, no matter how small or how obviously right the change looks.
-   A variant is not the place from which the thing all three variants run gets
+   A variant is not the place from which the thing all four variants run gets
    changed.
 
    When a variant needs something the engine does not do: **say so and stop.**
@@ -48,9 +50,9 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    `work/`, and there are two seams for it: `build` and `draw` put something on
    top of the finished frames, and `refine_art` corrects what the animator thinks
    is artwork. `engine/README.md` describes both. When it is genuinely neither,
-   the engine change is made from the root, by whoever is looking after all three.
+   the engine change is made from the root, by whoever is looking after all four.
 
-4. **If you are working in `engine/`, you are changing all three variants.**
+4. **If you are working in `engine/`, you are changing all four variants.**
    Before committing, re-render one clip in each and compare it against what it
    produced before. A difference is fine when it is the fix arriving - say which
    fix, and how large the difference is, in pixels and clusters, not in
@@ -62,8 +64,8 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    folder is rebuilt because a later clip does it better. Do not offer to.
 
 6. **Every clip ships with sound.** The silent pass is an intermediate: keep it
-   in `work/` or in `/tmp`, whichever your render script does - both variants'
-   `render.sh` need it on disk to probe its duration before muxing. What matters
+   in `work/` or in `/tmp`, whichever your render script does - every variant's
+   `render.sh` needs it on disk to probe its duration before muxing. What matters
    is that it **never lands in `OUTPUT/`**, where it is only something to mistake
    for the finished clip later.
 

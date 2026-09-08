@@ -166,13 +166,24 @@ so a highlight that simply stopped at the circle's edge would draw ten hard
 edges, one at every bowl and every organ. Verified over the whole window at
 1080 wide: 0 px changed outside the wave mask, 0 px changed inside a circle.
 
-**On its own it is nearly invisible in two of the three variants.** Of the wave,
-22.7% is behind a bowl or an organ and 71.1% of what is left is behind a badge -
-a badge is 210px across and the wave is 94 - so only 22.3% of the liquid is
-visible at all once the overlays have drawn. The band showing through the gaps is
-not the effect. The effect is the badges lighting as it passes them, and that is
-variant work, so the engine publishes what the variant would otherwise have to
-guess:
+**How much of it shows is decided by the variant, not by here.** Of the wave,
+22.7% is behind a bowl or an organ and is never painted at all. What covers the
+rest is the overlay's business, and the two answers so far are a long way apart.
+Micro's and Exercise's three 210px badges take another 54.7% - a badge is 210px
+across and the wave is 94 - and leave **22.3% of the liquid visible**. Biohacks'
+single 313x118 chip takes 23.6% and leaves **53.7%**; measured again from this
+side on its finished render, 22.0% and 55.2%, in five clusters, which are the
+five chips.
+
+So in the badge variants the band glinting through the gaps is not the effect,
+and the effect is the badges lighting as it passes them. In the chip variant the
+highlight carries on its own: the same clip rendered with and without it differs
+by +5.00 levels of mean brightness over the visible liquid at the crest, against
+0.01 of run-to-run noise.
+
+Either way the variant has to know when the crest reaches a given column, so the
+engine publishes it rather than leaving three overlays to work it out
+separately:
 
     ctx["finale"]        the instant
     ctx["surge"]["at"]   at(row, x) -> seconds, when the crest passes column x
@@ -194,11 +205,13 @@ rather than as a machine.
     import impact
     track = impact.build(cues, seconds, per_row, root=420.0)
 
-It is here because both variants make the same sound. Micro had its own, thinner
+It is here because the variants make the same sound. Micro had its own, thinner
 one - no sub, root at 760 - and the two drifted the way every other copy in this
 repository drifted. A variant that wants a different sound passes a different
 `root`; one that wants a genuinely different instrument writes its own and says
-why in the file.
+why in the file. Biohacks does both: its counter's lock is its own, built on the
+same inharmonic 1.41 ratio the chord below is, so its finale is a chord of a
+sound its clip has already taught the ear five times.
 
     track = impact.finale(t0, seconds, root=420.0)
 
