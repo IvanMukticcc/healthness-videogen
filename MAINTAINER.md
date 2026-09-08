@@ -139,6 +139,28 @@ files you touched, by name.
   last second reads as a fault, not a climax. The small per-badge response comes
   before the finale, not after it.
 
+## A fix in code, and the same command stale in prose
+
+Found by Exercise the evening the finale routing was fixed, and it is the
+maintainer's to sweep because it only shows across folders. Both variants that
+keep a "the steps it runs, if one is ever needed alone" block in `flow.md` had
+one that no longer matched `render.sh`. Anyone following the prose would have
+rebuilt the fault the code had just been cleared of.
+
+Exercise found and fixed its own. Micro's is still stale in three ways as of the
+9th: the bed goes in at `volume=1.0` with no duck, so the water never steps back
+under the finale - the shape its own agent argued should be preserved because it
+is the shape the chosen level was chosen through; the cwd is inconsistent, with
+`INPUT/` and `work/` written from the variant root while `../../engine/sfx/` is
+only right from `work/`; and `flowanim.py` and `ribbon_mask.png` are named as
+though they were local files, which is the layout rule 1 exists to stop people
+relearning. Flagged to its agent; it is their file.
+
+Foods and Biohacks carry no such block, so there is nothing to sweep there.
+
+The general shape: when a fix lands in a script, grep the prose for the same
+command. `grep -rn "amix=inputs" --include='*.md'` is what found these.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the
