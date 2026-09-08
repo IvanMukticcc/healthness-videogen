@@ -35,6 +35,20 @@ SETTLE = 0.34       # and how long it takes to come down onto the colour
 GLOW = 0.55         # how far the bloom reaches, as a fraction of the muscle
 LIFT = 0.62         # how far towards white the flash goes
 
+# The finale's own envelope, and it is not the landing envelope again. Two
+# reasons it is shorter and dimmer. The last row's highlight reaches its body at
+# about 7.05s and the clip's last frame is the one a feed freezes on, so
+# everything has to be still by ~7.2. And the landing flash lifts towards white,
+# which is right for one muscle arriving on a dark body and wrong here: at the
+# finale every region on the body lights at once, and washing them all towards
+# white is exactly how glutes beside hamstrings become one red mass. So the
+# finale multiplies instead - every pixel of a region keeps its ratio to the
+# darker rim drawn around it, and the rim is what carries the anatomy.
+FIN_FLASH = 0.07    # seconds at full lift
+FIN_SETTLE = 0.17   # and the fall
+FIN_LIFT = 0.62     # multiplied, not mixed towards white
+FIN_GLOW = 0.85     # the bloom carries the brightness the wash used to
+
 
 def _disc(r, rgb, light, feather=2.0):
     """The ground the figure stands on: the row's colour, a touch away from it,
@@ -105,7 +119,7 @@ def plan(rows, layout, W, H, times, stagger=0.09, base=None, scale=2.20,
             muscle.append(dict(plane=p, glow=np.array(g).astype(np.float32),
                                t=t0 + j * stagger, name=m, tier=tier))
 
-        out.append(dict(cx=cx, cy=cy, r=r, size=size, view=view, fig=fig,
+        out.append(dict(row=i, cx=cx, cy=cy, r=r, size=size, view=view, fig=fig,
                         muscle=muscle, light=light,
                         disc=_disc(r, bg, light) if disc else None))
     return out
@@ -143,6 +157,24 @@ def paint(frame, pl, secs):
             g = 0.30 + 0.70 * f
             if g > 0.02:
                 blend(frame, m["glow"], up * g * GLOW, x0, y0)
+
+        # The finale: every region on this body, at once, on the frame the
+        # highlight reaches its circle. One pass over the planes already held -
+        # nothing new is planned or drawn, they are simply lit again.
+        ft = b.get("fin_t")
+        if ft is None or secs < ft:
+            continue
+        s = secs - ft
+        f = max(0.0, 1.0 - max(0.0, s - FIN_FLASH) / FIN_SETTLE) ** 2
+        if f <= 0.02:
+            continue
+        for m in b["muscle"]:
+            if secs < m["t"]:
+                continue                    # not lit yet; the finale does not pre-light it
+            lit = m["plane"].copy()
+            lit[:, :, :3] = np.clip(lit[:, :, :3] * (1.0 + FIN_LIFT * f), 0, 255)
+            blend(frame, lit, 1.0, x0, y0)
+            blend(frame, m["glow"], f * FIN_GLOW * GLOW, x0, y0)
 
 
 def cues(pl):
@@ -246,6 +278,26 @@ def build(args, ctx):
               scale=args.body_scale, dy=args.muscle_dy, disc=bool(args.body_disc))
     print("  bodies: " + ", ".join(f"r{i + 1} {x['view']}" for i, x in enumerate(pl)))
     return pl
+
+
+def finale(pl, t0, ctx):
+    """Light every body again, each one as the highlight reaches its circle.
+
+    Not on one frame for all five. The surge is a cascade - one row every 0.06s,
+    top to bottom - and a body that lights before the light gets to it reads as
+    two unrelated events; lit as it arrives, the whole poster reads as one
+    gesture travelling down it. `at(row, x)` is the engine's, because only it
+    has the arc length the band actually travels.
+
+    Without --surge there is no cascade to follow, so they light together on the
+    finale's own instant, which is still better than not answering the count.
+    """
+    at = (ctx.get("surge") or {}).get("at")
+    for b in pl:
+        b["fin_t"] = float(at(b["row"], b["cx"])) if at else float(t0)
+    ts = sorted(b["fin_t"] for b in pl)
+    print(f"  bodies light again at {', '.join(f'{t:.2f}' for t in ts)}s, "
+          f"settled by {ts[-1] + FIN_FLASH + FIN_SETTLE:.2f}s")
 
 
 def draw(frame, pl, secs):

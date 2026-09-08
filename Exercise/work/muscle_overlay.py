@@ -203,8 +203,46 @@ def paint(frame, pl, secs, ring=True):
         side = max(2, int(round(b["d"] * SHADOW * scale)))
         im = Image.fromarray(np.clip(b["img"], 0, 255).astype(np.uint8), "RGBA")
         im = im.resize((side, side), Image.LANCZOS)
-        blend(frame, np.array(im).astype(np.float32), alpha,
-               int(round(b["cx"] - side / 2.0)), int(round(b["cy"] - side / 2.0)))
+        arr = np.array(im).astype(np.float32)
+        x0 = int(round(b["cx"] - side / 2.0))
+        y0 = int(round(b["cy"] - side / 2.0))
+        blend(frame, arr, alpha, x0, y0)
+        if b.get("fin_t") is not None:
+            _sweep(frame, b, arr, secs - b["fin_t"], alpha, x0, y0)
+
+
+SWEEP = 0.29        # seconds for the highlight to cross one ball
+SWEEP_W = 0.26      # its width, as a fraction of the ball
+SWEEP_A = 0.50      # peak alpha of the white
+
+
+def _sweep(frame, b, arr, s, alpha, x0, y0):
+    """A specular band crossing the ball as the surge passes its column.
+
+    Deliberately not a second pop. A badge that scales up again reads as landing
+    a second time, and a second landing wants a second hit under it - which is
+    the one thing the sound cannot give it, because the finale is a chord, not
+    five more strikes. A highlight sliding across glass says the light moved,
+    not the ball, and that is what actually happened.
+
+    It rides the ball's own alpha, so it never spills past the sphere onto the
+    row behind it, and it is tilted slightly with y so it reads as a curved
+    surface rather than a wipe.
+    """
+    if not 0.0 <= s <= SWEEP:
+        return
+    p = s / SWEEP
+    side = arr.shape[0]
+    xn = np.linspace(0.0, 1.0, side, dtype=np.float32)[None, :]
+    yn = np.linspace(0.0, 1.0, side, dtype=np.float32)[:, None]
+    u = xn * 0.82 + yn * 0.18
+    centre = -0.25 + 1.5 * p
+    band = np.exp(-((u - centre) / SWEEP_W) ** 2)
+    a = band * (np.sin(np.pi * p) ** 0.7) * SWEEP_A * alpha * (arr[:, :, 3] / 255.0)
+    if a.max() < 0.01:
+        return
+    src = np.dstack([np.full((side, side, 3), 255.0, np.float32), a * 255.0])
+    blend(frame, src, 1.0, x0, y0)
 
 
 def _ring(frame, b, p):
@@ -283,6 +321,22 @@ def build(args, ctx):
 
 
 _RING = [True]
+
+
+def finale(pl, t0, ctx):
+    """Each ball catches the light as the highlight passes its own column.
+
+    The badges are the reason the surge is worth having at all: 22.7% of the
+    wave is behind a circle and most of the rest is behind these, so the band
+    itself is barely visible - what the eye sees is the row of balls flaring in
+    order. So each one is timed to its own x, not to the row's.
+    """
+    at = (ctx.get("surge") or {}).get("at")
+    for b in pl:
+        b["fin_t"] = float(at(b["row"], b["cx"])) if at else float(t0)
+    ts = sorted(b["fin_t"] for b in pl)
+    print(f"  badges catch the light {ts[0]:.2f}-{ts[-1]:.2f}s, "
+          f"last one done at {ts[-1] + SWEEP:.2f}s")
 
 
 def draw(frame, pl, secs):
