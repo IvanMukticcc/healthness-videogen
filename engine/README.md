@@ -58,6 +58,33 @@ Change any of that and every `base_<topic>.png` in every variant has to be
 rebuilt, because `ribbon_mask.png` no longer fits. That is the one change that is
 never cheap.
 
+Two things the geometry does **not** guarantee, both found by Biohacks and worth
+knowing before a fifth variant rediscovers them.
+
+**The guide-circle wipe assumes the generator painted over the mark.** With
+`--anchored`, a pixel that still matches the anchored base where the anchored
+base carries a mark is taken as "the generator did not cover this circle", and
+the clean base is put back (`flowanim.py`, `left = (d_anc < anchor_tol) & mark`).
+That is certain from the code, and it is exactly right for a poster whose whole
+job was to fill those circles. It inverts the moment a variant stops asking for
+that: a generator that paints a full-bleed photograph *around* the circles leaves
+them matching the anchored base perfectly, so the wipe fires on every one of them
+and restores flat row colour into the middle of the picture. Reported measured at
+2-3 levels of difference inside the circles against a standard deviation of 47 in
+the photograph beside them. `--anchor-r 0` turns it off and is the right answer;
+nothing in here needs changing. Know which assumption your poster is under.
+
+**The liquid's silhouette moves outside the authored mask.** `--swell` lets the
+edge breathe past `ribbon_mask.png` and the resize to render width moves the
+boundary again, so a check that asks "what moved that should not" has to dilate
+the mask before using it as an alibi. Measured on a 540-wide render with the
+variant's own elements excluded: 86px of edge motion within 2px of the mask, 94
+at 2-4, 89 at 4-6, 43 at 6-8, and past 8px what is left is x264 ringing. On a
+flat row stripe none of it reads; on a bright photograph it does, which is why it
+took a photographic variant to surface. Not reproduced from this side - the
+poster is not on disk here - so it is one variant's number on one render, and the
+shape of it is what to trust rather than the digits.
+
 ## The overlay seam
 
 A variant that wants to draw on top of the finished frames does not fork the
