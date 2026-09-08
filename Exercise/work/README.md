@@ -9,10 +9,12 @@ layer is the 7 September checkpoint's and is unchanged, so the animation is the
 same animation. What changed is what stands at the two ends of every row and
 what the badges say.
 
-**This folder is self-contained.** Its own `ASSETS/`, its own `OUTPUT/`, its own
-`work/`. `.venv` is a symlink to `../../.venv`. It reads `icon-sources/`
-only if you ask it to re-derive the badge sphere, which is already committed
-here, so nothing outside the folder is needed to render a clip.
+**This folder holds everything but the engine.** `INPUT/` for the base, `OUTPUT/`
+for the clips, `work/` for the rest, with the badges in `work/icons/`. `.venv` is
+a symlink one level up. The six shared tools are called from `../../engine/` and
+never copied in (`../CLAUDE.md` rule 1); the badge sphere they were cut from is
+committed as `work/icons/_ball.png`, so nothing outside is needed to render a
+clip - `--rebuild` is not runnable from here and does not need to be.
 
 ## The one idea
 
@@ -105,9 +107,9 @@ Every muscle exists at every tier, so the files are `CHEST_p.png`, `CHEST_s.png`
 `CHEST_t.png` — 28 × 3 = 84.
 
 ```
-.venv/bin/python muscle_icons.py --all                # the catalogue
-.venv/bin/python muscle_icons.py --one 'Soleus:s'     # something not in it
-.venv/bin/python muscle_icons.py --sheet              # look at the lot
+../.venv/bin/python muscle_icons.py --all                # the catalogue
+../.venv/bin/python muscle_icons.py --one 'Soleus:s'     # something not in it
+../.venv/bin/python muscle_icons.py --sheet              # look at the lot
 ```
 
 ## The body
@@ -145,8 +147,8 @@ question rather than a size one — the first cut drew it at 0.20 and the lit
 muscle read as a detail on a statue.
 
 ```
-.venv/bin/python bodymap.py --sheet                          # every muscle, both views
-.venv/bin/python bodymap.py --view back --lit Lats:p,Biceps:s -o work/back.png
+../.venv/bin/python bodymap.py --sheet                          # every muscle, both views
+../.venv/bin/python bodymap.py --view back --lit Lats:p,Biceps:s -o back.png
 ```
 
 ## How they enter
@@ -211,7 +213,7 @@ lit are both finished 0.52 s after landing, so the gaps between one finishing an
 the next starting are windows where the only thing allowed to move is the liquid.
 
 ```
-.venv/bin/python audit.py work/push_silent.mp4 --cues work/push_cues.txt
+../.venv/bin/python audit.py push_silent.mp4 --cues push_cues.txt
 ```
 
 The 128 px it reports on this cut is **not motion**. It is a 64 × 2 px sliver on

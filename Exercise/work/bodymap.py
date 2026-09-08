@@ -21,8 +21,8 @@ The figure is a ghost - white on the dark rows, near-black on the light ones -
 so the only saturated thing in the circle is the muscle that is working. At the
 size a row gives it, about 300px tall, that contrast is the entire read.
 
-    python3 bodymap.py --sheet work/body_sheet.png     # every muscle, both views
-    python3 bodymap.py --view back --lit Lats:p,Biceps:s -o work/back.png
+    ../.venv/bin/python bodymap.py --sheet             # every muscle, both views
+    ../.venv/bin/python bodymap.py --view back --lit Lats:p,Biceps:s -o back.png
 """
 import argparse
 import os
@@ -32,6 +32,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 import muscles
 
+HERE = os.path.dirname(os.path.abspath(__file__))
 SS = 4                    # supersample; a 300px figure drawn straight is ragged
 
 
@@ -382,7 +383,7 @@ def main():
     p.add_argument("--lit", default="", help="'Chest:p,Triceps:s'")
     p.add_argument("--size", type=int, default=512)
     p.add_argument("--light", action="store_true", help="a light row: draw the ghost dark")
-    p.add_argument("--sheet", nargs="?", const="work/body_sheet.png")
+    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "body_sheet.png"))
     p.add_argument("-o", "--out")
     a = p.parse_args()
 
@@ -393,7 +394,7 @@ def main():
     if a.lit and not a.view:
         a.view = muscles.view_for(list(lit.items()))
     im = render(a.view, lit, a.size, light=a.light)
-    out = a.out or "work/body.png"
+    out = a.out or os.path.join(HERE, "body.png")
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     im.save(out)
     print(f"wrote {out}")

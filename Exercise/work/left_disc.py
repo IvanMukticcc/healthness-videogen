@@ -24,7 +24,7 @@ It goes into BOTH the base and its clean copy, and that matters: the animator
 wipes whatever differs between the two, treating it as a guide mark. Identical
 in both, the disc is design, and it survives.
 
-    python3 left_disc.py --base ../INPUT/base_<topic>.png \
+    ../.venv/bin/python left_disc.py --base ../INPUT/base_<topic>.png \
         -c base_<topic>_clean.png -l base_<topic>_layout.json
 """
 import argparse

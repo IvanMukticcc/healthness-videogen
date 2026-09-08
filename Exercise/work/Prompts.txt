@@ -1,10 +1,16 @@
 READY TOPICS - the whole recipe, not just the prompt
 ====================================================
 
-Each one is four commands and a paste. The template they all fill is in
-ImageSwap.txt and the opening paragraph is identical every time: it tells the
-model the waves are finished and that the right circle is not its business. Do
-not shorten it.
+Each one carries only the three lines that differ per topic: the palette, the
+captions and the render. Everything between them - left_disc.py, grab.py,
+check_base.py, clean_poster.py - is identical for every topic and is written down
+once, in flow.md. It is deliberately not repeated here: a pipeline kept in two
+places drifts, and on 8 September 2026 a stale copy of the mix command in prose
+would have put the finale back on the badge gain after the script was fixed.
+
+The prompt template they all fill is in ImageSwap.txt and the opening paragraph
+is identical every time: it tells the model the waves are finished and that the
+right circle is not its business. Do not shorten it.
 
 The five lifts are the argument of the clip. Pick them so the bodies differ -
 five pressing movements light the same chest five times and the viewer has seen
@@ -12,28 +18,28 @@ the whole video by row two. A good set moves the red around the figure.
 
 Check what a lift resolves to before building anything:
 
-    .venv/bin/python -c "import muscle_overlay as m; print(m.resolve('auto:HIP THRUST'))"
+    ../.venv/bin/python -c "import muscle_overlay as m; print(m.resolve('auto:HIP THRUST'))"
 
 
 -------------------------------------------------------------------------------
 1. PUSH DAY
 -------------------------------------------------------------------------------
 
-    .venv/bin/python recolor_base.py --rows '#0D1420,#E9EDF2' \
+    ../.venv/bin/python ../../engine/recolor_base.py --rows '#0D1420,#E9EDF2' \
       --waves '#00C4A7,#93E03C,#A05CFF,#2FD3B5,#C77DFF' \
       --vibrance 1.05 --contrast 1.04 \
       --title 'PUSH DAY' --subtitle 'WHAT EVERY LIFT ACTUALLY HITS' \
-      -o work/base_push.png
+      -o ../INPUT/base_push.png --work .
 
   Row 1:  Bench Press            Row 4:  Lateral Raise
   Row 2:  Overhead Press         Row 5:  Triceps Pushdown
   Row 3:  Chest Dip
 
-    .venv/bin/python add_labels.py work/base_push.png -l work/base_push_layout.json \
-      -o work/push_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py push_clean.png -l base_push_layout.json \
+      -o push_labelled.png \
       --labels 'BENCH PRESS|CHEST,OVERHEAD PRESS|SHOULDERS,CHEST DIP|CHEST,LATERAL RAISE|SHOULDERS,PUSHDOWN|TRICEPS'
 
-    ./render.sh push work/push_labelled.png \
+    ./render.sh push push_labelled.png \
       'auto:BENCH PRESS,OVERHEAD PRESS,CHEST DIP,LATERAL RAISE,TRICEPS PUSHDOWN'
 
 
@@ -41,21 +47,21 @@ Check what a lift resolves to before building anything:
 2. PULL DAY
 -------------------------------------------------------------------------------
 
-    .venv/bin/python recolor_base.py --rows '#101A16,#EDF2E9' \
+    ../.venv/bin/python ../../engine/recolor_base.py --rows '#101A16,#EDF2E9' \
       --waves '#2FD3B5,#C084FC,#22D3EE,#E879F9,#34D399' \
       --vibrance 1.05 --contrast 1.04 \
       --title 'PULL DAY' --subtitle 'FIVE LIFTS, FIVE DIFFERENT BACKS' \
-      -o work/base_pull.png
+      -o ../INPUT/base_pull.png --work .
 
   Row 1:  Pull-up                Row 4:  Barbell Curl
   Row 2:  Barbell Row            Row 5:  Shrug
   Row 3:  Face Pull
 
-    .venv/bin/python add_labels.py work/base_pull.png -l work/base_pull_layout.json \
-      -o work/pull_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py pull_clean.png -l base_pull_layout.json \
+      -o pull_labelled.png \
       --labels 'PULL-UP|BACK,BARBELL ROW|BACK,FACE PULL|REAR DELTS,BARBELL CURL|ARMS,SHRUG|TRAPS'
 
-    ./render.sh pull work/pull_labelled.png \
+    ./render.sh pull pull_labelled.png \
       'auto:PULL-UP,BARBELL ROW,FACE PULL,BARBELL CURL,SHRUG'
 
 
@@ -63,21 +69,21 @@ Check what a lift resolves to before building anything:
 3. LEG DAY
 -------------------------------------------------------------------------------
 
-    .venv/bin/python recolor_base.py --rows '#16101F,#F0EAF5' \
+    ../.venv/bin/python ../../engine/recolor_base.py --rows '#16101F,#F0EAF5' \
       --waves '#38E07B,#C084FC,#5CE1E6,#A78BFA,#3DDC84' \
       --vibrance 1.05 --contrast 1.04 \
       --title 'LEG DAY' --subtitle 'FRONT, BACK, AND WHAT YOU ARE SKIPPING' \
-      -o work/base_legs.png
+      -o ../INPUT/base_legs.png --work .
 
   Row 1:  Back Squat             Row 4:  Hip Thrust
   Row 2:  Romanian Deadlift      Row 5:  Calf Raise
   Row 3:  Leg Press
 
-    .venv/bin/python add_labels.py work/base_legs.png -l work/base_legs_layout.json \
-      -o work/legs_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py legs_clean.png -l base_legs_layout.json \
+      -o legs_labelled.png \
       --labels 'BACK SQUAT|QUADS,ROMANIAN DEADLIFT|HAMSTRINGS,LEG PRESS|QUADS,HIP THRUST|GLUTES,CALF RAISE|CALVES'
 
-    ./render.sh legs work/legs_labelled.png \
+    ./render.sh legs legs_labelled.png \
       'auto:BACK SQUAT,ROMANIAN DEADLIFT,LEG PRESS,HIP THRUST,CALF RAISE'
 
 
@@ -85,21 +91,21 @@ Check what a lift resolves to before building anything:
 4. THE BIG FIVE
 -------------------------------------------------------------------------------
 
-    .venv/bin/python recolor_base.py --rows '#0A0F16,#EAEEF2' \
+    ../.venv/bin/python ../../engine/recolor_base.py --rows '#0A0F16,#EAEEF2' \
       --waves '#00E5FF,#7CFC5A,#B388FF,#00E5A0,#C0A0FF' \
       --vibrance 1.06 --contrast 1.05 \
       --title 'THE BIG FIVE' --subtitle 'EVERYTHING ELSE IS ACCESSORY WORK' \
-      -o work/base_bigfive.png
+      -o ../INPUT/base_bigfive.png --work .
 
   Row 1:  Back Squat             Row 4:  Overhead Press
   Row 2:  Bench Press            Row 5:  Pull-up
   Row 3:  Deadlift
 
-    .venv/bin/python add_labels.py work/base_bigfive.png -l work/base_bigfive_layout.json \
-      -o work/bigfive_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py bigfive_clean.png -l base_bigfive_layout.json \
+      -o bigfive_labelled.png \
       --labels 'BACK SQUAT|LEGS,BENCH PRESS|CHEST,DEADLIFT|POSTERIOR CHAIN,OVERHEAD PRESS|SHOULDERS,PULL-UP|BACK'
 
-    ./render.sh bigfive work/bigfive_labelled.png \
+    ./render.sh bigfive bigfive_labelled.png \
       'auto:BACK SQUAT,BENCH PRESS,DEADLIFT,OVERHEAD PRESS,PULL-UP'
 
 
@@ -107,21 +113,21 @@ Check what a lift resolves to before building anything:
 5. NO EQUIPMENT
 -------------------------------------------------------------------------------
 
-    .venv/bin/python recolor_base.py --rows '#141018,#F2EEE8' \
+    ../.venv/bin/python ../../engine/recolor_base.py --rows '#141018,#F2EEE8' \
       --waves '#A3E635,#22D3EE,#84CC16,#06B6D4,#BEF264' \
       --vibrance 1.04 --contrast 1.03 \
       --title 'NO EQUIPMENT' --subtitle 'FIVE MOVES, A FLOOR, NOTHING ELSE' \
-      -o work/base_bodyweight.png
+      -o ../INPUT/base_bodyweight.png --work .
 
   Row 1:  Push-up                Row 4:  Plank
   Row 2:  Pistol Squat           Row 5:  Dead Hang
   Row 3:  Mountain Climbers
 
-    .venv/bin/python add_labels.py work/base_bodyweight.png -l work/base_bodyweight_layout.json \
-      -o work/bodyweight_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py bodyweight_clean.png -l base_bodyweight_layout.json \
+      -o bodyweight_labelled.png \
       --labels 'PUSH-UP|CHEST,PISTOL SQUAT|LEGS,MOUNTAIN CLIMBERS|CORE,PLANK|CORE,DEAD HANG|GRIP'
 
-    ./render.sh bodyweight work/bodyweight_labelled.png \
+    ./render.sh bodyweight bodyweight_labelled.png \
       'auto:PUSH-UP,PISTOL SQUAT,MOUNTAIN CLIMBERS,PLANK,DEAD HANG'
 
   This one repeats the core twice on purpose - rows 3 and 4 are both front views
@@ -133,21 +139,21 @@ Check what a lift resolves to before building anything:
 6. WHAT YOUR CORE ACTUALLY DOES
 -------------------------------------------------------------------------------
 
-    .venv/bin/python recolor_base.py --rows '#0F1626,#ECEFF5' \
+    ../.venv/bin/python ../../engine/recolor_base.py --rows '#0F1626,#ECEFF5' \
       --waves '#E879F9,#22D3EE,#D946EF,#06B6D4,#F0ABFC' \
       --vibrance 1.05 --contrast 1.04 \
       --title 'YOUR CORE' --subtitle 'FIVE MOVES THAT ARE NOT SIT-UPS' \
-      -o work/base_core.png
+      -o ../INPUT/base_core.png --work .
 
   Row 1:  Ab Wheel Rollout       Row 4:  Pallof Press
   Row 2:  Hanging Leg Raise      Row 5:  Side Plank
   Row 3:  Russian Twist
 
-    .venv/bin/python add_labels.py work/base_core.png -l work/base_core_layout.json \
-      -o work/core_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py core_clean.png -l base_core_layout.json \
+      -o core_labelled.png \
       --labels 'AB WHEEL|CORE,HANGING LEG RAISE|CORE,RUSSIAN TWIST|OBLIQUES,PALLOF PRESS|OBLIQUES,SIDE PLANK|OBLIQUES'
 
-    ./render.sh core work/core_labelled.png \
+    ./render.sh core core_labelled.png \
       'auto:AB WHEEL ROLLOUT,HANGING LEG RAISE,RUSSIAN TWIST,PALLOF PRESS,SIDE PLANK'
 
 

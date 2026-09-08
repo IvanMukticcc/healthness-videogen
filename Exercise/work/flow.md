@@ -11,35 +11,38 @@ title and the palette change.
 ## Where things live
 
     ShortPrompt/
-      OTHER/            the tools, the bases, the mask, the generated posters
-      Micro/            the food version: bowls, organs, micronutrients
-      Exercise/work/  this one: lifts, bodies, muscles. This file.
-        ASSETS/Muscle/    the badges, and the blank sphere they are cut from
-        ASSETS/           the bed, synthesised here
-        OUTPUT/           finished videos, one folder per day (`07.09/`)
-        work/             posters, scrap renders, cue files
-        palettes/         a reference base, kept so a new one has something to sit beside
-      ASSETS/           `Vitamini/` and `Minerali/` as generated, and the water beds
+      engine/           the shared tools, the wave assets, sfx/ - never copied in
+      Foods/ Micro/ Biohacks/   the other variants. Not ours to touch
+      Exercise/         this one: lifts, bodies, muscles
+        INPUT/            base_<topic>.png, and nothing else
+        OUTPUT/           finished clips, one folder per day (`08.09/`)
+        work/             everything else, including this file
+          icons/            the badges, and the blank sphere they are cut from
+          palettes/         a reference base, so a new one has something to sit beside
 
-Run everything from inside `Exercise/work/`. It writes nothing outside itself.
+Run everything from inside `Exercise/work/`. It writes nothing outside itself
+except the base, which goes to `../INPUT/`, and the finished clip, which goes to
+`../OUTPUT/<DD.MM>/`. `icons/` is where the badges live and where
+`muscle_icons.py` writes them - it wrote to `ASSETS/Muscle/` until 8 September
+2026, which nothing had read since the three-folder layout landed.
 
 ## Files that carry the design
 
 | file | what it is |
 | --- | --- |
-| `base_layer.png` | the reference base: five row stripes, five identical waves, logo. 1536×2752 |
-| `ribbon_mask.png` | where the waves are. Authored from `base_layer.png`, **geometry only** |
+| `../../engine/base_layer.png` | the reference base, shared by every variant: five row stripes, five identical waves, logo. 1536×2752 |
+| `../../engine/ribbon_mask.png` | where the waves are. Authored from `base_layer.png`, **geometry only** |
 | `base_<topic>.png` | one per topic: `base_layer.png` recoloured. Same geometry, so the same mask fits |
-| `flowanim.py` | the animator |
-| `recolor_base.py` | makes a new palette |
-| `check_base.py` | did the generator leave the waves alone? |
-| `make_base.py` | rebuilds `base_layer.png` from a freshly generated wave poster. Rarely needed |
+| `../../engine/flowanim.py` | the animator |
+| `../../engine/recolor_base.py` | makes a new palette |
+| `../../engine/check_base.py` | did the generator leave the waves alone? |
+| `../../engine/make_base.py` | rebuilds `base_layer.png` from a freshly generated wave poster. Rarely needed |
 | `muscles.py` | the vocabulary: label, tier, colour, body regions. Everything else reads it |
 | `bodymap.py` | the figure, front and back. `--sheet` for the catalogue |
 | `body_overlay.py` | where the body sits in the row and how a muscle ignites |
 | `muscle_icons.py` | builds the badges. `--all` for the catalogue, `--one 'Label:p\|s\|t'` for one |
 | `muscle_overlay.py` | where the badges go and how they enter. Imported by `flowanim.py` |
-| `muscle_audio.py` | the hit, and the bed. Both synthesised |
+| `muscle_audio.py` | the hit, the chord and the bed. All three synthesised - `../../engine/sfx/lift_bed_8s.m4a` is this file's own `--bed` output, and reproduces from it at waveform correlation 0.999983, so it is generated rather than licensed and could be rebuilt if it were ever lost |
 | `exercises.json` | lift → the muscles it works, prime mover first |
 | `../../engine/grab.py` | takes the newest 1536×2752 image out of Downloads and names it `<topic>.jpeg` |
 | `clean_poster.py` | puts the base back where the generator drew outside its brief |
@@ -54,10 +57,15 @@ Run everything from inside `Exercise/work/`. It writes nothing outside itself.
 clearly different from the last few. Build the base:
 
 ```
-.venv/bin/python recolor_base.py --rows '<dark>,<light>' \
+../.venv/bin/python ../../engine/recolor_base.py --rows '<dark>,<light>' \
   --waves '<c1>,<c2>,<c3>,<c4>,<c5>' --vibrance 1.05 --contrast 1.04 \
-  --title '<TITLE>' --subtitle '<SUBTITLE>' -o work/base_<topic>.png
+  --title '<TITLE>' --subtitle '<SUBTITLE>' \
+  -o ../INPUT/base_<topic>.png --work .
 ```
+
+`--work .` is what keeps the two working files here: the base itself is the one
+file a person opens, so it goes to `../INPUT/` alone, and its clean copy and its
+layout stay in `work/` beside everything else (`../CLAUDE.md` rule 7).
 
 Rows 1, 3, 5 take the dark colour and 2, 4 the light one. Put the bright wave
 colours on the dark rows.
@@ -70,21 +78,21 @@ Pick the five lifts so the bodies differ — five presses light the same chest f
 times and the viewer has seen the whole clip by row two. Check before building:
 
 ```
-.venv/bin/python -c "import muscle_overlay as m; print(m.resolve('auto:HIP THRUST'))"
+../.venv/bin/python -c "import muscle_overlay as m; print(m.resolve('auto:HIP THRUST'))"
 ```
 
 **1b. Fill the left circle.** The lifter sits in a circle the way the food sits
 in a bowl, and the circle is drawn rather than asked for:
 
 ```
-../.venv/bin/python left_disc.py -b base_<topic>.png -c base_<topic>_clean.png \
-    -l base_<topic>_layout.json
+../.venv/bin/python left_disc.py -b ../INPUT/base_<topic>.png \
+    -c base_<topic>_clean.png -l base_<topic>_layout.json
 ```
 
 It reads each row's own wave colour and puts the disc down in both files —
 identical in the two, so the animator reads it as design rather than as a guide
-mark to wipe. Then move `base_<topic>.png` to `../INPUT/`, which holds base
-images and nothing else.
+mark to wipe. Both files are written in place, and nothing needs moving: the base
+is already in `../INPUT/`, which holds base images and nothing else.
 
 **2. Give the user the prompt**, ready to paste, and tell them to attach
 `base_<topic>.png`. The template is in `ImageSwap.txt`; the opening paragraph is
@@ -96,7 +104,7 @@ about this version that a prompt copied from the food version gets wrong.
 **3. The user returns the generated poster.** It does not have to be moved by hand — `../.venv/bin/python ../../engine/grab.py <topic>` takes the newest file in Downloads whose size is exactly 1536×2752 and renames it `<topic>.jpeg` here. The size is the safety net: a screenshot or a photo is not that, and the generator's own filename changes every time. Then check it before spending time on it:
 
 ```
-.venv/bin/python check_base.py <poster> --base work/base_<topic>.png
+../.venv/bin/python ../../engine/check_base.py <poster> --base ../INPUT/base_<topic>.png
 ```
 
 `safe to animate` means the mask still fits. Anything else: ask for a
@@ -130,17 +138,25 @@ caption names the muscle **group**, not a muscle — the body beside it is alrea
 saying which muscles, in colour, one at a time:
 
 ```
-.venv/bin/python add_labels.py <poster> -l work/base_<topic>_layout.json \
-    -o work/<topic>_labelled.png \
+../.venv/bin/python ../../engine/add_labels.py <topic>_clean.png \
+    -l base_<topic>_layout.json -o <topic>_labelled.png \
     --labels 'LIFT|GROUP,LIFT|GROUP,LIFT|GROUP,LIFT|GROUP,LIFT|GROUP'
 ```
+
+The input is the **cleaned** poster, never the base: the base has no athletes on
+it, and labelling it would throw the generator's work away at the last step.
+
+Watch the size it prints. Every caption is set at one size and the longest label
+picks it, so a single long one shrinks all ten: `CONCENTRATION CURL` gave 30px
+where `SUITCASE CARRY` gives 40. If one label is much longer than the rest,
+shorten that one rather than accepting the size it forces.
 
 **4. Animate, sound it, ship it.** One command, because the animator and the
 sound have to agree on when the badges land — and that instant is also when the
 muscle lights:
 
 ```
-./render.sh <topic> work/<topic>_labelled.png 'auto:LIFT,LIFT,LIFT,LIFT,LIFT'
+./render.sh <topic> <topic>_labelled.png 'auto:LIFT,LIFT,LIFT,LIFT,LIFT'
 ```
 
 `auto:` reads `exercises.json`. To choose the muscles by hand, pass them instead —
@@ -149,7 +165,7 @@ muscle lights:
 straight to `flowanim.py`.
 
 Out comes `../OUTPUT/<DD.MM>/<topic>_muscles.mp4` with the bed and the hits on it.
-`work/<topic>_silent.mp4` is the scrap pass; `work/<topic>_cues.txt` is what the
+`<topic>_silent.mp4` is the scrap pass; `<topic>_cues.txt` is what the
 sound was cut against.
 
 Watch the render's output for a line like
@@ -159,25 +175,43 @@ Watch the render's output for a line like
 That is a dead beat: the badge lands and the hit sounds over a body where nothing
 happens. Either reorder the row so the view flips, or swap the muscle.
 
-The three steps it runs, if one is ever needed alone:
+The three steps it runs, if one is ever needed alone. Run them from `work/`, and
+keep them in step with `render.sh` - a stale copy here is how a fixed fault comes
+back, which is exactly what the two-input mix below used to do to the finale:
 
 ```
-.venv/bin/python flowanim.py work/<topic>_labelled.png --width 1080 --seconds 8 \
-    --mask ribbon_mask.png --base work/base_<topic>_clean.png \
-    --anchored work/base_<topic>.png --layout work/base_<topic>_layout.json \
-    --drops 0 --reach 0 --muscles 'auto:LIFT,...' \
-    --muscle-cues work/<topic>_cues.txt -o work/<topic>_silent.mp4
+../.venv/bin/python ../../engine/flowanim.py <topic>_labelled.png \
+    --width 1080 --seconds 8 \
+    --overlay body_overlay,muscle_overlay \
+    --base base_<topic>_clean.png --anchored ../INPUT/base_<topic>.png \
+    --layout base_<topic>_layout.json \
+    --drops 0 --reach 0 --anchor-tol 6 \
+    --muscles 'auto:LIFT,...' --muscle-times 1,2,3.2,4.4,5.6 \
+    --muscle-cues <topic>_cues.txt \
+    --finale auto --surge 0.30 --finale-cue <topic>_finale.txt \
+    -o <topic>_silent.mp4
 
-.venv/bin/python muscle_audio.py --cues-file work/<topic>_cues.txt \
-    --seconds 8 -o work/<topic>_hits.wav
+../.venv/bin/python muscle_audio.py --cues-file <topic>_cues.txt \
+    --finale-cue <topic>_finale.txt --finale-out <topic>_chord.wav \
+    --seconds 8 -o <topic>_hits.wav
 
-ffmpeg -y -i work/<topic>_silent.mp4 -i ../../engine/sfx/lift_bed_8s.m4a -i work/<topic>_hits.wav \
-  -filter_complex "[1:a]volume=1.0[w];[2:a]volume=0.62[p];\
-[w][p]amix=inputs=2:duration=first:normalize=0[m];\
-[m]alimiter=limit=0.82:level=disabled[a]" \
-  -map 0:v -map "[a]" -shortest -c:v copy -c:a aac -b:a 192k \
+# the duck window is read from the finale's own instant: FIN-0.28 to FIN+1.12
+FIN=$(cat <topic>_finale.txt)
+DUCK="volume='1-0.28*clip(min((t-$(awk -v t=$FIN 'BEGIN{print t-0.28}'))/0.20,\
+($(awk -v t=$FIN 'BEGIN{print t+1.12}')-t)/0.35),0,1)':eval=frame"
+
+ffmpeg -y -i <topic>_silent.mp4 -i ../../engine/sfx/lift_bed_8s.m4a \
+  -i <topic>_hits.wav -i <topic>_chord.wav \
+  -filter_complex "[1:a]volume=1.0,${DUCK}[w];[2:a]volume=0.62[p];\
+[3:a]volume=1.0[f];\
+[w][p][f]amix=inputs=3:duration=first:normalize=0[m];\
+[m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[a]" \
+  -map 0:v -map "[a]" -shortest -c:v copy -c:a aac -b:a 192k -movflags +faststart \
   ../OUTPUT/<DD.MM>/<topic>_muscles.mp4
 ```
+
+The chord is a fourth input at unity and not a fourth thing in the hits file:
+one track takes one gain, and 0.62 is the badges' number, not its.
 
 Without `--muscles` the animator renders the liquid and nothing else.
 
@@ -189,7 +223,7 @@ for the finished one later.
 **5. Audit before delivering.**
 
 ```
-.venv/bin/python audit.py work/<topic>_silent.mp4 --cues work/<topic>_cues.txt
+../.venv/bin/python audit.py <topic>_silent.mp4 --cues <topic>_cues.txt
 ```
 
 Single digits is clean. On the reference cut it reports 128 px, and that is x264
@@ -249,6 +283,92 @@ rediscover them.
   `geo["top"]` is indexed by `x - x0`, not by `x`.
 
 ### New here
+
+- **The finale has to be paid for in the rhythm, not in seconds.** At
+  `1,2,4,5.5,7` the last badge lands at 7.18 of an 8s clip and there is nowhere
+  to put an arrival. `render.sh` now runs `1,2,3.2,4.4,5.6`: last badge 5.78,
+  finale 6.38, and the clip is still and settled from 7.25s to the last frame -
+  measured at 540 wide, 178 px in 3 clusters on the last moving frame and 0 px,
+  0 clusters after it. A longer clip is not the alternative: the surface travels
+  a whole number of ribbon lengths, so 8s is 92px/s and 9s is 82, with nothing
+  in between.
+- **The finale is not the landing flash again.** The landing lifts a muscle
+  towards white, which is right for one region arriving on a dark body. At the
+  finale every region lights at once, and lifting them all towards white is
+  exactly the merge this file already warns about - glutes beside hamstrings as
+  one red mass. So `body_overlay.finale` multiplies instead: every pixel keeps
+  its ratio to the darker rim around it. Measured over the five bodies, 99% of
+  the rim pixels survive the peak (9413 against 9465 settled).
+- **A badge does not pop twice.** `muscle_overlay.finale` slides a specular band
+  across each ball as the surge passes its column. A second pop reads as a
+  second landing, and a second landing wants a second hit under it - which the
+  sound cannot give, because the finale is one chord, not five more strikes.
+- **The finale is not a badge cue.** It goes in `<topic>_finale.txt`, its own
+  file, and `muscle_audio.py` reads it through `--finale-cue`. Written into
+  `<topic>_cues.txt` it would be sounded as a sixth badge on a frame where
+  nothing lands.
+- **The finale's level is the engine's, not this folder's.** It was tempting to
+  set it here and it was wrong twice over. The sound itself changed under us on
+  8 September 2026 - `impact.finale` is now an FM bell, chosen by the user out of
+  nine candidates in a finished clip, and its own default gain is 0.316 - so the
+  1.00 this file used to pass, measured against the old chord, became +10 dB over
+  the level the sound was picked at: on the hits track the chord alone reached
+  0.0 dBFS before the mix even started. And the sound is shared with the other
+  variants, so a number set in `muscle_audio.py` is a second loudness for one
+  sound, which is the drift `engine/impact.py` exists to prevent. `--finale-gain`
+  is therefore an override that is not passed: unset, the engine's own gain
+  stands.
+
+  Measured here anyway, because an Exercise row is three hits and Micro's is one,
+  and the difference is real. Hits track alone, cardio: the chord is -22.3 dB
+  mean / -10.0 peak against row 5's -18.4 / -2.9, so it answers the row from
+  3.9 dB under it (4.6 under row 4). In the finished mix, where the bed and the
+  row's own tail are in the window too, that reads as 2.9 dB under row 5 - and
+  Micro measures 2.4 dB on `energy` and 2.5 dB on `superfoods12`. Three variants
+  within half a decibel, on rows of one hit and rows of three, is the argument
+  for one value in the engine rather than a gain per folder: level with the row
+  costs +3.3 dB here (gain 0.46) and about the same there (0.398). Affordable
+  either way - the mixed file peaks at -3.11 dB at 0.316 and at 0.46 alike,
+  1.4 dB clear of the limiter's -1.72 ceiling, so nothing is limited. Headroom
+  was never what was wrong with 1.00; being a second loudness for a shared sound
+  was. **That number is reported to the root, not applied here.**
+
+  The user settled it at 0.398 in the engine (d1fba5d, 8 September 2026), +2.0 dB
+  over the audition and the value that is level with a Micro row, on the grounds
+  that a cadence sitting slightly under is a smaller fault than one sitting over.
+  Measured here afterwards on the same cardio cut: the chord is 1.9 dB under
+  row 5 on the hits track (2.6 under row 4) and 2.8 dB under in the finished mix,
+  and the mix peak is still -3.11 dB, set by a badge rather than by the chord.
+  So an Exercise finale does arrive under the row it answers, by about a third of
+  what it did. If that ever reads as under rather than measures as it, the seam is
+  the same one: report the number and the cut, do not put a gain back in here.
+
+- **One track gets one gain, so the finale needs its own.** `muscle_audio.py`
+  summed the chord into `<topic>_hits.wav` and `render.sh` then multiplied that
+  whole track by `HIT_GAIN`, 0.62 - a number measured for badge hits. So the
+  0.398 the engine returns arrived at 0.247, **4.15 dB under the level the user
+  picked it at**, and every measurement above was taken through that loss without
+  knowing it. It is also why the finished-mix window looked so unresponsive: the
+  chord in it was 4 dB quieter than intended before the window even diluted it.
+  No engine number could have fixed this - it was the routing, not the level, and
+  a local gain here would have hidden it and left two variants at two chord
+  levels for the third time.
+
+  The chord now comes out in `<topic>_chord.wav` (`--finale-out`) and the mix
+  takes it as a fourth input at `FINALE_GAIN=1.0`. Measured on the cardio cut,
+  before -> after:
+
+      sfx track at mix weights   1.9 dB UNDER row 5  ->  2.2 dB OVER it
+                                 2.6 under row 4     ->  1.6 over
+      finished mix               2.8 under row 5     ->  1.7 under
+      file peak                  -3.11 dB either way, set by a badge, limiter idle
+      integrated                 -18.1 -> -17.9 LUFS, true peak -2.7 both
+
+  Read by peak rather than by mean the chord is still about 1 dB under the
+  badges: it sustains where they spike, and the two meters disagree by design.
+  Whether 2 dB over by mean is right for a three-hit row is a question for a
+  finished cut nobody has heard yet - the numbers go to the root, the gain does
+  not come back in here.
 
 - **The circle is drawn, not asked for.** Three days, three answers: an opaque
   white disc on a dark row, a near-black one on a light row, and then — after the

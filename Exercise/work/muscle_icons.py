@@ -2,7 +2,8 @@
 """
 muscle_icons.py - the muscle badges, all cut from one sphere.
 
-The nine vitamin balls in ../ASSETS/Vitamini were generated one at a time, so no
+The nine vitamin balls the sphere was recovered from were generated one at a time
+for the food version, so no
 two share a glyph size and vitamin C is not even a sphere - it came back as a
 shield with the checkerboard still baked into its fringe. A row of badges that
 disagree about how big a letter is reads as clip art. So the sphere is authored
@@ -36,10 +37,13 @@ The letters are white with a soft shadow of themselves under them, because hue
 contrast - which is all the original orange balls had - is the first thing a
 badge loses at the size it occupies in a vertical video.
 
-    python3 muscle_icons.py --all             # every muscle at every tier
-    python3 muscle_icons.py --rebuild         # re-derive the sphere first
-    python3 muscle_icons.py --one 'Soleus:s'  # one off-catalogue badge
-    python3 muscle_icons.py --sheet           # contact sheet of what exists
+    ../.venv/bin/python muscle_icons.py --all             # every muscle at every tier
+    ../.venv/bin/python muscle_icons.py --one 'Soleus:s'  # one off-catalogue badge
+    ../.venv/bin/python muscle_icons.py --sheet           # contact sheet of what exists
+
+--rebuild does not run from here and is not meant to: the eight source balls are
+the food version's and are not in this variant. The sphere it recovered is
+committed as icons/_ball.png and every badge is cut from that.
 """
 import argparse
 import json
@@ -54,7 +58,14 @@ import muscles
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC_BALLS = os.path.join(HERE, "..", "ASSETS", "Vitamini")   # read only, never written
-OUT = os.path.join(HERE, "ASSETS", "Muscle")
+# The badges live in icons/, which is the directory muscle_overlay.py reads. They
+# were in ASSETS/Muscle/ until the three-folder layout landed, and this file was
+# not moved with them: --one and --all wrote badges into a folder nothing loads,
+# and --one crashed before it got there, because the missing _ball.png sent it to
+# rebuild the sphere from vitamin balls that are not in this variant. Two files
+# disagreeing about where the badges live is the same drift the engine exists to
+# prevent, one folder down.
+OUT = os.path.join(HERE, "icons")
 TEMPLATE = os.path.join(OUT, "_ball.png")
 FONT = "/Users/ivanmuktic/Library/Fonts/SF-Pro-Display-Heavy.otf"
 
@@ -338,10 +349,14 @@ def main():
                    help="'Label:tier' where tier is p, s or t")
     p.add_argument("--rebuild", action="store_true", help="re-derive the sphere first")
     p.add_argument("--size", type=int, default=512)
-    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "work", "muscle_sheet.png"))
+    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "muscle_sheet.png"))
     args = p.parse_args()
 
     os.makedirs(OUT, exist_ok=True)
+    if (args.rebuild or not os.path.exists(TEMPLATE)) and not os.path.isdir(SRC_BALLS):
+        sys.exit(f"no sphere at {TEMPLATE}, and it cannot be rebuilt here: the eight "
+                 f"source balls are the food version's and are not in this variant. "
+                 f"Restore icons/_ball.png rather than re-deriving it.")
     if args.rebuild or not os.path.exists(TEMPLATE):
         build_template()
     tpl = template()

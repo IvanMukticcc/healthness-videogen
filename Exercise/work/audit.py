@@ -16,7 +16,7 @@ the original invariant holds exactly as it did before any of this existed.
 The bodies themselves never move, so they need no window: they are outside the
 mask and perfectly still, which is what the check is looking for.
 
-    python3 audit.py work/push_silent.mp4 --cues work/push_cues.txt
+    ../.venv/bin/python audit.py push_silent.mp4 --cues push_cues.txt
 """
 import argparse
 import pathlib

@@ -32,7 +32,7 @@ Only the row's own stripe is touched, so a generous circle radius cannot reach
 the row above or below, and the athlete is only ever clipped where it lies in
 its own caption bar.
 
-    python3 clean_poster.py poster.jpeg --base base_pull.png \
+    ../.venv/bin/python clean_poster.py poster.jpeg --base ../INPUT/base_pull.png \
         -l base_pull_layout.json -o pull_clean.png
 """
 import argparse
