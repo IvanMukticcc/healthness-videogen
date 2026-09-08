@@ -211,6 +211,27 @@ def build(args, ctx):
             dial=dial(r, row["hour"], c, row["reached"]),
             mark=stage_mark(r, row["stage"], c, row["reached"]),
         ))
+    # An unreached row's CAPTION is the last thing that still shouts. add_labels
+    # burns it into the poster, so the overlay cannot dim what is already pixels
+    # - but it can put the clean base back over it, which is the trade this whole
+    # design makes everywhere else: what must be identical is never regenerated.
+    # Without this the row says "the fast stops before here" and its caption says
+    # AUTOPHAGY as loudly as the lit ones, which is a claim made by typography.
+    if getattr(args, "base", None):
+        clean = np.array(Image.open(args.base).convert("RGB").resize((W, H),
+                                                                     Image.LANCZOS)
+                         ).astype(np.float32)
+        cw = args.caption_w * k / 2 + 10 * k
+        for p_, lay in zip(plan, L["rows"]):
+            if p_["reached"]:
+                continue
+            y0, y1 = int(lay["cap_top"] * k) - 4, int((lay["cap_top"] + lay["cap_h"]) * k) + 4
+            spans = []
+            for cx0 in (L["anchor_l"], L["anchor_r"]):
+                x0 = max(0, int(cx0 * k - cw)); x1 = min(W, int(cx0 * k + cw))
+                spans.append((y0, y1, x0, x1, clean[y0:y1, x0:x1].copy()))
+            p_["caption_patch"] = spans
+
     lit = sum(1 for r in rows if r["reached"])
     print(f"  {proto['name']}: {lit} of {len(rows)} rows reached, "
           f"dials sweep at {', '.join(f'{p[chr(116)]:.1f}' for p in plan)}s")
@@ -233,6 +254,11 @@ def draw(frame, plan, secs):
         for img, cx in ((p["dial"], p["cxl"]), (p["mark"], p["cxr"])):
             _blend(frame, img, a,
                    int(round(cx - img.shape[1] / 2)), int(round(p["cy"] - img.shape[0] / 2)))
+        # and the caption comes down to the same weight as the row it belongs to
+        for y0, y1, x0, x1, patch in p.get("caption_patch", ()):
+            r = frame[y0:y1, x0:x1]
+            r *= DIM
+            r += patch * (1.0 - DIM)
 
 
 def cues(plan):

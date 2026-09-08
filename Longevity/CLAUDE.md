@@ -28,11 +28,19 @@ optional: this is the only category here whose subject can hurt somebody.
    opposite of claiming the stage. **The caption under a dim row must not add a
    verdict the app declined to give.**
 
-3. **The rows do not alternate.** `--rows` gets the same colour twice, because a
+3. **An unreached row says so, in words.** `longevity.labels_for()` writes
+   `NOT REACHED` where the others carry the fact, because the stage name is a
+   claim and *not reached* is not. Dimming alone left the caption saying
+   AUTOPHAGY at full strength beside a row that means the fast stops before
+   here - the poster arguing with itself, with the loud half wrong. The overlay
+   dims the caption as well, by putting clean-base pixels back over it, but the
+   words are the load-bearing half.
+
+4. **The rows do not alternate.** `--rows` gets the same colour twice, because a
    poster whose argument is that top to bottom is time cannot read as a
    checkerboard. The five waves carry the whole gradient instead.
 
-4. **Photograph the outside, draw the inside.** Nobody can photograph autophagy.
+5. **Photograph the outside, draw the inside.** Nobody can photograph autophagy.
    The generator gets the room and the light and nothing else; the hour and the
    stage are authored here and identical on every clip.
 
@@ -64,9 +72,5 @@ seams are `--overlay` with `build`/`draw`/`cues`/`finale`, and `refine_art`. See
 
 - the hour sits left-of-centre in its ring
 - the 0–24 h bar is written in `fast_overlay.bar()` and never drawn
-- **an unreached row keeps a full-strength caption**, because `add_labels` draws
-  captions into the poster and the overlay cannot dim what is already pixels.
-  The row says the fast stops before here and its caption says AUTOPHAGY as
-  loudly as the lit ones. This is the one that matters
 - no clip has been made from a real generated poster yet; the first was rendered
   from the base itself

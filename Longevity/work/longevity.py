@@ -201,6 +201,35 @@ def rows_for(pid, table=None, rows=5):
     return p, out
 
 
+def labels_for(pid):
+    """The add_labels string for a protocol, with the unreached rows saying so.
+
+    Biohacks' argument and it is a design fix rather than a drawing one: dimming
+    an unreached row's caption leaves it saying AUTOPHAGY at full strength beside
+    a row that means *the fast stops before here*, so the poster argues with
+    itself and the loud half is the wrong half. **The stage name is the claim.
+    "NOT REACHED" is not.**
+
+    Left stays the stage, because naming what comes next is information rather
+    than a claim about the viewer. Right carries the fact about their protocol.
+    """
+    _, rows = rows_for(pid)
+    out = []
+    for r in rows:
+        right = FACT.get(r["stage"], r["name"].upper()) if r["reached"] else "NOT REACHED"
+        out.append(f"{r['name'].upper()}|{right}")
+    return ",".join(out)
+
+
+FACT = {
+    "anabolic": "DIGESTING",
+    "catabolic": "GLYCOGEN",
+    "fat_burning": "FAT STORES",
+    "ketosis": "KETONES",
+    "autophagy": "CLEAN-UP",
+}
+
+
 def main():
     if len(sys.argv) > 1:
         p, rows = rows_for(sys.argv[1])
