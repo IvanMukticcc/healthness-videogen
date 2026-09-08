@@ -84,7 +84,7 @@ def own_regions(topic, W, H, hackspec, times):
     yy, xx = np.mgrid[0:H, 0:W]
     m = np.zeros((H, W), bool)
 
-    pad = 22 * k                                   # the bloom, and the shock ring
+    pad = 22 * k                                   # the shock ring, and the rim
     for row in L["rows"]:
         for cx in (L["anchor_l"], L["anchor_r"]):
             m |= np.hypot(xx - cx * k, yy - row["cy"] * k) < row["r"] * k + pad
@@ -143,13 +143,22 @@ def main():
     d = np.abs(np.diff(fr.astype(np.int16), axis=0)).max(axis=0)
     mask = np.asarray(Image.open("../../engine/ribbon_mask.png").convert("L")
                       .resize((W, H), Image.LANCZOS)).astype(np.float32) / 255.0 > 0.5
-    # Grown by four pixels before it is used as an alibi. The authored mask is
+    # Grown by six pixels before it is used as an alibi. The authored mask is
     # where the liquid *is*; the animator's --swell lets its silhouette breathe a
     # little past that, and the resize down to the render width moves the
     # boundary again. Undilated, this test reported 2370 px in 79 clusters, every
     # one of them a two-pixel fringe along a wave edge, and a test that cries
     # wolf on its own geometry is a test nobody runs twice.
-    mask = ndimage.binary_dilation(mask, np.ones((9, 9)))
+    #
+    # Six rather than four, and measured on a scene-mode clip with every element
+    # of this folder's excluded. The liquid's own edge motion outside the mask
+    # runs 86 px within 2 px of it, 94 px at 2-4, 89 px at 4-6, 43 px at 6-8, and
+    # then stops: growing the mask past 8 px changes nothing, because what is left
+    # is 56 px of x264 ringing scattered across the frame. Four px left a 39 px
+    # cluster of row 4's own wave edge one step under the failure line - on a flat
+    # stripe that edge is invisible and on a bright photograph it is not, which is
+    # why this only showed up in scene mode.
+    mask = ndimage.binary_dilation(mask, np.ones((13, 13)))
     times = [float(t) for t in a.times.split(",")]
     mine = own_regions(a.topic, W, H, spec, times)
 

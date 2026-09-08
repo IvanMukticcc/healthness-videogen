@@ -10,10 +10,11 @@
 # by add_labels.py is the whole input, and nothing has to be generated, checked,
 # fetched out of Downloads or looked at by eye before the render starts.
 #
-# For a topic that wants photographs in the left circle, pass the generated
-# poster as $3 and add --scene poster:
+# SCENE MODE: for a topic whose rows are photographs, pass the labelled poster
+# as $3. That alone switches it - glass discs, glass dials, and the guide-circle
+# wipe off, because the generator paints around our marks rather than over them.
 #
-#   ./render.sh day 'auto:...' day_labelled.png --scene poster
+#   ./render.sh firsthour 'auto:...' firsthour_labelled.png
 #
 # Everything after that goes straight to flowanim.py, so --hack-times,
 # --dial-count, --chip-h, --daybar and the rest are available untouched.
@@ -31,8 +32,29 @@ if [ $# -lt 2 ]; then
 fi
 
 TOPIC="$1"; HACKS="$2"; shift 2
+# A poster given as $3 IS scene mode - it is the only reason to pass one - so the
+# four flags that mode needs are switched on here rather than remembered. Anything
+# after it still goes to flowanim.py and still wins, argparse taking the last
+# value it is given.
+#
+#   --scene-disc glass  the row is a photograph and has no colour for a disc to
+#   --dial-disc glass   take: sampled at the left margin it returns a pixel of
+#                       sky or grass and our components end up wearing the scene
+#   --anchor-r 0        the generator paints AROUND the guide circles rather than
+#                       over them, so the poster still matches the anchored base
+#                       inside them - and the wipe would then punch a disc of
+#                       flat row colour into the photograph. Measured on the
+#                       first scene poster: |poster - base| is 2-3 levels inside
+#                       every circle, against std 47 in the photograph beside it
+PHOTO=""
 POSTER="${1:-}"
-if [ -n "$POSTER" ] && [ -f "$POSTER" ]; then shift; else POSTER="${TOPIC}_labelled.png"; fi
+if [ -n "$POSTER" ] && [ -f "$POSTER" ]; then
+    shift
+    PHOTO="--scene-disc glass --dial-disc glass --anchor-r 0"
+    echo "== scene mode: $POSTER"
+else
+    POSTER="${TOPIC}_labelled.png"
+fi
 
 # The base itself lives in INPUT and only there - it is the file a person opens.
 # Its clean copy and its layout are working files and stay here.
@@ -82,7 +104,7 @@ echo "== liquid, glyphs, chips, dials and the day bar"
     --dial-cues "${TOPIC}_dials.txt" \
     --finale auto --finale-lead 0.50 --finale-cue "${TOPIC}_finale.txt" \
     --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05 \
-    -o "${TOPIC}_silent.mp4" "$@"
+    $PHOTO -o "${TOPIC}_silent.mp4" "$@"
 
 SECONDS_USED=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "${TOPIC}_silent.mp4")
 

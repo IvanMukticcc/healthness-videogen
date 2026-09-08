@@ -213,7 +213,8 @@ def paint_pulses(frame, ps, secs, amount=PULSE, dur=PULSE_DUR, width=PULSE_W):
             room, amount * band[:, None])
 
 
-def plan(rows, layout, W, H, times, base=None, mask=None, scale=SCALE, dy=0.0, lead=0.0):
+def plan(rows, layout, W, H, times, base=None, mask=None, scale=SCALE, dy=0.0,
+         lead=0.0, material="row"):
     """One entry per row: the disc, the glyph, and the instant it lights."""
     L = json.load(open(layout)) if isinstance(layout, str) else layout
     k = W / 1536.0
@@ -242,7 +243,9 @@ def plan(rows, layout, W, H, times, base=None, mask=None, scale=SCALE, dy=0.0, l
         bloom = np.array(Image.fromarray(np.clip(lit, 0, 255).astype(np.uint8), "RGBA")
                          .filter(ImageFilter.GaussianBlur(size * 0.06))).astype(np.float32)
         out.append(dict(row=i, cx=cx, cy=cy, r=r, colour=col,
-                        disc=dial.disc(r, bg, light), glyph=g, lit=lit, bloom=bloom,
+                        disc=(dial.glass(r, light) if material == "glass"
+                              else dial.disc(r, bg, light)),
+                        glyph=g, lit=lit, bloom=bloom,
                         t=(times[i] if i < len(times) else times[-1]) + lead,
                         name=h["name"], icon=h["icon"]))
     return out
@@ -322,6 +325,13 @@ def add_arguments(p):
     p.add_argument("--scene", choices=["glyph", "poster"], default="glyph",
                    help="glyph draws the left circle here and needs no generator at "
                         "all; poster leaves it as the image model returned it")
+    p.add_argument("--scene-disc", choices=["auto", "row", "glass"], default="auto",
+                   help="what the glyph sits on. 'row' is the row's own background "
+                        "colour a little darker; 'glass' is the chips' material and "
+                        "is what a photographic row needs - there is no row colour "
+                        "to take, and the generator leaves our guide circle standing "
+                        "on the photograph, so the disc has to be something that "
+                        "looks meant rather than left over. 'auto' is row")
     p.add_argument("--scene-scale", type=float, default=SCALE,
                    help="the glyph's box as a fraction of the circle's diameter")
     p.add_argument("--scene-dy", type=float, default=0.0)
@@ -350,7 +360,9 @@ def build(args, ctx):
     glyphs_on = args.scene == "glyph"
     pl = Plan(plan(hacks.resolve(args.hacks), ctx["layout"], ctx["W"], ctx["H"], times,
                    base=ctx["base"], mask=ctx["mask"],
-                   scale=args.scene_scale, dy=args.scene_dy) if glyphs_on else [])
+                   scale=args.scene_scale, dy=args.scene_dy,
+                   material=("glass" if args.scene_disc == "glass" else "row"))
+              if glyphs_on else [])
     _PARAMS[:] = [args.pulse, args.pulse_dur, args.pulse_width]
     if args.pulse > 0:
         pl.pulses = pulses(ctx["layout"], ctx["W"], ctx["H"], ctx["geo"],

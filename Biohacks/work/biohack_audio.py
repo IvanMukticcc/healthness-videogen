@@ -196,10 +196,30 @@ def main():
                         "render.sh mean the same here as they do next door")
     p.add_argument("--chip-gain", type=float, default=0.60)
     p.add_argument("--tick-gain", type=float, default=0.30)
-    # 1.00 rather than the engine's 0.316 default and Micro's 0.62. A row here is
-    # a chip, sixteen ticks and a lock - a thinner, higher event than a badge
-    # thudding - so the chord has to come in over a busier and brighter texture
-    # than it does next door. Measured in the first finished cut; see flow.md.
+    # 1.00, passed explicitly and never left to the engine's default. A row here
+    # is a chip, sixteen ticks and a lock - a thinner, higher, busier event than
+    # a badge thudding - so the chord has to arrive over a brighter texture than
+    # it does next door. Measured in the first finished cut; see flow.md.
+    #
+    # **The number that survives is the end-to-end one**, because a level derived
+    # from another level is not a measurement. In the finished scene-mode cut,
+    # on half-second windows: a chip row is -15.2 dB, the chord is -12.3, the bed
+    # under it -14.0, peak -1.58 dBFS. So the finale arrives **+2.9 dB over the
+    # row it answers**, which is what it is for and what was listened to.
+    #
+    # Everything the 1.00 was originally written against has moved and none of it
+    # changed this clip. impact.finale's default went 0.316 -> 0.398 on 8
+    # September (+2.00 dB, d1fba5d) after Micro and Exercise measured their chords
+    # arriving 2.4-3.9 dB *under* their rows; both of them forward nothing and
+    # take that default, where this is the only variant that overrides it. And
+    # the chord is summed into the sfx wav, which render.sh then scales by
+    # SFX_GAIN 0.80 - so 1.00 is +8.0 dB over the shared default before that and
+    # +6.0 after it.
+    #
+    # None of those three numbers is worth calibrating against again. The 0.80
+    # was already in the cut this was chosen on, which is the whole reason the
+    # outcome above is right: it was picked by ear on a finished mix rather than
+    # in the abstract.
     p.add_argument("--finale-gain", type=float, default=1.00)
     p.add_argument("-o", "--out", required=True)
     a = p.parse_args()
