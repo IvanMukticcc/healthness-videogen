@@ -131,6 +131,23 @@ files you touched, by name.
   `engine/impact.py` reproduces `muscle_audio.py`'s hits bit for bit; when its
   agent is free, that file should call the engine's and keep only its bed. Until
   then the two are identical and nothing is at risk, but it is a copy.
+- **The prompt template has now been fixed by hand a fourth time.** On
+  9 September the negative-prompt block came out of every one of them, because a
+  separate negative field contradicts the body of the prompt: every variant's
+  list contained `text, letters, caption, label, title` and three of them
+  `logo`, while the body says the title and the logo are *already in the image
+  and must stay*. A generator handed both reads the negative field as permission
+  to remove what the base drew - the reserved caption bars, the title - which is
+  what the user reported seeing. One edit per variant, plus Micro's
+  `make_prompt.py`, which lifts the block out of its own `ImageSwap.txt` and
+  emits it into all nineteen generated prompts, so removing the block from the
+  template alone would make `negative()` raise on the next topic.
+
+  The entry below said "worth splitting before it is fixed by hand a third
+  time". It has now been four, the cost is measurable - four templates, one
+  generator, nineteen files - and the prediction was right. Splitting it is
+  still the answer and still nobody's current task.
+
 - **The prompt template is the third thing that exists in three copies.** After
   the tools and the badge synthesis, `ImageSwap.txt` is now forked across Foods,
   Micro and Exercise, and it drifts the same way: Micro measured three faults on

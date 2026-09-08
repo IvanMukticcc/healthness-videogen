@@ -119,16 +119,6 @@ Every line of it was paid for once.
   their own they get treated as part of the background and covered.
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
-
-text, letters, caption, label, title, top-down view, overhead shot, flat lay,
-bowl seen from above, ceramic bowl, opaque bowl, coloured bowl, flat
-illustration, medical diagram, textbook drawing, line art, 2D icon, changed liquid, redrawn wave, different wave shape, moved
-wave, recoloured wave, extra liquid, droplets, splash, spray, particles,
-sparkles, glow, halo, drop shadow, changed background colour, changed logo,
-watermark
-
-
 AFTER GENERATING
 
 Check the wave before animating:
