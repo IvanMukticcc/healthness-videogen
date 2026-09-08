@@ -68,6 +68,19 @@ the result before handing it over.
 `base_<topic>.png`. The template is in `ImageSwap.txt`; the opening paragraph is
 what does the work and goes in unchanged. Filled examples are in `Prompts.txt`.
 
+Both halves of that handover have a command, so neither is done with a mouse:
+
+```
+../.venv/bin/python ../../engine/copy.py image <topic>    # the base, to attach
+... | ../.venv/bin/python ../../engine/copy.py prompt - --topic <topic>
+../.venv/bin/python ../../engine/copy.py prompt           # it back, after a clobber
+```
+
+Print the prompt whole as rule 8 requires **and** pipe it through the second
+line; the pipe is the only reason the third one has anything to give back. The
+buffer it keeps is one entry in the temp directory, not a `prompt_<topic>.txt` -
+it names its age on every re-copy and refuses past 45 minutes.
+
 **3. The user returns the generated poster.** Check it before spending time on it:
 
 ```
