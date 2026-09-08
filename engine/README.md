@@ -251,6 +251,12 @@ here were wrong before this was understood, both derived by adding dB to a
 measurement taken elsewhere, and both were caught by the variant they were
 written about. The sfx track is the instrument; the mix is the outcome.
 
+Name the meter too, not only the basis. A chord sustains and a badge spikes, so
+mean and peak disagree about them by construction and go on disagreeing: on a
+corrected Exercise cut the chord measures 2.2dB **over** row 5 by mean over half
+a second and 1.0dB **under** it by peak, on the same track in the same window.
+Neither is wrong. A level quoted with no meter on it is half a number.
+
 **And the level it returns is the level it has to arrive at.** All three
 variants currently sum the finale into the same wav as their badge hits and then
 scale that wav by their own pop gain in the mix - 0.85 in Micro, 0.62 in
