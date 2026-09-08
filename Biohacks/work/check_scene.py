@@ -7,6 +7,19 @@ the waves move. This answers the five that decide whether the picture is any
 good, and it answers them in numbers so that sending one back is a measurement
 rather than an opinion.
 
+    0. IS IT OURS  does this poster even come from this topic's base? The title
+                  is drawn into the base and the prompt forbids touching it, so
+                  |poster - base| over the title band is near zero for a poster
+                  of ours and enormous for anyone else's.
+
+                  This is first because it is the check that invalidates all the
+                  others, and because nothing else catches it: `grab.py` takes
+                  the newest 1536x2752 file in Downloads and cannot know which
+                  variant it belongs to, and every variant is built on the same
+                  base geometry - so an Exercise poster passed check_base.py's
+                  wave test AND all four checks below. Measured: 4.0 mean for
+                  ours, 86.4 for the one that was not.
+
     1. MARKS      is the LEFT circle painted over, or did the generator paint the
                   photograph around it and leave it standing? A flat disc has
                   almost no variance; a photograph has a lot, and that one number
@@ -52,6 +65,9 @@ from PIL import Image
 # A flat disc left standing measures std 0.8-8; a photograph painted over the
 # mark measures 24-79. Both ends measured on the two firsthour posters, so the
 # line between them is drawn where there is nothing near it.
+OURS_DIFF = 25.0            # mean |poster - base| over the title band. Ours
+                            # measures 4.0, another variant's poster 86.4
+TITLE = (191, 392)          # where recolor_base.py draws the title, at 1536
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
 JOIN_DIFF = 40.0            # levels between poster and base at the wave's start.
@@ -82,7 +98,18 @@ def main():
     yy, xx = np.mgrid[0:H, 0:W]
     bad = []
 
-    print(f"{poster}  {W}x{H}\n")
+    ty0, ty1 = int(TITLE[0] * k), int(TITLE[1] * k)
+    ours = float(np.abs(img[ty0:ty1] - base[ty0:ty1]).max(axis=2).mean())
+    print(f"{poster}  {W}x{H}")
+    if ours >= OURS_DIFF:
+        print(f"\n  THIS IS NOT A POSTER OF base_{a.topic}.png. The title band is "
+              f"{ours:.0f} levels from the base (ours measures ~4).\n"
+              f"  grab.py takes the newest 1536x2752 file in Downloads and cannot "
+              f"know whose it is,\n  and every variant shares this base geometry - "
+              f"so the wave check passes on someone\n  else's poster. Put it back "
+              f"where it came from and grab again.")
+        sys.exit(1)
+    print(f"  from our base (title band {ours:.1f} levels off, limit {OURS_DIFF:.0f})\n")
     print("  band  left mark      lightness          the join     right third")
     for i, row in enumerate(L["rows"]):
         y0, y1 = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
