@@ -72,7 +72,14 @@ one fast**:
 ## Why this is the father
 
 Not because it is a clip about our categories — nobody outside this repository
-cares about our taxonomy. Because **the fast is the day the other four hang off**.
+cares about our taxonomy. Because **the fast is the day the other four hang off**,
+and the product said so first. `fitcircle/docs/CORE_STORY.md`, the app's
+authoritative narrative, opens: *"Healthness is a daily rhythm where fasting,
+hydration, light movement, and mindful feeding interlock — and the app reorders
+itself around whichever phase you're in."* Its **Daily Cycle** section is the
+father argument in the founder's own voice, written in June, before this
+repository existed. We did not invent the spine. We found the one the product was
+already built on.
 Foods and Micro are the feeding window. Water, the walk and the light are the
 fasting hours. Exercise sits where the protocol puts it. The father is the spine
 the children were already attached to, and the poster is the first place that
@@ -111,6 +118,43 @@ a camera can actually see, and the split is the point being made.
 It also gives the master prompt the one job image models are best at: **the same
 place, five times, as the light changes.** Not five subjects that must agree with
 each other - one subject that must agree with itself.
+
+## Five stages, and the ones the fast does not reach
+
+Biohacks found the flaw in the axis while writing step 2, and it is arithmetic:
+**no protocol reaches five stages.** Verified here against the app's own numbers:
+
+    13:11  14:10  16:8    reach 3 of 6, stopping at fat burning
+    18:6   20:4   OMAD    reach 4 of 6, stopping at ketosis
+
+So five-rows-are-five-stages cannot be a routine topic — and the stage after
+ketosis is autophagy, which **none of the six protocols the app ships reaches at
+all.**
+
+The fix is theirs and it is better than either shape we had: **draw all five
+stages, and draw the ones beyond the fast unreached.** A 16:8 lights three rows
+and leaves two dim. A 20:4 lights four. `rows_for` returns `reached` per row.
+
+**The gap is the content.** What a longer protocol buys is shown instead of
+argued, the six protocols finally compare against each other on one poster, and a
+dim row is not a claim — it says the fast stops before here, which is the
+opposite of claiming the stage.
+
+And it hands back the finale in a form that can be defended. The first plan ended
+by adding rows up, which on decades would have been an invented number. Here the
+ending is **how far it got**: arithmetic, not a claim.
+
+### The hook, and it is the honest one
+
+The most repeated sentence about fasting on the internet is that 16:8 gives you
+autophagy. **It does not, on the app's own thresholds** — 16:8 stops at fat
+burning, two stages short, and nothing the app ships reaches autophagy.
+
+So the poster's strongest image and its most responsible one are the same image:
+the row everybody has been told they reach, drawn dim, beyond where their
+protocol stops, carrying *research is ongoing*. Contrarian, sourced, and safer
+than the myth it corrects — which is the only kind of viral this category is
+allowed to want.
 
 ## The elements
 
