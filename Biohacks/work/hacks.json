@@ -115,6 +115,16 @@
   "source": "Dunstan et al., Diabetes Care 2012: breaking 5 h of sitting with 2 min of light walking every 20 min cut the postprandial glucose incremental AUC by 24.1% against uninterrupted sitting. Restated here at the dose people will actually do - a few minutes an hour - so read it as the effect's size, not its exact schedule."
  },
 
+ "step outside": {
+  "icon": "trees",
+  "clock": "15:30",
+  "chips": ["120 MIN/WK"],
+  "metric": "GOOD HEALTH",
+  "value": "+59%",
+  "dir": "up",
+  "source": "White et al., Scientific Reports 2019 (19 806 people, Monitor of Engagement with the Natural Environment): 120-179 min of nature contact in the past week against none gave OR 1.59 (95% CI 1.32-1.92) for reporting good health and 1.23 (1.08-1.40) for high wellbeing. There is a threshold - under 120 min showed no benefit at all - and it did not matter whether the time came in one visit or several. Cross-sectional, so association not cause."
+ },
+
  "no screens": {
   "icon": "eye",
   "clock": "21:30",

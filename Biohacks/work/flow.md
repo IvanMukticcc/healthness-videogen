@@ -22,7 +22,9 @@ loop every other variant here follows and this folder is not an exception to it:
     2. write the prompt             ImageSwap.txt filled for the topic, handed
                                     over whole in the terminal - never a file,
                                     never a diff, never offered. PROMPTING.md
-                                    is why it says what it says
+                                    is why it says what it says. Pipe it through
+                                    engine/copy.py at handover so it is on the
+                                    clipboard as well as on the screen
     3. the user returns the image   grab.py, then check_base, check_scene
     4. caption it and render        add_labels.py, then ./render.sh with the
                                     poster as the third argument
@@ -114,6 +116,25 @@ Out comes `../OUTPUT/<DD.MM>/<topic>_biohack.mp4` with the bed, the chips, the
 counters and the chord on it. `WIDTH=540 ./render.sh ...` while tuning: identical
 timing, a third of the wait.
 
+**3b. Hand it over with the clipboard, not with a mouse.** A topic costs two
+paste actions and both were being done by hand - dragging the base out of a
+Finder window, and selecting a hundred and fifty lines of terminal output
+without catching the shell prompt at the end.
+
+    ../../engine/copy.py image <topic>                 the base, size-checked
+    cat <the prompt> | ../../engine/copy.py prompt - --topic <topic>
+    ../../engine/copy.py prompt                        the same one again
+
+**This does not make the prompt a file and does not soften rule 8.** What that
+rule forbids is a `prompt_<topic>.txt` lying around to be pasted three revisions
+later. `copy.py` keeps one buffer in the temp directory, overwritten by the next
+prompt, gone on reboot, printing its topic and its age on every re-copy and
+refusing outright past 45 minutes. A stale one announces itself instead of being
+pasted quietly, which is the whole of what rule 8 is protecting.
+
+The prompt is still printed whole in the terminal, every time. The clipboard is
+in addition to that, never instead of it.
+
 **4b. Grab. Plain, no flags - it takes the image out of Downloads.**
 
     ../../.venv/bin/python ../../engine/grab.py <topic>
@@ -136,6 +157,15 @@ a render. Prevention moved downstream, which is where it belongs.
 `--keep` is still there for the one case its help describes: when another
 session is known to be mid-generation and its file must not disappear from
 under it.
+
+**4c. Open the day's folder.** The user picks the finished mp4 up by hand to
+post it, so a render announced by path only is not delivered:
+
+    open ../OUTPUT/$(date +%d.%m)/
+
+Once per finished clip, after the checks. **Not for a preview** - those stay in
+`work/` and get named in the message instead, because opening a folder for
+something that is not the deliverable teaches the habit wrong.
 
 **5. Check before delivering.**
 
