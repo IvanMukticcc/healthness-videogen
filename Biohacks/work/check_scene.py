@@ -182,13 +182,21 @@ TITLE = (191, 392)          # where recolor_base.py draws the title, in a 2752
                             # found the same line in their own copy.
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
-CAP_CONTRAST = 110.0        # ink to background mean, and how busy the background
-CAP_NOISE = 65.0            # is. A caption fails only when it misses BOTH.
-                            # Measured over three scene posters: the one that
-                            # could not be read ran 97 against variation 72,
-                            # while MORNING LIGHT reads fine at 169 against 70
-                            # and LONG EXHALES at 123 against 74. Either number
-                            # alone rejects captions that are perfectly legible
+CAP_NEAR = 60.0             # luminance within which the ink is lost
+CAP_LOST = 0.20             # and how much of the strip may be that close.
+                            # Looked at rather than inferred, on six posters:
+                            #
+                            #   0.0-4.3   every caption with a plain strip
+                            #   15.3      day's MORNING LIGHT - reads perfectly
+                            #   18.6      sleep's MORNING LIGHT - reads
+                            #   22.2      crash's STAND UP - first word going
+                            #   31.9      firsthour's LONG EXHALES - E half lost
+                            #   32.3      crash's WATER FIRST - FIRST half gone
+                            #
+                            # It ranks better than it thresholds: the order is
+                            # right every time and the boundary is a judgement
+                            # between 15 and 22. 20 is where it was put after
+                            # looking at all six, not from the numbers alone
 # No JOIN threshold. See the header: the number is printed and not judged,
 # because it tracks the scene's brightness rather than the seam's coverage.
 
@@ -303,24 +311,21 @@ def main():
         for side, cx in (("left ", L["anchor_l"]), ("right", L["anchor_r"])):
             m = (np.abs(xx - cx * k) < 190 * k) & (yy > c0) & (yy < c1)
             b = 0.299 * img[m][:, 0] + 0.587 * img[m][:, 1] + 0.114 * img[m][:, 2]
-            con, noise = abs(float(b.mean()) - ink), float(b.std())
-            # Both together, never either alone. High contrast survives a busy
-            # background: sleep's MORNING LIGHT reads at 169 against variation
-            # 70 and firsthour's LONG EXHALES at 123 against 74, and both are
-            # perfectly legible. It is the pair that kills - 97 against 72.
-            ok = con >= CAP_CONTRAST or noise <= CAP_NOISE
+            lost = float((np.abs(b - ink) < CAP_NEAR).mean())
+            con = abs(float(b.mean()) - ink)
+            ok = lost <= CAP_LOST
             if not ok:
-                bad.append(f"r{i+1} {side.strip()} caption is not readable - "
-                           f"contrast {con:.0f} (want {CAP_CONTRAST:.0f}) against a "
-                           f"background varying by {noise:.0f} (want under "
-                           f"{CAP_NOISE:.0f}). The bottom fifth of that band has to "
-                           f"be quiet; the ink was chosen before the photograph "
-                           f"existed. Contrast alone is fine at any noise, and a "
-                           f"quiet background is fine at any contrast - it is the "
-                           f"pair that kills")
-                print(f"  caption r{i+1} {side}  contrast {con:5.0f}  noise {noise:5.0f}  NO")
+                bad.append(f"r{i+1} {side.strip()} caption disappears over "
+                           f"{100*lost:.0f}% of its strip (limit {100*CAP_LOST:.0f}%) - "
+                           f"something bright is sitting under the ink. Its mean "
+                           f"contrast is {con:.0f}, which is why a mean does not "
+                           f"catch this: the rest of the strip carries the average "
+                           f"while one word is gone")
+                print(f"  caption r{i+1} {side}  lost {100*lost:5.1f}%  "
+                      f"(mean contrast {con:3.0f})  NO")
             else:
-                print(f"  caption r{i+1} {side}  contrast {con:5.0f}  noise {noise:5.0f}  ok")
+                print(f"  caption r{i+1} {side}  lost {100*lost:5.1f}%  "
+                      f"(mean contrast {con:3.0f})  ok")
 
     # the footer, where the day bar goes
     f0, f1 = int(2476 * k), int(2585 * k)
