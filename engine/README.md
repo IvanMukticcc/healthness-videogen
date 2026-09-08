@@ -200,22 +200,34 @@ repository drifted. A variant that wants a different sound passes a different
 `root`; one that wants a genuinely different instrument writes its own and says
 why in the file.
 
-    track = impact.finale(t0, seconds, root=420.0, lead=0.26)
+    track = impact.finale(t0, seconds, root=420.0)
 
-The other sound in there: 260ms of noise climbing into a chord, laid at the
-finale's instant. The rows climb a pentatonic one degree at a time and leave the
-ear counting; this is the cadence that answers it - the five rows' own notes
-spread across three octaves so no two of them cluster, struck once. Not five
-strikes on the same frame: that is a stack of clicks and a peak the limiter
-flattens.
+The other sound in there: the chord the climbing rows resolve onto, laid at the
+finale's instant. Two-operator FM with the modulator at 1.41x the carrier -
+which is how a bell is made, and why it is not an organ - seven voices on the
+pentatonic an octave over the root, opening upward 12ms per degree, with one
+sine an octave *below* the root underneath. On a phone that sine is felt rather
+than heard, and it is the difference between a chime and an arrival.
 
-The riser is the only sound in the clip that says something is *about* to
-happen; everything else is heard after it has already landed. It is what buys
-the watch.
+It was chosen off nine candidates auditioned in a finished clip, six of them
+real recordings: crotales playing these exact five notes, a tuned Thai gong on
+the root, a 40-inch tam-tam, cymbal rolls, all from the Iowa MIS collection and
+all free of restrictions. The synthesis won. One measurement from that audition
+is worth keeping whatever wins next time: **a phone speaker is gone below about
+500Hz.** Through a fourth-order high pass there, the 40-inch tam-tam loses 7.6dB
+of itself and the gongs lose 3.0 - the biggest sounds in the collection are the
+most impressive of the nine in headphones and the weakest of them in a feed.
+This one loses 0.8.
 
-Measured in a finished cut, with the bed ducked 2.9dB under it: the finale's
-half second is the loudest passage in the clip by mean (-19.4dB against -20.8
-for a badge row) while its peak sits at -5.1dB, 3.4dB under the limiter's
-ceiling. Dense rather than peaky is the whole point - and the tail is cut to
-what is left of the clip and faded, because a chord still ringing on the last
-sample is a click on every lap of the loop.
+Measured in a finished cut on half-second windows, with the bed ducked 2.9dB
+under it: the finale is -22.3dB mean at a -4.2dB peak, against -20.5 and -2.2
+for a badge row and -23.1 for the water alone. So it currently sits *under* a
+badge landing, which is a level decision rather than a sound one - the limiter's
+ceiling is -1.72dB, so there are about 2.5dB free above it in `gain`.
+
+`lead` puts a riser in front, and is 0 because that is how the chord was picked.
+It is the only sound in the clip that says something is *about* to happen -
+everything else is heard after the thing has already landed - so it is kept, off.
+
+The tail is cut to what is left of the clip and faded, because a chord still
+ringing on the last sample is a click on every lap of the loop.

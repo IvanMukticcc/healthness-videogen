@@ -14,8 +14,9 @@ licensed, because nothing was downloaded.
     air       band-passed noise, 35 ms            the room, briefly
 
 `finale` is the other sound in here: the chord the climbing rows resolve onto,
-with 260 ms of riser in front of it. Same argument as the strike - both variants
-arrive at the same moment and it should not be two different sounds.
+an FM bell an octave over the root with a sine under it. Same argument as the
+strike - both variants arrive at the same moment and it should not be two
+different sounds.
 
 The note climbs: one degree of a pentatonic per row, two semitones per badge
 inside a row. Five identical thuds read as a machine; five rising ones read as a
@@ -78,52 +79,70 @@ def strike(f0, sr=SR, dur=0.40):
 # at once - five of these on the same frame is a stack of clicks and a peak the
 # limiter flattens - but one chord, struck once, with the five rows' own notes
 # spread across three octaves so no two of them cluster.
-CHORD = [-12, 2, 7, 12, 16, 21]     # rows 1-5 spread out, plus the octave over the root
+# The finale. The rows climb a pentatonic one degree at a time, which leaves the
+# ear counting and waiting; this is the cadence that answers it. Struck once, not
+# five strikes on the same frame - that is a stack of clicks and a peak the
+# limiter flattens.
+#
+# Chosen off nine candidates auditioned in the finished clip, six of them real
+# recordings: crotales playing these exact five notes, a tuned Thai gong on the
+# root, a 40-inch tam-tam, cymbal rolls. The synthesis won, and the measurement
+# that killed the best of the recordings is worth keeping: a phone speaker is
+# gone below about 500 Hz, and the tam-tam lost 7.6 dB of itself through a
+# fourth-order high pass there. It is the most impressive of the nine in
+# headphones and the weakest of them in a feed. This one loses 0.8.
+CHORD = [0, 2, 4, 7, 9, 12, 16]                    # the pentatonic, then its octave and third
+CHORD_GAIN = [0.5, 0.7, 0.8, 0.85, 0.8, 0.7, 0.5]  # loudest in the middle, so it is a chord
+SPREAD = 0.012                                     # seconds per degree, so it opens upward
 
 
-def swell(f0, sr=SR, dur=0.75):
-    """One voice of the chord. A tone, not an impact: the pitch does not fall.
+def bell(f0, sr=SR, dur=1.5, ratio=1.41, index=3.2):
+    """One voice: two-operator FM, which is how a bell is made.
 
     `strike` falls by a factor of three in 30 ms and that is what makes it read
     as something landing. Nothing lands here - everything that was going to land
-    already has - so the voice holds its pitch and decays, and the arrival is
-    carried by the attack the caller puts in front of it.
+    already has - so the voice holds its pitch and rings.
+
+    The modulator sits at 1.41 x the carrier. An integer ratio gives a harmonic
+    tone, which is an organ; the irrational one gives the inharmonic partials
+    that say metal, and 1.41 is close enough to root two to have no common
+    factor with anything. The index falls faster than the amplitude does, so the
+    voice is bright on arrival and pure while it rings - a bell that keeps its
+    clang all the way down is a doorbell.
     """
-    n = int(sr * dur)
-    t = np.arange(n) / sr
-    ph = 2 * np.pi * f0 * t
-    v = np.sin(ph) + 0.28 * np.sin(2 * ph) + 0.11 * np.sin(3 * ph)
-    # Slower attack than a strike's 1.5 ms: six of these opening together on the
-    # same sample is a click nobody asked for.
-    v *= np.exp(-t / (0.34 + 0.16 * (220.0 / max(f0, 60.0)))) * np.clip(t / 0.006, 0, 1)
-    return v
+    t = np.arange(int(sr * dur)) / sr
+    m = np.sin(2 * np.pi * f0 * ratio * t) * index * np.exp(-t / 0.22)
+    return np.sin(2 * np.pi * f0 * t + m) * np.exp(-t / (0.20 + 0.5 * (440.0 / f0)))
 
 
 def riser(sr=SR, dur=0.26):
-    """The 260 ms before the chord: noise climbing into it.
+    """Noise climbing into the chord. Off by default - `lead=0` - and here
+    because it is the only sound in the clip that says something is *about* to
+    happen; everything else is heard after it has already landed.
 
-    This is the part that buys the watch. Everything else in the clip is an
-    event that has already happened by the time it is heard; this is the only
-    sound that says something is about to.
+    One pole, its corner climbing 300 -> 5200 Hz. Filtering with a fixed band
+    and fading it up reads as someone turning a knob; moving the corner reads as
+    something approaching.
     """
     n = int(sr * dur)
     t = np.arange(n) / sr
     rng = np.random.default_rng(11)
     x = rng.standard_normal(n)
-    # One pole, its corner climbing 300 -> 5200 Hz. Filtering with a fixed band
-    # and fading it up reads as someone turning a knob; moving the corner reads
-    # as something approaching.
     fc = 300.0 * (5200.0 / 300.0) ** (t / dur)
     a = np.exp(-2 * np.pi * fc / sr)
     lo = np.zeros(n)
     for i in range(1, n):
         lo[i] = (1 - a[i]) * x[i] + a[i] * lo[i - 1]
-    hp = x - lo                                  # what the moving corner lets through
-    return hp * (t / dur) ** 2.2 * 0.30
+    return (x - lo) * (t / dur) ** 2.2 * 0.30
 
 
-def finale(t0, seconds, sr=SR, root=420.0, gain=0.62, lead=0.26, dur=0.75):
-    """The riser, the chord and the weight under it, laid at `t0`.
+def finale(t0, seconds, sr=SR, root=420.0, gain=0.316, lead=0.0, dur=1.5):
+    """The chord, and the weight under it, laid at `t0`.
+
+    The voices are an octave over the root the badges use, so the finale answers
+    them from above rather than in among them. Underneath, one sine an octave
+    *below* the root: on a phone it is felt rather than heard, and on anything
+    else it is the difference between a chime and an arrival.
 
     The tail is cut to what is left of the clip and faded, never left to run off
     the end: the clip loops in a feed, and a chord still ringing on the last
@@ -133,23 +152,22 @@ def finale(t0, seconds, sr=SR, root=420.0, gain=0.62, lead=0.26, dur=0.75):
     room = seconds - t0
     if room <= 0.05:
         return out
-    dur = min(dur, room)
-    n = int(sr * dur)
-    t = np.arange(n) / sr
 
-    body = np.zeros(n)
-    for semi in CHORD:
-        f = root * 2 ** (semi / 12.0)
-        v = swell(f, sr, dur)
-        body += v[:n] * (0.62 if semi < 0 else 1.0)      # the low voice is weight, not melody
-    body += np.sin(2 * np.pi * root * 0.5 * t) * np.exp(-t / 0.16) * 0.5 * np.clip(t / 0.004, 0, 1)
-    rng = np.random.default_rng(23)
-    k = int(sr * 0.0012)
-    body[:k] += np.diff(rng.standard_normal(k + 1)) * 0.45
+    span = int(sr * (dur + SPREAD * max(CHORD)))
+    body = np.zeros(span)
+    for semi, g in zip(CHORD, CHORD_GAIN):
+        v = bell(root * 2 ** (semi / 12.0) * 2.0, sr, dur)
+        i0 = int(sr * SPREAD * abs(semi))
+        body[i0:i0 + len(v)] += v * g
+    t = np.arange(int(sr * 0.5)) / sr
+    body[:len(t)] += (np.sin(2 * np.pi * root * 0.5 * t) * np.exp(-t / 0.13)
+                      * np.clip(t / 0.004, 0, 1) * 0.9)
     body /= np.abs(body).max()
 
-    if dur < 0.75:                                        # truncated: land it softly
-        f = int(sr * 0.06)
+    n = min(len(body), int(sr * room))
+    body = body[:n].copy()
+    if n < span:                                   # truncated: land it softly
+        f = min(n, int(sr * 0.06))
         body[-f:] *= np.linspace(1.0, 0.0, f)
 
     i0 = int(round(t0 * sr))
