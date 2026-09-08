@@ -30,6 +30,15 @@ loss is real, but it is now caught at the next step instead: `check_base.py`
 compares the title band and refuses a poster from another base before any time is
 spent on it. Prevention moved downstream, so the flag went back to being what it
 is for - a one-off, when you know somebody else is mid-generation.
+
+**Putting a file back must not restamp it.** Newest-first is the whole ordering
+here, so a poster returned to Downloads has to keep the modification time it
+arrived with, or it jumps to the head of the queue and the next grab takes it
+instead of the one that was actually just generated. This is not hypothetical: it
+is how a poster taken by the wrong variant got back to its owner in September,
+and nobody had designed it. `mv`, `shutil.move` and `shutil.copy2` all preserve
+the stamp. Plain `cp` does not - it writes the current time - and neither does
+generating the file again. Measured, not assumed.
 """
 import argparse
 import os
