@@ -188,14 +188,43 @@ the generator's five athletes away at the last step. Stale prose and stale
 sibling paths in tools nobody has run lately are the same fault; only the first
 is greppable. What finds the second is running the commands.
 
-Swept across the four on 9 September. Nothing carries a stale `work/` prefix any
-more. Foods had one bare engine tool name in `ImageSwap.txt`, fixed here. Micro
-has the builder fault in its worse form and has been told: `micro_icons.py`
-writes to `work/ASSETS/Micro`, which does not exist, while `micro_overlay.py`
-reads `work/icons`, which holds the 41 real badges - and `--rebuild` reads
-`Micro/ASSETS/Vitamini`, which does not exist anywhere in the tree. The nine
-vitamin balls are recoverable from `e0020f1^`, where the three-folder move
-deleted them. Biohacks writes and reads `work/icons` in one place and is clean.
+**And running a command is not the whole of it either.** A command can run and
+still be wrong. Micro's `README.md` carried an `audit.py` example that predated
+the finale, so without `--finale` it counts the ending's own movement as motion
+that should not be there: it reports 76 816 px on a clip that measures 4 with the
+flag. It executes, it prints, and it is believed. A command that cries wolf is
+worse than one that does not run. So the check has three levels - grep the prose,
+run the command, and read the number it prints knowing what it should say.
+
+Swept across the four on 9 September, and two things I wrote here that day were
+wrong. Both were caught by the variant they were written about, and both are
+worth keeping as method rather than as apology.
+
+*"Nothing carries a stale `work/` prefix any more"* was false when written. The
+grep looked for the literal - `default=`, `="work/`, `'work/` - and a path built
+by segments walks straight past it. At that very commit `micro_icons.py:349` and
+`muscle_icons.py:341` both held `os.path.join(HERE, "work", …)`, where `HERE` is
+already `work/`, so `--sheet` would have made `work/work/` on first use. **Grep
+finds strings, not paths.** That is the whole argument for running the command.
+
+*"The nine vitamin balls are recoverable from `e0020f1^`, where the three-folder
+move deleted them"* was also false, and the evidence was two commands above it in
+my own terminal: the move brought them in as `Micro/work/icon-sources/`, nine
+files, `vit_A.png` through `vit_K.png`. Only `SRC_BALLS` was left pointing where
+they used to be. One path, no restore. Micro then proved the flag had always
+worked: `--rebuild` re-derives the sphere from those nine byte-identically to the
+`_ball_orange.png` every shipped badge was cut from.
+
+What is actually true after all of it: Foods had one bare engine tool name in
+`ImageSwap.txt`, fixed here. Micro's builder wrote to `work/ASSETS/Micro` while
+the overlay read `work/icons`; repointed, and `--all` then rebuilt all 40 badges
+byte-identically to the ones in every shipped clip. Its `make_prompt.py` had
+written the rule-7 violation into **twelve** generated prompts rather than the
+two the grep found - the generator, not the files, was the fault. And the
+poster's real route, `<topic>.jpeg` from `grab.py` converted to a lossless
+`<topic>_poster.png`, was in no document at all, so one step grabbed a jpeg and
+the next silently expected a png. Biohacks writes and reads `work/icons` in one
+place and is clean.
 
 ## Where the record is
 
