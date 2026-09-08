@@ -135,10 +135,40 @@
   "source": "Gu et al., J Clin Endocrinol Metab 2020: the same meal eaten at 22:00 rather than 18:00 left overnight glucose higher and fat oxidation lower in the same people. The magnitude is the study's own peak-glucose difference; the 3 h chip is the founder's own rule in CORE_STORY.md - last meal two or three hours before bed."
  },
 
+ "fibre first": {
+  "icon": "wheat",
+  "clock": "08:00",
+  "chips": ["30 G"],
+  "metric": "ALL CAUSES",
+  "value": "-20%",
+  "dir": "down",
+  "source": "Reynolds et al., Lancet 2019 (185 prospective studies, 58 trials, 135 million person-years): 25-29 g of dietary fibre a day against under 15 g was associated with 15-30% lower all-cause and cardiovascular mortality, and the dose-response curve was still falling at 35 g. -20% is the middle of that band. Observational for the mortality end, though the trials support the mechanism."
+ },
+
+ "lift twice": {
+  "icon": "dumbbell",
+  "clock": "17:30",
+  "chips": ["40 MIN/WK"],
+  "metric": "DIABETES",
+  "value": "-17%",
+  "dir": "down",
+  "source": "Momma et al., Br J Sports Med 2022 (meta-analysis of 16 cohort studies): 30-60 min a week of muscle-strengthening activity was associated with 10-17% lower risk of all-cause mortality, cardiovascular disease, total cancer and diabetes. The curve is J-shaped and flat past an hour - more is not better here, which is the unusual part and the reason the chip says 40 min a WEEK. Independent of aerobic activity; combined, the two are additive."
+ },
+
+ "see people": {
+  "icon": "users",
+  "clock": "20:30",
+  "chips": ["WEEKLY"],
+  "metric": "SURVIVAL",
+  "value": "+50%",
+  "dir": "up",
+  "source": "Holt-Lunstad et al., PLoS Medicine 2010 (meta-analysis, 148 studies, 308 849 people, average 7.5 y follow-up): people with stronger social relationships had a 50% greater likelihood of survival, OR 1.50. The effect held across age, sex, health status and cause of death, and is comparable in size to quitting smoking. The only entry in this table whose dose is not a number, because the studies measure integration rather than minutes."
+ },
+
  "heat then cold": {
   "icon": "thermometer",
   "clock": "19:00",
-  "chips": ["11 MIN /WK"],
+  "chips": ["11 MIN/WK"],
   "metric": "CARDIAC RISK",
   "value": "-27%",
   "dir": "down",

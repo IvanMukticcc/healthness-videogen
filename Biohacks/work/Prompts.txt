@@ -163,6 +163,46 @@ Scenes for the photographic version, if it is wanted:
 
 
 ================================================================================
+longer     LIVE LONGER / NOT ONE OF THESE IS A PILL         glyph
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#12181C,#EDEFEA' \
+  --waves '#D9A441,#3E8F2E,#7FA8FF,#C4471C,#E0555C' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'LIVE LONGER' --subtitle 'NOT ONE OF THESE IS A PILL' \
+  -o ../INPUT/base_longer.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py ../INPUT/base_longer.png \
+  -l base_longer_layout.json -o longer_labelled.png \
+  --labels 'FIBRE FIRST|ALL CAUSES,WALK DAILY|DEATH RISK,LIFT TWICE|DIABETES,SAUNA|CARDIAC RISK,SEE PEOPLE|SURVIVAL'
+
+./render.sh longer 'auto:FIBRE FIRST@08:00,7000 STEPS@12:30,LIFT TWICE@17:30,HEAT THEN COLD@19:00,SEE PEOPLE@20:30'
+
+The first topic that needed the table grown rather than rearranged - `fibre
+first`, `lift twice` and `see people` are new, each with its own meta-analysis.
+Four topics in, every hack was being used twice and a fifth would have been a
+remix.
+
+**Five studies of one outcome want five different words for it.** All-cause
+mortality is what four of these actually measured, and five rows captioned
+`DEATH RISK` is one row shown five times. Each caption is the outcome that
+study reported - all causes, death risk, diabetes, cardiac risk, survival - so
+they are true and they are distinct. Do not reach for a synonym that the source
+does not support to break a tie; change the entry instead.
+
+The clocks are the weakest part and worth knowing about. A longevity topic is
+not a day, and 08:00 to 20:30 is a plausible day rather than a measured one -
+the studies say nothing about when. The day bar still earns its place because
+these are things you do in a day, but if a topic ever has no honest clocks,
+`--daybar 0` is there.
+
+`SEE PEOPLE` is the only entry in the table whose chip is not a number, because
+the studies measure social integration rather than minutes. It is also the
+largest effect on the poster, which is worth leaving where the eye finds it.
+
+
+================================================================================
 TITLES ARE THE ONE THING THAT MAY NOT REPEAT
 ================================================================================
 
