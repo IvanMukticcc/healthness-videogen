@@ -149,9 +149,11 @@ def finale(t0, seconds, sr=SR, root=420.0, gain=0.398, lead=0.0, dur=1.5):
     to: at 0.316 the cadence arrives 2.4 dB under a Micro badge row, 2.9 under
     an Exercise one in the mix and 3.9 on its hits track alone, and 0.5 dB over
     the water. A sound that answers a count cannot be the quietest thing in the
-    bar it lands on. 0.398 puts it level with the row it closes - 0.5 dB under
-    on Micro, 1.3 under on Exercise's heavier three-hit rows - and the limiter
-    stays idle either way: the mix peak is set by a badge, not by this.
+    bar it lands on. 0.398 puts it level with the row it closes: on the sfx
+    track alone, where neither window carries the bed, 0.5 dB under a Micro row
+    and 1.9 under Exercise's heavier three-hit ones; in the finished mixes, 0.4
+    and 0.9. The limiter stays idle either way - the mix peak is set by a badge,
+    not by this.
 
     It is one number here rather than one per variant on purpose. The level a
     shared sound arrives at is part of the sound; tuned in two folders it

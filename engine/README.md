@@ -238,9 +238,12 @@ and none of them was asked to: at the audition level the cadence arrived 2.4dB
 under a Micro badge row, 2.9dB under an Exercise one in the mix and 3.9dB on its
 hits track alone, and 0.5dB over the water - the quietest of the three things in
 its own half second. A sound that answers a count cannot be that. At 0.398 it
-lands level with the row it closes: -0.5dB against a Micro row, -1.3dB against
-Exercise's heavier three-hit ones. The limiter is idle at either level; the mix
-peak is set by a badge, not by the chord.
+lands level with the row it closes. On the sfx track alone, where neither window
+carries the bed, that is 0.5dB under a Micro row and 1.9dB under Exercise's
+heavier three-hit ones; in the finished mixes, 0.4 and 0.9. Name which basis a
+number came from: on Micro the two agree to a tenth, on Exercise they are a full
+dB apart. The limiter is idle at either level; the mix peak is set by a badge,
+not by the chord.
 
 It is one number here rather than one per variant, deliberately. The level a
 shared sound arrives at is part of the sound, and tuned separately in two
