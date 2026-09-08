@@ -163,7 +163,13 @@ run over the whole shelf:
 **Two columns, because for this test one is not a number.** Unweighted RMS is
 how much energy the speaker fails to reproduce; the LUFS pair is how much
 quieter it will sound, and K-weighting has already discounted the bottom octaves
-the way an ear does before the high pass gets to them. `flow_stream` is where
+the way an ear does before the high pass gets to them.
+
+Say whether a loudness figure is **gated**, too. The column above is an ungated
+mean over the whole file; ffmpeg's `ebur128` integrated figure is EBU-gated and
+drops the quiet stretches, which on a bed with an authored swell is worth 0.3 to
+1.2dB. Two tables of these numbers were written the same evening and disagreed by
+exactly that, in the same direction, for exactly that reason. `flow_stream` is where
 they part: 64% of it lies under 80Hz, so it reads -5.5 by RMS and -1.0 by LUFS,
 and neither is wrong.
 
