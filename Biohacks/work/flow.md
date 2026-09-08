@@ -15,6 +15,25 @@ of those are text in a file.
 
 ## The loop
 
+**A clip in `OUTPUT/` came from a generated poster. Always.** That is the same
+loop every other variant here follows and this folder is not an exception to it:
+
+    1. build base_<topic>.png       recolor_base.py
+    2. write the prompt             ImageSwap.txt filled for the topic, handed
+                                    over whole in the terminal - never a file,
+                                    never a diff, never offered
+    3. the user returns the image   grab.py --keep, then check_base, check_scene
+    4. caption it and render        add_labels.py, then ./render.sh with the
+                                    poster as the third argument
+
+Running `./render.sh <topic> 'auto:...'` with no poster renders a **preview**
+into `work/<topic>_preview.mp4` and will not write to `OUTPUT/`. The preview
+earns its place - it shows the layout, the rhythm and the dials before a
+generation is spent, and it is the fastest way to find out that a caption is too
+long or two rows share a glyph. It is not the clip. Three previews were
+delivered as clips on 8 September because this script wrote to the same place
+whether or not a poster existed; it does not any more.
+
 **1. Pick five hacks and check they have sources.**
 
 ```
@@ -83,8 +102,12 @@ chip prices it: `WALK MORE` and `7000 STEPS`.
 about five instants and typing them twice drifts by a frame.
 
 ```
-./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK'
+./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK' <topic>_labelled.png
 ```
+
+The poster is what makes this a clip rather than a preview, and passing it also
+switches the whole scene mode on - `--scene poster`, glass dials, and both
+base-repair passes off.
 
 Out comes `../OUTPUT/<DD.MM>/<topic>_biohack.mp4` with the bed, the chips, the
 counters and the chord on it. `WIDTH=540 ./render.sh ...` while tuning: identical

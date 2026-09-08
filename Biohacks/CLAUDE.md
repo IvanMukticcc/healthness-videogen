@@ -11,17 +11,17 @@ under all five a bar filling across one day.
                biohack_audio.py, check.py, icons/, icon-sources/,
                flow.md, README.md, ImageSwap.txt
 
-    cd work && ./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK'
+    cd work && ./render.sh <topic> 'auto:HACK,...' <topic>_labelled.png
 
 ## What is different here, and why it is not decoration
 
-**There is no generator in the loop.** Both circles are drawn at render time - a
-lucide glyph on the left, a dial on the right - so the input is the base and
-nothing else. No prompt to write, no poster to wait for, nothing to check by eye
-before the render starts. `ImageSwap.txt` is still here for a topic that wants
-photographs, behind `--scene poster`, but it is the exception. A variant that
-can put out a clip in a minute is a different instrument from one that needs a
-person for ten, and on a feed that is the whole strategy.
+**A clip comes from a generated poster, like everywhere else here.** Build the
+base, hand the prompt over whole, take the image back, caption it, render. What
+this variant adds is that it can also draw both circles itself - a lucide glyph
+on the left, a dial on the right - and that is a **preview**: it writes to
+`work/<topic>_preview.mp4`, never to `OUTPUT/`, and it exists so a topic can be
+seen laid out and timed before a generation is spent on it. Three previews were
+delivered as clips on 8 September, which is what the split is for.
 
 **The right circle counts.** Micro's organs do not move for eight seconds and
 `MAINTAINER.md` says so; Exercise's body lights. Here the circle holds a

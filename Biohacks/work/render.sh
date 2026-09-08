@@ -2,13 +2,21 @@
 # render.sh - a topic in, a finished clip out: liquid, glyphs, chips, dials,
 # the day bar, the bed, the counters and the chord.
 #
-#   ./render.sh day 'auto:MORNING LIGHT,COLD FINISH,WALK AFTER LUNCH,LAST COFFEE,LIGHTS DOWN'
+#   ./render.sh <topic> 'auto:HACK,...' <topic>_labelled.png
 #
-# **There is no poster argument.** That is the difference between this variant
-# and the two beside it. Both circles are drawn here - a lucide glyph on the
-# left, a dial on the right - so the base built by recolor_base.py and captioned
-# by add_labels.py is the whole input, and nothing has to be generated, checked,
-# fetched out of Downloads or looked at by eye before the render starts.
+# **A CLIP IS ONLY A CLIP IF IT CAME FROM A GENERATED POSTER.** The loop is the
+# same one every other variant in this repository follows:
+#
+#     1. build base_<topic>.png          recolor_base.py
+#     2. write the prompt                ImageSwap.txt, filled, handed over whole
+#     3. the user returns the image      grab.py --keep, check_base, check_scene
+#     4. caption it and render           add_labels.py, then this
+#
+# Without a poster this script renders a PREVIEW into work/ and refuses to touch
+# OUTPUT/. The preview is worth having - it shows the layout, the rhythm and the
+# dials before a generation is spent on the topic - but it is not the deliverable
+# and OUTPUT/ is not where it goes. Three of them ended up in there on 8
+# September because this script wrote to the same place either way.
 #
 # SCENE MODE: for a topic whose rows are photographs, pass the labelled poster
 # as $3. That alone switches it - glass discs, glass dials, and the guide-circle
@@ -90,13 +98,20 @@ TICK_GAIN="${TICK_GAIN:-0.30}"
 SFX_GAIN="${SFX_GAIN:-0.80}"
 BED_GAIN="${BED_GAIN:-1.0}"
 DAY="$(date +%d.%m)"
-OUT="../OUTPUT/$DAY/${TOPIC}_biohack.mp4"
+if [ -n "$PHOTO" ]; then
+    OUT="../OUTPUT/$DAY/${TOPIC}_biohack.mp4"
+    mkdir -p "../OUTPUT/$DAY"
+else
+    OUT="${TOPIC}_preview.mp4"
+    echo "== PREVIEW: no poster, so this is not a deliverable"
+    echo "   Glyphs stand in for the photographs, and it is written to work/."
+    echo "   For a clip in OUTPUT/, hand over the prompt, grab the image back,"
+    echo "   caption it, and pass it as the third argument."
+fi
 
 for f in "$POSTER" "$CLEAN" "$BASE" "$LAYOUT" "$BED"; do
     [ -f "$f" ] || { echo "missing: $f" >&2; exit 1; }
 done
-mkdir -p "../OUTPUT/$DAY"
-
 echo "== liquid, glyphs, chips, dials and the day bar"
 # --overlay order is the order they draw in, and it is left circle, right circle,
 # then everything that is not in a circle. The chip is last so it is never behind
