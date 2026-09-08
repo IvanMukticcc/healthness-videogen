@@ -12,6 +12,11 @@ dark navy row barely clears any threshold, and the check then reports drift that
 is not there.
 
     python3 check_base.py new_poster.png
+
+It asks one thing before any of that: is this poster from this base at all? All
+four variants share the same wave geometry, so every other test here passes on a
+poster belonging to another variant. The title tells them apart, because it is
+drawn into the base and never regenerated.
 """
 import argparse
 from pathlib import Path
@@ -48,6 +53,9 @@ def main():
     p.add_argument("-m", "--mask", default=str(_HERE / "ribbon_mask.png"))
     p.add_argument("--drift", type=float, default=2.0, help="pixels of drift still considered a fit")
     p.add_argument("--diff", type=float, default=14.0, help="allowed mean difference on the wave")
+    p.add_argument("--title-tol", type=float, default=8.0,
+                   help="mean difference in the title band that still counts as the same "
+                        "base; 0 skips the test")
     args = p.parse_args()
 
     ref = np.array(Image.open(args.mask).convert("L")) > 127
@@ -58,9 +66,42 @@ def main():
         img = img.resize((W, H), Image.LANCZOS)
     new = np.array(img).astype(np.float32)
 
+    print(f"{args.poster}  vs  {args.base}   ({W}x{H})")
+
+    # Is this poster even from this base? Four variants share this geometry, so
+    # every wave sits in the same place in all of them and every test below
+    # passes on a poster that belongs to somebody else. One did on 8 September:
+    # a poster grabbed out of Downloads by the wrong variant checked out at four
+    # rows ok and one repainted, which is an ordinary result.
+    #
+    # What does not cross is the title. recolor_base.py draws it into the base
+    # and every prompt forbids touching it, so the band it occupies is the one
+    # place a poster carries its base's identity.
+    #
+    # Measured over 37 posters and 1332 mismatched pairs across the four
+    # variants: a poster against its own base runs 0.0 to 3.2, and all but ten
+    # of the mismatches are over 6. Eight is 2.5x the worst legitimate match and
+    # under the bulk of the mismatches.
+    #
+    # The ten it cannot separate are the point of this comment. They are pairs
+    # that share a title: liver and lungs exist in two variants, and Micro's
+    # superfoods run is one title over many topics - SUPERFOODS 7 against the
+    # SUPERFOODS 12 base measures 5.4. **This test finds a foreign base, not a
+    # foreign topic.** No threshold fixes that; the title is genuinely the same.
+    if args.title_tol > 0:
+        y0, y1 = int(H * 191 / 2752), int(H * 392 / 2752)
+        t = float(np.abs(new[y0:y1] - base[y0:y1]).mean())
+        if t > args.title_tol:
+            raise SystemExit(
+                f"  title band differs by {t:.1f} (over {args.title_tol:.0f})\n"
+                f"  This poster was not generated from {args.base}. It is somebody\n"
+                f"  else's, or this topic's own base is not the one passed in.\n"
+                f"  Do not regenerate it - nothing is wrong with the poster. Find\n"
+                f"  the base it belongs to, or leave the file for whoever made it.")
+        print(f"  title band matches the base ({t:.1f})")
+
     lab, n = ndimage.label(ref)
     order = sorted(range(1, n + 1), key=lambda i: np.where(lab == i)[0].min())
-    print(f"{args.poster}  vs  {args.base}   ({W}x{H})")
     worst_d = worst_e = 0.0
     for k, i in enumerate(order, 1):
         band = lab == i

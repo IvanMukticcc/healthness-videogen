@@ -805,9 +805,15 @@ def main():
                    help="how different from the anchored base still counts as leftover circle")
     p.add_argument("--layout", help="the _layout.json the base wrote")
     p.add_argument("--caption-w", type=float, default=380)
-    p.add_argument("--anchor-r", type=float, default=150, help="guide circle radius at 1536 wide; 0 disables")
-    p.add_argument("--anchor-l", type=float, default=250)
-    p.add_argument("--anchor-r-x", dest="anchor_r_x", type=float, default=1270)
+    # --anchor-r, --anchor-l and --anchor-r-x were here until 9 September. All
+    # three predated --layout and none of them had been read since it landed:
+    # the circles come from the layout file now, as L["anchor_l"], L["anchor_r"]
+    # and row["r"]. They parsed, and --anchor-r's help promised an off switch for
+    # the guide-circle wipe that it did not have - somebody spent twenty minutes
+    # passing --anchor-r 0 and watching the wipe print its count on every render.
+    # A flag that is silently ignored is worse than one that does not exist,
+    # because a missing flag fails at argparse. The wipe's real off switch is
+    # --anchor-tol 0, which makes its test never true, and --halo 0 for the seal.
     p.add_argument("--save-mask", help="write the detected mask here for reuse")
     p.add_argument("--mask-only", action="store_true")
     p.add_argument("--overlay", help="comma-separated modules in the calling folder that "

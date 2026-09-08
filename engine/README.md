@@ -11,7 +11,8 @@ poster move is here, and **nowhere else**.
     grab.py             the poster the generator handed back, out of Downloads and
                         into <topic>.jpeg beside the caller. The size is the whole
                         safety net: nothing that is not 1536x2752 is renamed
-    check_base.py       did the generator leave the waves alone?
+    check_base.py       is this poster even from this base, and did the generator
+                        leave the waves alone?
     add_labels.py       the row captions, all ten at one size
     flowanim.py         the animator
 
@@ -38,6 +39,35 @@ liquid still broke where it met the organ.
 When a variant genuinely needs different behaviour, that behaviour goes in the
 variant, as its own module and its own flags - the way `micro_overlay.py` and
 `muscle_overlay.py` already do it. A fork of a tool is the thing to avoid.
+
+## One base looks like another
+
+All four variants are built on the same geometry, which is the point of it - and
+it means every test in `check_base.py` passes on a poster belonging to somebody
+else. On 8 September one variant grabbed another's poster out of `~/Downloads`,
+where `grab.py` takes the newest file of the right size and cannot know who
+generated it. It checked out at four rows fine and one repainted, which is an
+ordinary result.
+
+What does not cross variants is the **title**: `recolor_base.py` draws it into
+the base and every prompt forbids touching it, so the band it occupies is where a
+poster carries its base's identity. `check_base.py` compares it before anything
+else and refuses above `--title-tol`, 8 by default.
+
+Measured over 37 posters and 1332 mismatched pairs across the four: a poster
+against its own base runs 0.0-3.2, and all but ten mismatches are over 6.
+
+Those ten are the limit, and it is a real one. They are pairs that **share a
+title**: `liver` and `lungs` exist in two variants each, and Micro's superfoods
+run is one title across many topics - SUPERFOODS 7 against the SUPERFOODS 12 base
+measures 5.4 and passes. The test finds a foreign *base*, not a foreign *topic*,
+and no threshold changes that because the title really is the same. The older
+hazard `grab.py` was written against - last topic's poster animated with this
+topic's base - is still only guarded by the size check and by looking.
+
+And the message matters as much as the check. A poster from another variant is
+not a bad poster, so the refusal does not say regenerate: somebody acting on that
+would burn a generation replacing a file that was fine.
 
 ## Paths
 
