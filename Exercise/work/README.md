@@ -239,7 +239,11 @@ and written down here instead.
 
 ## What is known to break
 
-Everything in `flow.md` still applies. Added or changed by this folder:
+Everything in `flow.md` still applies, and `PROMPTING.md` holds the half of it
+that is about the prompt rather than the animation: why the template says what it
+says, what the generator gets right unasked, what it gets wrong every time, and
+what each of those cost in generations. Read it before changing a word of
+`ImageSwap.txt`. Added or changed by this folder:
 
 - **The waves may not be red, orange or amber.** The badges are red, orange and
   blue, and the synergist is the commonest tier in the table, so an amber wave

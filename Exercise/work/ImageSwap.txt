@@ -90,7 +90,8 @@ The athletes are photorealistic and cleanly cut out, in plain dark training kit,
 === END OF PROMPT ===
 
 
-WHY THE PROMPT LOOKS REPETITIVE
+WHY THE PROMPT LOOKS REPETITIVE   (the short version - PROMPTING.md is the long
+                                   one, and carries what each line cost)
 
 Most of it was paid for once, by the food version, and against the same
 generator behaviours.

@@ -47,11 +47,33 @@ except the base, which goes to `../INPUT/`, and the finished clip, which goes to
 | `../../engine/grab.py` | takes the newest 1536×2752 image out of Downloads and names it `<topic>.jpeg` |
 | `clean_poster.py` | puts the base back where the generator drew outside its brief |
 | `left_disc.py` | fills the left circle with that row's wave colour, in the base and its clean copy |
-| `render.sh` | animate, sound, mux |
+| `render.sh` | animate, sound, mux. Refuses a poster with empty left circles |
+| `PROMPTING.md` | why the prompt says what it says, and what each line cost |
 | `audit.py` | what moves that should not |
 | `../OUTPUT/<DD.MM>/` | the day's finished clips, sound already on them |
 
 ## The loop
+
+**A clip in `OUTPUT/` came from a generated poster. Always.** Every variant here
+follows the same four steps and this folder is not an exception to them:
+
+    1. build base_<topic>.png       ../../engine/recolor_base.py, then left_disc.py
+    2. write the prompt             ImageSwap.txt filled for the topic, handed
+                                    over whole in the terminal - never a file,
+                                    never a diff, never "change only row 3".
+                                    PROMPTING.md is why it says what it says
+    3. the user returns the image   grab.py, then check_base.py, then
+                                    clean_poster.py
+    4. caption it and render        add_labels.py, then ./render.sh with the
+                                    labelled poster as the second argument
+
+`render.sh` will not write to `OUTPUT/` unless the file it is handed carries an
+athlete in every left circle. A labelled **base** is a file that plausibly exists
+in here - the six recipes in `Prompts.txt` were captioning the base until
+8 September 2026 - and handed one, every other check passes, because the waves it
+carries are the base's own. The left circles are the only thing a generation
+adds: 29 to 74 off the base on a real poster, 0.0 on all five rows of a labelled
+base.
 
 **1. Pick the topic and the palette.** Five lifts, a title, and a colour scheme
 clearly different from the last few. Build the base:
@@ -94,9 +116,17 @@ identical in the two, so the animator reads it as design rather than as a guide
 mark to wipe. Both files are written in place, and nothing needs moving: the base
 is already in `../INPUT/`, which holds base images and nothing else.
 
-**2. Give the user the prompt**, ready to paste, and tell them to attach
-`base_<topic>.png`. The template is in `ImageSwap.txt`; the opening paragraph is
-what does the work and goes in unchanged. Filled examples are in `Prompts.txt`.
+**2. Give the user the prompt**, whole and ready to paste, and tell them to
+attach `base_<topic>.png`. The template is in `ImageSwap.txt`; the opening
+paragraph is what does the work and goes in unchanged. Filled examples are in
+`Prompts.txt`. **`PROMPTING.md` is why it says what it says** - read it before
+changing a word of the template, because every line in it was paid for by a
+poster that came back wrong.
+
+Sending one back is cheap and cheaper than a render: say the number, name the
+row, and hand over the whole prompt again with that paragraph rewritten. Never a
+diff. A reject costs one generation; a poster that passes and should not costs a
+render, a look, a rewrite and then a generation anyway.
 
 The generator now fills **only the left circle**. Say so; it is the one thing
 about this version that a prompt copied from the food version gets wrong.

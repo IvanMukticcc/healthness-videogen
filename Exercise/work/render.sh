@@ -67,6 +67,35 @@ for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$BASE" \
          "$DIR/base_${TOPIC}_layout.json" "$BED"; do
     [ -f "$f" ] || { echo "missing: $f" >&2; exit 1; }
 done
+# Is this a generated poster at all? render.sh writes straight into a day folder,
+# and a labelled BASE is a file that plausibly exists in here - the six recipes in
+# Prompts.txt were captioning the base until 8 September 2026. Handed one, every
+# other check passes: the waves are exactly where the mask expects them, because
+# they are the base's own waves. What is missing is the only thing a generation
+# adds, which is an athlete in each left circle. Measured over the four posters of
+# 8 September the left circles differ from the base by 29 to 74; a labelled base
+# differs by 0.0 on all five rows. Nothing lives in between, so nothing is tuned.
+../.venv/bin/python - "$POSTER" "$BASE" "$DIR/base_${TOPIC}_layout.json" <<'PYCHK' || exit 1
+import sys, json, numpy as np
+from PIL import Image
+poster, base, layout = sys.argv[1:4]
+p = np.asarray(Image.open(poster).convert("RGB")).astype(float)
+b = np.asarray(Image.open(base).convert("RGB")).astype(float)
+L = json.load(open(layout))
+H, W = p.shape[:2]
+yy, xx = np.mgrid[0:H, 0:W]
+d = np.abs(p - b).max(2)
+rows = [float(d[np.hypot(xx - L["anchor_l"], yy - r["cy"]) < r["r"]].mean()) for r in L["rows"]]
+med = float(np.median(rows))
+if med < 10:
+    sys.exit("  left circles differ from the base by "
+             + ", ".join(f"{v:.1f}" for v in rows)
+             + f"\n  There is no athlete in them, so {poster} is not a generated"
+               "\n  poster - a labelled base reads 0.0 and a real one 29 to 74."
+               "\n  A clip in OUTPUT/ came from a generated poster. Always.")
+print(f"  poster carries artwork in all five left circles (median {med:.0f} off the base)")
+PYCHK
+
 mkdir -p "../OUTPUT/$DAY"
 
 echo "== liquid, badges and bodies"
