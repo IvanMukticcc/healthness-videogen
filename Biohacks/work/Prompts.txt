@@ -108,7 +108,7 @@ sugar      BLOOD SUGAR / FIVE FIXES, NO DIET               glyph
 
 ../../.venv/bin/python ../../engine/recolor_base.py \
   --rows '#141A22,#EAEEF2' \
-  --waves '#FF7043,#C08A1E,#0FA3A3,#B02A6B,#8B7BFF' \
+  --waves '#D64545,#3E9E4A,#5B9BFF,#C08A1E,#D6456F' \
   --vibrance 1.05 --contrast 1.04 \
   --title 'BLOOD SUGAR' --subtitle 'FIVE FIXES, NO DIET' \
   -o ../INPUT/base_sugar.png --work .
@@ -122,6 +122,15 @@ sugar      BLOOD SUGAR / FIVE FIXES, NO DIET               glyph
 All five dials are `down`, so all five rings are blue - which turns out to read
 as one argument rather than as five facts. Worth doing again on a topic that has
 one direction.
+
+**The palette was rebuilt for scene mode.** It shipped first as a preview with
+`#FF7043,#C08A1E,#0FA3A3,#B02A6B,#8B7BFF` - an arc chosen for how it read down
+the page, which is all a preview needs. Three of those five have no source in a
+photograph: teal for standing at a desk, magenta for walking, violet for dinner.
+Every wave now comes out of something in its own scene - roasted peppers, a
+green park path, cool window daylight, golden-hour pavement, a dusk sky behind a
+table - which is the rule this file states above and the first topic to have
+been rebuilt to satisfy it.
 
 The left caption is `WALK MORE`, not `7000 STEPS`, because the chip already says
 7000 STEPS and the row would spend its whole half second saying one thing twice.
