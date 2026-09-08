@@ -110,12 +110,17 @@ files you touched, by name.
   Until they are written, `--surge` shows properly only in Foods, where nothing
   covers the wave.
 - **Biohacks is the fourth variant, and two decisions of its own are settled.**
-  Its bed stays in `Biohacks/work/`, not on the shelf in `engine/sfx/`: the two
-  water beds and the lift bed are assets that were downloaded and licensed, and
-  this one is *derived* - `biohack_audio.py --bed` rebuilds it, seamless by
-  construction, every component a whole number of cycles over the clip. A
-  derived file belongs beside the thing that derives it, and it is not a copy of
-  anything. Do not "tidy" it onto the shelf. Its `--finale-gain 1.00` against
+  Its bed stays in `Biohacks/work/` rather than on the shelf in `engine/sfx/`,
+  and the reason first written here was wrong: it said the shelf holds assets
+  that were downloaded and licensed while this one is derived. Checked - the
+  lift bed is derived too, synthesised by `Exercise/work/muscle_audio.py --bed`,
+  and it is not in `LICENCES.md` because nothing was downloaded to make it. So
+  the shelf already holds one generated bed and a variant holds another, and the
+  line between them is where each happened to end up rather than a principle.
+  Left as it is, deliberately, because moving either costs a re-render for a
+  tidiness nobody is paying for - but it is an inconsistency and not a rule, and
+  the next variant that generates a bed can point at either precedent. Decide it
+  then, once, for all of them. Its `--finale-gain 1.00` against
   the engine's 0.316 is also deliberate and measured: a row there is a chip,
   sixteen ticks and a lock, so the chord has to arrive over a brighter and
   busier texture than a badge thudding leaves.

@@ -109,8 +109,21 @@ down first so a badge is never behind it.
 ## sfx/
 
 The sound shelf, shared. `flow_soft_8s.m4a` under the food clips,
-`lift_bed_8s.m4a` under the exercise ones, both normalised to -18 LUFS, both CC0
-with the sources in `LICENCES.md`.
+`lift_bed_8s.m4a` under the exercise ones, both normalised to about -18 LUFS.
+They did not arrive the same way: the water beds are cut from CC0 recordings and
+`LICENCES.md` has their sources, while the lift bed is **synthesised**, by
+`Exercise/work/muscle_audio.py --bed`, and is in no licence file because nothing
+was downloaded to make it.
+
+**A bed has no level. It has a level at an instant.** Measured here on the assets
+themselves, momentary R128 every half second across the clip: `lift_bed` spans
+1.5 LU and is quietest at 8.0s, `flow_soft` spans 2.8 LU and is quietest at 7.0s.
+The first is authored that way - its swell is placed so the loop seam falls where
+it is quietest - and in a finished mix the spread is wider still, because the
+duck's release lands on top of it. So a figure quoted for "the bed" means
+nothing without the second it was taken at. Badge rows and the chord are events
+at fixed times and a window identifies them; a bed is a continuous shape and it
+does not.
 
 ### refine_art, the other half of the seam
 
