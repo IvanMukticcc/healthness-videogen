@@ -135,6 +135,23 @@ pasted quietly, which is the whole of what rule 8 is protecting.
 The prompt is still printed whole in the terminal, every time. The clipboard is
 in addition to that, never instead of it.
 
+**The buffer is one buffer for the whole machine, not one per variant.** Four
+sessions hand prompts into it and the last one wins - measured, not feared: a
+`crash` prompt put there at handover was replaced by Exercise's `cables` inside
+half an hour. So `clip.py prompt` is reliable immediately after your own
+handover and a lottery after that.
+
+This is not a fault, it is the design working. The alternative is a file per
+topic, which is the thing rule 8 forbids. What makes it safe is that every
+re-copy prints the topic AND the variant, so somebody else's prompt announces
+itself instead of being pasted quietly - the same class as the poster this
+folder took out of Downloads on 8 September, and visible for the same reason:
+the label is the whole safety net.
+
+Read the line before pasting. If it names another variant, re-pipe your own
+rather than assuming - and be aware that doing so takes the buffer off whoever
+was about to paste theirs, so say which topic you are taking it for.
+
 **4b. Grab. Plain, no flags - it takes the image out of Downloads.**
 
     ../../.venv/bin/python ../../engine/grab.py <topic>
