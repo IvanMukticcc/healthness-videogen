@@ -129,7 +129,7 @@ shape passed on the first generation.
 
 Run both before spending a render. Between them they catch everything above.
 
-    ../../.venv/bin/python ../../engine/check_base.py <topic>.jpeg --base ../INPUT/base_<topic>.png
+    ../../.venv/bin/python ../../engine/check_base.py <topic>_poster.jpeg --base ../INPUT/base_<topic>.png
     ../../.venv/bin/python check_scene.py <topic>
 
 `check_base.py` answers the only question that can break the video — did the

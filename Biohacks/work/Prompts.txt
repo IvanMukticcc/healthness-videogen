@@ -93,7 +93,7 @@ firsthour  YOUR FIRST HOUR / 5 FREE HACKS, 21 MINUTES      scene
   --title 'YOUR FIRST HOUR' --subtitle '5 FREE HACKS, 21 MINUTES' \
   -o ../INPUT/base_firsthour.png --work .
 
-../../.venv/bin/python ../../engine/add_labels.py <poster>.jpeg \
+../../.venv/bin/python ../../engine/add_labels.py <topic>_poster.jpeg \
   -l base_firsthour_layout.json -o firsthour_labelled.png \
   --labels 'MORNING LIGHT|BEDTIME,GLASS OF WATER|ALERTNESS,COLD FINISH|DOPAMINE,LONG EXHALES|BREATH RATE,STAND UP|GLUCOSE SWING'
 

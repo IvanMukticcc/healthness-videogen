@@ -156,6 +156,15 @@ was about to paste theirs, so say which topic you are taking it for.
 
     ../../.venv/bin/python ../../engine/grab.py <topic>
 
+It lands as `<topic>_poster.jpeg`, and the suffix is what makes it survive. The
+root `.gitignore` drops `*.jpeg` wholesale, so until 9 September every poster
+this folder had grabbed was untracked - **the one artefact no command can
+remake, carried by nothing.** Everything else in the loop is one command away;
+a poster is a round trip through a person and an image model. The ignore file
+un-ignores `*_poster.jpeg` now. Check with `git check-ignore -v <path>` rather
+than by reading the pattern - reading it is how this went unnoticed for a day,
+because `*.jpeg` looks like it is about the generator's downloads.
+
 `--keep` copies rather than moves, and this folder ran it in the routine loop
 for part of 8 September after `grab.py` took an Exercise poster away from that
 session. The user has ruled against it and both halves of the reason are worth

@@ -135,7 +135,7 @@ food version and is written down there.
 AFTER GENERATING
 
     ../../.venv/bin/python ../../engine/grab.py <topic>
-    ../../.venv/bin/python ../../engine/check_base.py <topic>.jpeg \
+    ../../.venv/bin/python ../../engine/check_base.py <topic>_poster.jpeg \
         --base ../INPUT/base_<topic>.png
 
 Under about two pixels of drift the authored mask still fits. Above that,
