@@ -27,12 +27,13 @@ WHAT THE GENERATOR MAY AND MAY NOT TOUCH
                        and animated from a mask that fits them to the pixel; a
                        wave moved by two pixels breaks the video
     the row stripes    replaced by photographs - that is the point of this mode
-    the left circle    covered by the scene. The subject stands where it was,
-                       but it is not cut into a circle any more
-    the right circle   the background may run through it. Nothing may be DRAWN
-                       in it: the dial covers it at render time
-    the caption bars   kept simple. The text goes on afterwards in a fixed
-                       colour and needs somewhere quiet to land
+      the four marks     the two faint circles and the two faint bars in every
+                       band are painted OVER. They are alignment marks and the
+                       scene is continuous across them
+    the right third    background only. Nothing drawn there: the dial covers it
+                       at render time whatever is underneath
+    where the captions the text goes on afterwards in a fixed colour and needs
+    go                 somewhere quiet to land
     the strip below    the day bar's, and the logo's. Untouched
     the title          already in the image
 
@@ -80,9 +81,11 @@ REPLACE EACH OF THE FIVE HORIZONTAL BANDS WITH A PHOTOGRAPH. Each band is a full
 
 KEEP EACH BAND'S LIGHTNESS EXACTLY AS IT IS NOW. Bands 1, 3 and 5 are dark and their photographs must be dark overall — night, shadow, deep tone. Bands 2 and 4 are light and their photographs must be light overall — bright, airy, pale. This is not a style preference: text is added afterwards in a fixed colour and a band that changes its lightness loses its caption.
 
-THE SUBJECT OF EACH ROW SITS ON THE LEFT, in the left third of the band, where the faint circle is now. It is part of the photograph and bleeds into the scene — do not cut it into a circle, do not put a disc, frame, vignette or border behind it. The liquid leaves the subject at its right-hand side.
+EACH BAND CONTAINS TWO FAINT GREY CIRCLES AND TWO FAINT GREY BARS. These are alignment marks, not artwork. The photograph is painted over all four of them, so that none of them is left anywhere in the finished image. Do not replace a mark with a plain disc, a white circle, a dark circle, a blurred patch or a soft glow — there must simply be photograph there, continuous with the scene around it, as if the marks had never existed.
 
-THE FAINT CIRCLE ON THE RIGHT OF EACH BAND: the photograph may run straight through it. Do not draw anything in it and do not draw anything around it — no object, no person, no ring, no dial, no gauge, no chart, no glow. It is covered by finished artwork later.
+THE SUBJECT OF EACH ROW IS IN THE LEFT THIRD OF THE BAND. It is part of the photograph and bleeds into the scene: no circle, no disc, no frame, no vignette and no border behind it. The liquid leaves the subject at its right-hand side.
+
+DO NOT DRAW ANY OBJECT IN THE RIGHT THIRD OF A BAND — no person, no ring, no dial, no gauge, no chart, no glow. Only the photograph's own background belongs there; finished artwork is placed over it later.
 
 KEEP THE BOTTOM FIFTH OF EACH BAND QUIET — simple, low-detail, low-contrast, no faces and no small busy texture. Captions are placed there afterwards and need somewhere calm to sit.
 
@@ -122,7 +125,8 @@ NEGATIVE PROMPT, if the tool offers a separate field:
 
 text, letters, numbers, caption, label, title, clock, watermark, logo, ring,
 dial, gauge, chart, infographic, diagram, object in the right circle, circle
-around the subject, disc behind the subject, frame, border, vignette, collage,
+around the subject, disc behind the subject, grey circle, grey bar, faint
+circle left visible, plain disc, blurred patch, frame, border, vignette, collage,
 split screen, illustration, 3d render, cartoon, changed liquid, redrawn wave,
 restyled wave, wave as splash, wave as spray, droplets, mist, particles,
 sparkles, glow around the liquid, halo, drop shadow, reflection, moved wave,
@@ -148,6 +152,14 @@ Then, by eye, before labelling:
     has no disc to hide behind
   - is anything DRAWN in a right circle? The dial covers what is inside it, but
     something straddling its edge survives and also nudges the wave's tip
+  - are the four marks GONE, or did they come back as flat discs? Measured on
+    the first scene poster, the generator painted the photograph around them and
+    left them exactly as the base drew them: std 0.8 inside a circle against
+    std 47 in the picture beside it, matching the anchored base to 2-3 levels.
+    That is the case the paragraph above is written against. If it happens
+    anyway, `--scene-disc glass` makes both circles deliberate instead - the
+    marks become the same material as the chips - and passing the poster as $3
+    to render.sh already turns that on
 
 WHY THE LIQUID STILL ANIMATES OVER A PHOTOGRAPH
 
