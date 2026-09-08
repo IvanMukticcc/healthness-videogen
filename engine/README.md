@@ -9,7 +9,9 @@ poster move is here, and **nowhere else**.
     recolor_base.py     a palette and a title -> base_<topic>.png, its _clean copy
                         and its _layout.json
     grab.py             the poster the generator handed back, out of Downloads and
-                        into <topic>.jpeg beside the caller. The size is the whole
+                        into <topic>_poster.jpeg beside the caller - the name the
+                        ignore file carries, because this is the one artefact no
+                        command can remake. The size is the whole
                         safety net: nothing that is not 1536x2752 is renamed
     clip.py             the other direction: `clip.py image <topic>` puts the base
                         on the clipboard, `clip.py prompt` puts the last prompt

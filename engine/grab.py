@@ -10,7 +10,7 @@ time it went wrong the poster from the previous topic got animated with this
 topic's base - which check_base.py catches only because the palette differs.
 
 So: newest image in Downloads whose size is exactly the poster's, moved in as
-<topic>.jpeg. The size check is the whole safety net. A screenshot, an app icon
+<topic>_poster.jpeg. The size check is the whole safety net. A screenshot, an app icon
 or a photo is not 1536x2752, and refusing is better than renaming the wrong file
 into place. All three variants generate at that size, so the default fits them
 all; the poster lands where the caller stands, which is the variant's work/.
@@ -83,7 +83,15 @@ def main():
 
     found.sort()
     _, src = found[-1]
-    dst = Path(f"{args.topic}.jpeg")
+    # <topic>_poster.jpeg, not <topic>.jpeg. The name has to say what the file
+    # is, because the ignore file decides what survives by name and this is the
+    # one artefact no command can remake. On 9 September the archival rule went
+    # into CLAUDE.md and the ignore file was taught to carry *_poster.jpeg -
+    # while this line was still writing <topic>.jpeg, so the rule protected a
+    # filename nothing produced and every poster in three variants stayed
+    # uncarried. A convention that depends on four agents remembering to rename
+    # is the same shape as the four copies of the prompt template.
+    dst = Path(f"{args.topic}_poster.jpeg")
     if dst.exists():
         print(f"  replacing {dst} from {os.path.getmtime(dst):.0f}")
     print(f"  {src.name}  ({src.stat().st_size / 1e6:.1f} MB, {want[0]}x{want[1]})")
