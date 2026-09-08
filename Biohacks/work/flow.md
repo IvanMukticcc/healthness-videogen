@@ -202,6 +202,36 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
 - **A transverse wave through something that stays put is a flag, not a flow.**
   `--snake 0`, `--swell` low.
 
+### Two ways a note in this file goes wrong
+
+Both happened on 8 September, to notes written carefully, and they need
+different answers.
+
+- **A mitigation outlives the gap it was standing in for.** `--keep` was adopted
+  after `grab.py` took another session's poster away, and the trade-off was
+  written down honestly: move loses a file, copy re-opens the silent
+  previous-poster accident, pick your risk. That stopped being true the same
+  evening, when `check_base.py` gained the title comparison and started refusing
+  a foreign poster before any time went into it. The note was true when written
+  and the world moved under it.
+
+  **So: re-read a mitigation the day the check it was standing in for arrives.**
+  Nobody here had that habit and it is the only one of these two that needs one.
+
+- **A mechanism is written from one observation.** "Put a returned poster back
+  by MOVING it, not copying it" described something real - the file kept its
+  timestamp and sank back in the ordering - and the reason under it was wrong.
+  Measured: `move`, `copy2`, `mv` and `cp -p` all preserve mtime; `shutil.copy`
+  and a bare `cp` restamp. The axis is the timestamp, never copy-versus-move.
+
+  A wrong mechanism is worse than no mechanism, because **a reason generalises
+  and an observation does not** - somebody reaches for a bare `cp` on a
+  different file believing they have understood the rule. The anecdote may stay
+  an anecdote; the sentence that explains it is the part that gets quoted
+  somewhere else, so it is the part that has to be measured. This one was
+  thirty seconds of measurement away and went a day, because nothing about it
+  looked like a number that could be checked.
+
 ### New here — scene mode
 
 - **The animator's two base-repair passes are wrong on a photograph** - and
