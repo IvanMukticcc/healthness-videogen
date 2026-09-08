@@ -103,6 +103,43 @@ def disc(r, rgb, light, feather=2.0):
     return np.dstack([col, a * 255.0 * 0.97]).astype(np.float32)
 
 
+def glass(r, light, feather=2.0):
+    """The disc as glass, for a poster whose rows are photographs.
+
+    `disc` above takes the row's own background colour, which is exactly right
+    when the row IS a colour and meaningless when it is a photograph: sampled at
+    the left margin it returns whatever pixel of sky or grass happens to be
+    there, and the dial ends up wearing a piece of the scene it is sitting on.
+
+    Glass has no such dependency. It is the same material as the chips in the
+    liquid - a dark plate, a light rim, a highlight across the top third - so a
+    photographic poster reads as one design rather than as our components dropped
+    onto someone else's picture. It takes the row's lightness and nothing else,
+    which keeps `ink(light)` right: white numbers on the dark rows, near-black on
+    the light ones.
+    """
+    D = int(round(r * 2))
+    yy, xx = np.mgrid[0:D, 0:D]
+    c = (D - 1) / 2.0
+    d = np.hypot(xx - c, yy - c)
+    a = np.clip((r - 1 - d) / feather, 0, 1)
+
+    body = np.float32((236, 242, 245) if light else (10, 16, 20))
+    fill = 0.62 if light else 0.72
+    col = np.broadcast_to(body, (D, D, 3)).astype(np.float32).copy()
+
+    # A highlight across the top third and a little more light at the very top
+    # edge: without it a flat translucent disc reads as a hole cut in the photo.
+    g = np.clip(1.0 - (yy - (c - r * 0.62)) / (r * 0.75), 0, 1) ** 2
+    col = col * (1 - 0.16 * g[:, :, None]) + 255.0 * (0.16 * g[:, :, None]) if not light         else col * (1 - 0.10 * g[:, :, None]) + 255.0 * (0.10 * g[:, :, None])
+
+    rim = np.clip((d - (r - 3.5)) / 2.2, 0, 1) * a
+    edge = np.float32((255, 255, 255))
+    col = col * (1 - rim[:, :, None] * 0.55) + edge[None, None, :] * (rim[:, :, None] * 0.55)
+    alpha = a * (fill + (1.0 - fill) * rim)      # the rim is the solid part
+    return np.dstack([col, alpha * 255.0]).astype(np.float32)
+
+
 def _ring(D, r, w, rgb, alpha, deg=360.0, start=-90.0):
     """One ring, or one arc of one, anti-aliased by drawing it four times too big."""
     S = D * SS
@@ -150,7 +187,7 @@ def _text(D, s, font, rgb, alpha=1.0):
     return np.dstack([np.broadcast_to(np.float32(rgb), (D, D, 3)), m * 255.0]).copy()
 
 
-def build(h, r, rgb_row, light, font, frames, k=1.0):
+def build(h, r, rgb_row, light, font, frames, k=1.0, material="row"):
     """Everything one dial ever draws, made once.
 
     `frames` is how many steps the count takes. Rendering the number per frame
@@ -161,14 +198,23 @@ def build(h, r, rgb_row, light, font, frames, k=1.0):
     col = hacks.colour(h)
     rr, ww = r * R_RING, r * W_RING
 
-    dsc = disc(r, rgb_row, light)
+    dsc = glass(r, light) if material == "glass" else disc(r, rgb_row, light)
+    if material == "glass":
+        # On glass the track cannot be "the row's colour, a bit off" - there is
+        # no row colour. White at a low alpha on the dark rows, black on the
+        # light ones: the same rule the chip's rim follows.
+        rgb_row = np.float32((0, 0, 0) if light else (255, 255, 255))
     # The unfilled ring. Row colour rather than the accent - a track as bright as
     # the value is not a track. But it has to be clearly there: at +46 on a dark
     # row it was dark grey on a dark disc, and for the first 0.7s of the clip all
     # five right circles read as holes cut in the poster rather than as five
     # instruments waiting. +80 is the smallest step that reads at 540 wide.
-    track_rgb = np.clip(np.float32(rgb_row) + (80 if not light else -70), 0, 255)
-    track = _ring(D, rr, ww, track_rgb, 0.92)
+    if material == "glass":
+        track_rgb, track_a = np.float32(rgb_row), 0.34
+    else:
+        track_rgb = np.clip(np.float32(rgb_row) + (80 if not light else -70), 0, 255)
+        track_a = 0.92
+    track = _ring(D, rr, ww, track_rgb, track_a)
 
     arcs = [_ring(D, rr, ww, col, 1.0, deg=360.0 * i / (ARCS - 1)) for i in range(ARCS)]
 

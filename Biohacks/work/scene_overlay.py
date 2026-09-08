@@ -336,14 +336,21 @@ def add_arguments(p):
 
 
 def build(args, ctx):
-    if not args.hacks or args.scene != "glyph":
+    if not args.hacks:
         return None
     if not ctx["layout"]:
         raise SystemExit("--hacks needs --layout: the circles are where it says")
     times = [float(t) for t in args.hack_times.split(",")]
+    # `--scene poster` drops the glyph and its disc, and keeps the pulse. The
+    # pulse is about the liquid, not about the left circle: on a photographic
+    # poster the generator owns that circle, and the light still has to leave
+    # whatever it drew there and arrive at the dial. Returning None for the whole
+    # module - which is what this did first - took the row's causality out with
+    # the glyph and left a river belonging to nothing again.
+    glyphs_on = args.scene == "glyph"
     pl = Plan(plan(hacks.resolve(args.hacks), ctx["layout"], ctx["W"], ctx["H"], times,
                    base=ctx["base"], mask=ctx["mask"],
-                   scale=args.scene_scale, dy=args.scene_dy))
+                   scale=args.scene_scale, dy=args.scene_dy) if glyphs_on else [])
     _PARAMS[:] = [args.pulse, args.pulse_dur, args.pulse_width]
     if args.pulse > 0:
         pl.pulses = pulses(ctx["layout"], ctx["W"], ctx["H"], ctx["geo"],
@@ -362,7 +369,7 @@ def build(args, ctx):
                   file=sys.stderr)
     print(f"  {len(pl)} glyphs drawn in the left circles, "
           f"lucide {glyphs.licence()} - no generator in the loop")
-    for e in pl:
+    for e in pl if glyphs_on else []:
         print(f"    r{e['row'] + 1}: {e['icon']:<16} in its wave's own "
               f"({e['colour'][0]:.0f},{e['colour'][1]:.0f},{e['colour'][2]:.0f}), "
               f"lights at {e['t']:.2f}s")

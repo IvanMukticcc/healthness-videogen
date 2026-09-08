@@ -45,7 +45,8 @@ FIN_GLOW = 0.60
 IDLE = 0.34         # how present the resting zero is before the row fires
 
 
-def plan(rows, layout, W, H, times, fps, base=None, lead=LEAD, count=COUNT, dy=0.0):
+def plan(rows, layout, W, H, times, fps, base=None, lead=LEAD, count=COUNT, dy=0.0,
+         material="row"):
     L = json.load(open(layout)) if isinstance(layout, str) else layout
     k = W / 1536.0
     n = max(2, int(round(count * fps)))
@@ -65,7 +66,7 @@ def plan(rows, layout, W, H, times, fps, base=None, lead=LEAD, count=COUNT, dy=0
         if base is not None:
             a, b = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
             bg = tuple(np.median(base[a + 8:b - 8, 4:20].reshape(-1, 3), axis=0))
-        d = dial.build(h, r, bg, bool(row["light"]), font, n, k=k)
+        d = dial.build(h, r, bg, bool(row["light"]), font, n, k=k, material=material)
         d.update(row=i, cx=cx, cy=cy, r=r, n=n, count=count,
                  t=(times[i] if i < len(times) else times[-1]) + lead,
                  name=h["name"], dir=h["dir"])
@@ -122,6 +123,12 @@ def add_arguments(p):
     p.add_argument("--dial-count", type=float, default=COUNT,
                    help="how long the count takes")
     p.add_argument("--dial-dy", type=float, default=0.0)
+    p.add_argument("--dial-disc", choices=["auto", "row", "glass"], default="auto",
+                   help="what the dial sits on. 'row' is the row's own background "
+                        "colour a little darker, which is right when the row IS a "
+                        "colour; 'glass' is the same material as the chips, which is "
+                        "the only thing that works when the row is a photograph and "
+                        "there is no row colour to take. 'auto' follows --scene")
     p.add_argument("--dial-cues", help="write the instants the dials settle here, "
                                        "for the SFX - the tick train is cut against "
                                        "them and typing them twice drifts by a frame")
@@ -131,9 +138,13 @@ def build(args, ctx):
     if not args.hacks:
         return None
     times = [float(t) for t in args.hack_times.split(",")]
+    material = args.dial_disc
+    if material == "auto":
+        material = "glass" if getattr(args, "scene", "glyph") == "poster" else "row"
     pl = plan(hacks.resolve(args.hacks), ctx["layout"], ctx["W"], ctx["H"], times,
               ctx["fps"], base=ctx["base"], lead=args.dial_lead,
-              count=args.dial_count, dy=args.dial_dy)
+              count=args.dial_count, dy=args.dial_dy, material=material)
+    print(f"  dials sit on {material}")
     for d in pl:
         print(f"    r{d['row'] + 1}: {d['metric']:<18} counts to {d['value']:>7} "
               f"({d['dir']}) over {d['t']:.2f}-{d['t'] + d['count']:.2f}s")

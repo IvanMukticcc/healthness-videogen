@@ -1,31 +1,49 @@
-ADDING A TOPIC TO base_<topic>.png   —   THE OPTIONAL PATH
-==========================================================
+ADDING A TOPIC TO base_<topic>.png
+==================================
 
-READ THIS FIRST: most Biohacks clips do not use this file.
+There are two ways to make a Biohacks poster and they want different prompts.
 
-Both circles in this variant are drawn at render time - a lucide glyph on the
-left, a dial on the right - so `./render.sh <topic> 'auto:...'` produces a
-finished clip with no generator in the loop and nobody waiting on one. That is
-the shipped path and `flow.md` describes it.
+  GLYPH MODE   (the default, no generator at all)
+      Both circles are drawn at render time - a lucide glyph on the left, a
+      counting dial on the right - and `./render.sh <topic> 'auto:...'` is the
+      whole loop. Nothing in this file applies. See flow.md.
 
-This file is for the topics where the left circle should be a photograph: a real
-sunrise through a real window, a real hand under a cold tap. It costs the round
-trip - write, paste, wait, fetch, check the waves survived, look at the circles
-by eye - and it buys warmth that a line icon does not have. Decide which you are
-making before you build the base, because the two want different left circles.
+  SCENE MODE   (this file)
+      Every row becomes a photograph, edge to edge, running behind the liquid,
+      with the hack happening in it on the left. Our wave, our chips, our dials,
+      our captions and our day bar go on top afterwards. It costs the round trip
+      and it buys a poster that looks like a place rather than a diagram.
 
-    photographs:   ./render.sh <topic> 'auto:...' <topic>_labelled.png --scene poster
-    glyphs:        ./render.sh <topic> 'auto:...'
+          ./render.sh <topic> 'auto:...' <topic>_labelled.png --scene poster
+
+      `--scene poster` drops the glyph and its disc, keeps the pulse, and puts
+      the dials on glass instead of on a row colour - there is no row colour to
+      take when the row is a photograph.
 
 
-THE RIGHT CIRCLE IS NEVER GENERATED, IN EITHER PATH
+WHAT THE GENERATOR MAY AND MAY NOT TOUCH
 
-It holds the dial, and the dial is drawn by dial.py. Five posters whose dials
-disagree about where a ring starts is five instruments instead of one, and the
-comparison the whole clip is about - this costs two minutes and moves that, the
-next costs ten and moves this - does not survive it. An image model cannot draw
-the same ring twice, so it is not asked to, for the same reason it is not asked
-to redraw the wave.
+    the five waves     NEVER. This is the whole design. They are authored once
+                       and animated from a mask that fits them to the pixel; a
+                       wave moved by two pixels breaks the video
+    the row stripes    replaced by photographs - that is the point of this mode
+    the left circle    covered by the scene. The subject stands where it was,
+                       but it is not cut into a circle any more
+    the right circle   the background may run through it. Nothing may be DRAWN
+                       in it: the dial covers it at render time
+    the caption bars   kept simple. The text goes on afterwards in a fixed
+                       colour and needs somewhere quiet to land
+    the strip below    the day bar's, and the logo's. Untouched
+    the title          already in the image
+
+
+THE ONE THING THAT DECIDES WHETHER THIS WORKS
+
+**Each row must keep its lightness.** Rows 1, 3 and 5 are dark and rows 2 and 4
+are light, and `add_labels.py` picks white or near-black ink from that flag in
+the layout file, before it has ever seen the photograph. A dark scene on row 2
+does not make the caption grey - it makes it invisible. Say it in the prompt,
+say it again per row, and check it by eye before labelling.
 
 
 GEOMETRY OF THE BASE LAYER  (1536 x 2752)
@@ -36,86 +54,79 @@ GEOMETRY OF THE BASE LAYER  (1536 x 2752)
   row 3 wave  y 1317-1527
   row 4 wave  y 1729-1940
   row 5 wave  y 2142-2353
-  title                          y ~191-392, drawn into the base
-  day bar                        y 2476-2585, drawn at render time. LEAVE CLEAR
-  logo                           y ~2586-2667, centred
+  title                          y ~191-392
+  caption bars    380 x 78, centred under each circle
+  day bar         y 2476-2585, drawn at render time
+  logo            y ~2586-2667
 
-  guide circles   r 137, centred x 250 and x 1270, one per row over each wave tip
-  caption bars    380 x 78, centred under each circle, 20px below it
+  guide circles   r 137, centred x 250 and x 1270
 
-  LEFT circle   what the generator fills, and the only thing it fills
-  RIGHT circle  the dial. Drawn over a disc that covers the circle exactly.
-                LEAVE IT ALONE
-  caption bars  add_labels.py writes into them. Leave them alone
-  the strip under the last row  the day bar. Nothing goes there
-
-  The safe area is one FOURTEENTH of the width, not one tenth. The circles reach
-  x 112 and x 1408, and a tenth of 1536 is 154 - so a tenth tells the model to
-  keep the subject out of the very circle it is told to fill, and it follows the
-  sentence over the mark. A fourteenth is 110, just outside them.
+  THE SAFE AREA APPLIES TO THE SUBJECT, NOT TO THE BACKGROUND. The photograph
+  should reach all four edges of its row; what must stay a fourteenth of the
+  width clear of the left and right edges is the thing the row is about. In
+  glyph mode the safe area covered everything, and a prompt copied from there
+  produces five photographs with a margin of row colour around them.
 
 
 === THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
 
-Use the attached image as the finished background. Add elements on top of it.
+Use the attached image as the base. Keep everything I list as final and replace only what I ask for.
 
-DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+THE FIVE COLOURED LIQUID WAVES ARE FINAL AND MUST NOT CHANGE. Do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss. Do not turn them into splashes, spray, droplets, mist or particles. Do not add a glow, a halo, a shadow or a reflection around them. They must come back pixel for pixel where they are now — everything else in the image is being replaced around them.
 
-THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+THE TITLE AT THE TOP AND THE LOGO AT THE BOTTOM ARE FINAL. Do not redraw, move or restyle either. ADD NO TEXT OF ANY KIND: no labels, no captions, no numbers, no clock times, no watermarks. All text is added later, outside the generator.
 
-ADD NO TEXT OF ANY KIND. No labels, no captions, no numbers, no clock times, no words under the pictures, nothing at all. Text is added later, outside the generator.
+REPLACE EACH OF THE FIVE HORIZONTAL BANDS WITH A PHOTOGRAPH. Each band is a full-bleed photographic scene that fills its band from the left edge to the right edge and from its top edge to its bottom edge, running behind the liquid wave. The five bands are five separate photographs with a clean horizontal cut between them — they do not blend into each other.
 
-EACH ROW HAS A FAINT CIRCLE ON THE LEFT, A FAINT CIRCLE ON THE RIGHT, and under each of them A FAINT BAR. Add one thing per row and one only: a photograph filling the circle ON THE LEFT, cropped by its edge, the way food sits in a bowl. THE RIGHT CIRCLE IS ALREADY FINISHED ARTWORK. Do not draw anything in the right circle, do not put a person, an object, a dial, a diagram or a number there, and do not draw anything in the empty space around it. The bars under the circles are reserved for text that is added later: keep them completely clear and do not draw on them. THE STRIP BETWEEN THE BOTTOM ROW AND THE LOGO IS ALSO RESERVED: keep it completely empty.
+KEEP EACH BAND'S LIGHTNESS EXACTLY AS IT IS NOW. Bands 1, 3 and 5 are dark and their photographs must be dark overall — night, shadow, deep tone. Bands 2 and 4 are light and their photographs must be light overall — bright, airy, pale. This is not a style preference: text is added afterwards in a fixed colour and a band that changes its lightness loses its caption.
 
-KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster.
+THE SUBJECT OF EACH ROW SITS ON THE LEFT, in the left third of the band, where the faint circle is now. It is part of the photograph and bleeds into the scene — do not cut it into a circle, do not put a disc, frame, vignette or border behind it. The liquid leaves the subject at its right-hand side.
 
-Every one of the five pictures is a close, warm, photorealistic shot of the moment the habit happens - not a person posing, not a product on a background, not a diagram. Shallow depth of field, one clear subject, natural light, no studio backdrop.
+THE FAINT CIRCLE ON THE RIGHT OF EACH BAND: the photograph may run straight through it. Do not draw anything in it and do not draw anything around it — no object, no person, no ring, no dial, no gauge, no chart, no glow. It is covered by finished artwork later.
 
-Row 1: <HACK 1 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+KEEP THE BOTTOM FIFTH OF EACH BAND QUIET — simple, low-detail, low-contrast, no faces and no small busy texture. Captions are placed there afterwards and need somewhere calm to sit.
 
-Row 2: <HACK 2 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+LEAVE THE BAND BELOW THE LAST ROW EMPTY, between the bottom row and the logo. Nothing goes there.
 
-Row 3: <HACK 3 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+The photographs are realistic, cinematic and shot on a real camera: shallow depth of field, natural light, one clear subject, no studio backdrop, no illustration, no 3D render, no stock-photo staging.
 
-Row 4: <HACK 4 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+Row 1 (dark): <SCENE 1>
 
-Row 5: <HACK 5 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+Row 2 (light): <SCENE 2>
 
-The five photographs are cleanly cut to their circles with no background outside them, no glow and no cast shadow. The liquid leaves each picture at its right-hand side. Keep every wave fully visible between the picture and the right circle.
+Row 3 (dark): <SCENE 3>
+
+Row 4 (light): <SCENE 4>
+
+Row 5 (dark): <SCENE 5>
 
 === END OF PROMPT ===
 
 
-WRITING THE FIVE ROWS
+WRITING THE FIVE SCENES
 
-A hack is an action, and an action asked for as a noun comes back as a product
-shot. "Cold exposure" gives a photograph of a shower head on a white background;
-"a hand held under cold running water, droplets caught mid-air" gives the moment.
-Name the moment, not the category:
+Name the moment, not the category. A hack asked for as a noun comes back as a
+product shot: "cold exposure" gives a shower head on white, "a hand held under
+cold running water, droplets caught mid-air" gives the thing itself. This is the
+same lesson the food version writes down as "an organ named on its own comes back
+as an object" and the exercise version as "caught at the hardest point of the
+rep" — a phrase the model can nod at is worth less than a thing it either draws
+or does not.
 
-  morning light   sunlight coming through a window onto a kitchen counter at
-                  dawn, low and orange
-  cold finish     a hand held under cold running water, droplets caught mid-air
-  lunch walk      a pair of feet mid-step on a pavement, seen from above
-  last coffee     a cup of black coffee on a table with afternoon light across it
-  lights down     a bedside lamp turned low in a dark room
-
-That is the same lesson the food version writes down as "an organ named on its
-own comes back as an object", and the exercise version as "caught at the hardest
-point of the rep" - a phrase the model can nod at is worth less than a thing it
-either draws or does not.
+And say the tone with the scene, every time. Stated once at the top it holds for
+a row or two and then drifts, which is what happened to the camera angle in the
+food version and is written down there.
 
 
 NEGATIVE PROMPT, if the tool offers a separate field:
 
-text, letters, numbers, caption, label, title, clock, watch face, dial on the
-right, ring, gauge, chart, diagram, infographic, object in the right circle,
-anything under the bottom row, second circle, resized circle, recoloured circle,
-white circle behind the subject, black circle behind the subject, studio
-backdrop, product shot, stock photo watermark, changed liquid, redrawn wave,
-different wave shape, moved wave, recoloured wave, extra liquid, droplets,
-splash, spray, particles, sparkles, glow, halo, drop shadow, changed background
-colour, changed logo, watermark
+text, letters, numbers, caption, label, title, clock, watermark, logo, ring,
+dial, gauge, chart, infographic, diagram, object in the right circle, circle
+around the subject, disc behind the subject, frame, border, vignette, collage,
+split screen, illustration, 3d render, cartoon, changed liquid, redrawn wave,
+restyled wave, wave as splash, wave as spray, droplets, mist, particles,
+sparkles, glow around the liquid, halo, drop shadow, reflection, moved wave,
+recoloured wave, changed title, changed logo, anything below the bottom row
 
 
 AFTER GENERATING
@@ -125,13 +136,29 @@ AFTER GENERATING
         --base ../INPUT/base_<topic>.png
 
 Under about two pixels of drift the authored mask still fits. Above that,
-regenerate rather than animate: the animation cannot correct a wave the generator
-has redrawn.
+regenerate — the animation cannot correct a wave the generator has redrawn, and
+in this mode there is more to tempt it: a photograph of water next to a liquid
+wave is an invitation to merge the two.
 
-Then look at the right circles and the day-bar strip by eye. The wave check
-covers neither. Anything the generator drew *inside* the right circle is covered
-by the dial's own disc, which is drawn at the full circle radius at 0.97 alpha;
-anything straddling its *edge* survives and also nudges the wave's tip, because
-the ribbon geometry is computed from the poster. That case is a regeneration.
-Anything in the day-bar strip is not covered by anything and is also a
-regeneration - the bar is a thin track on a wide empty band, and it has no disc.
+Then, by eye, before labelling:
+
+  - is every band still the lightness it started as? Rows 1, 3, 5 dark, 2 and 4
+    light. This is the one that silently ruins the captions
+  - is the strip under the bottom row still empty? The day bar goes there and
+    has no disc to hide behind
+  - is anything DRAWN in a right circle? The dial covers what is inside it, but
+    something straddling its edge survives and also nudges the wave's tip
+
+WHY THE LIQUID STILL ANIMATES OVER A PHOTOGRAPH
+
+Worth knowing, because it looks like it should not. The animator finds artwork by
+difference from `base_<topic>_clean.png` and paints only what is left. A
+full-bleed photograph differs from the flat base everywhere, so the whole row
+becomes artwork — except the wave, which the prompt above forbids touching and
+which therefore still matches the base exactly. The wave is the only clean thing
+left, and the clean thing is what gets painted.
+
+The engine already defends the one way this could go wrong: a wave enclosed on
+all sides by artwork is an enclosed hole, and `binary_fill_holes` would fill it
+and freeze the liquid silently. `--art-cap` stops that — a hole bigger than 25%
+of the row's wave is not filled, and this one is the whole of it.
