@@ -1,0 +1,88 @@
+LONGEVITY — THE MASTER PROMPT
+
+The father category's prompt, and the only one here that asks for a place rather
+than for things. Fill the five rows, attach base_<topic>.png, paste it whole.
+
+
+WHY THIS ONE IS NOT THE OTHERS' PROMPT
+
+Foods and Micro ask for five subjects in five bowls. Exercise asks for one
+athlete per row. Biohacks' scene mode asks for five photographs of five
+different moments. All four ask the generator for FIVE THINGS THAT MUST AGREE
+WITH EACH OTHER, and all four spend most of their length keeping those five
+things in line.
+
+This one asks for ONE THING THAT MUST AGREE WITH ITSELF: the same room,
+photographed five times, as one night passes through it. That is the single job
+image models are most reliable at, and it is why this prompt is shorter than
+Biohacks' and asks for more.
+
+Three consequences, and they are the whole difference:
+
+  - EVERY BAND IS DARK. Not alternating. The base has one row colour for all
+    five because the poster is one night, so there is no lightness to preserve
+    per band - there is a night to keep dark, and a window that gets lighter
+  - BOTH ENDS OF EVERY BAND CARRY DRAWN ARTWORK. The hour on the left and the
+    stage on the right are placed afterwards, so the photograph must be quiet at
+    both ends, not just at one. Biohacks keeps the right third clear; this keeps
+    both thirds clear and gives the middle to the room
+  - THE SUBJECT IS TIME. Nothing in the picture is doing anything. The rooms are
+    empty, and what changes from band to band is the light
+
+
+=== THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
+
+Use the attached image as the base. Keep everything I list as final and replace only what I ask for.
+
+THE FIVE COLOURED LIQUID WAVES ARE FINAL AND MUST NOT CHANGE. Do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss. Do not turn them into splashes, spray, droplets, mist or particles. Do not add a glow, a halo, a shadow or a reflection around them. They must come back pixel for pixel where they are now — everything else in the image is being replaced around them.
+
+THE TITLE AT THE TOP AND THE LOGO AT THE BOTTOM ARE FINAL. Do not redraw, move or restyle either. ADD NO TEXT OF ANY KIND: no labels, no captions, no numbers, no clock faces, no clock hands, no watermarks. All text is added later, outside the generator.
+
+REPLACE EACH OF THE FIVE HORIZONTAL BANDS WITH A PHOTOGRAPH OF THE SAME ROOM. This is one continuous place — the same kitchen, the same table, the same window, the same camera position in every band, unmoved. Only the light changes. The five bands are five separate photographs with a clean horizontal cut between them; they do not blend into each other, and nothing in the room moves between them.
+
+THE ROOM IS EMPTY IN EVERY BAND. No people, no hands, no animals, no movement. This is a photograph of a place while time passes through it, and a person in it would become the subject.
+
+EVERY BAND IS DARK. All five are night interiors and all five must stay dark overall — deep tone, low key, most of the frame in shadow. This is not a style preference: the captions are placed afterwards in a fixed light colour and a band that brightens loses its caption. What changes down the poster is the light at the window, not the exposure of the room.
+
+THE WINDOW IS WHERE THE TIME IS. Put a window in the same place in every band, in the middle third, behind the table. What it shows is the only thing that changes: the evening outside, then black, then the first grey, then the blue before dawn, then daylight. The room stays dark in every one of them; the window carries the whole night on its own.
+
+KEEP THE LEFT SIXTH AND THE RIGHT SIXTH OF EVERY BAND QUIET. Simple, dark, low-detail, low-contrast — a plain wall, a dark surface, the shadowed end of a room. Finished artwork is placed over both ends afterwards and it needs somewhere calm to sit. Do not put an object, a lamp, a face or a busy texture at either end of any band.
+
+EACH BAND CONTAINS TWO FAINT GREY CIRCLES AND TWO FAINT GREY BARS. These are alignment marks, not artwork. The photograph is painted over all four of them, so that none of them is left anywhere in the finished image. Do not replace a mark with a plain disc, a dark circle, a blurred patch or a soft glow — there must simply be photograph there, continuous with the room around it, as if the marks had never existed.
+
+THE LIQUID MUST LOOK LIKE IT BELONGS TO THE ROOM. The coloured wave begins with a blunt cut about one sixth of the way in, and that cut must not be visible: let the wave's left end pass behind something dark in the room — the edge of the table, the back of a chair, the shadowed counter — so the two overlap for a good distance rather than merely touching. Where the wave crosses the room, the room's own light picks up its colour, faintly, the way a coloured light would fall on a dark surface.
+
+KEEP THE BOTTOM FIFTH OF EACH BAND QUIET — simple, low-detail, low-contrast, no small busy texture. Captions are placed there afterwards and need somewhere calm to sit.
+
+LEAVE THE BAND BELOW THE LAST ROW EMPTY, between the bottom row and the logo. Nothing goes there.
+
+Cinematic, real camera, shallow depth of field, natural light only, no artificial colour grading. Photographic, never illustrated.
+
+THE FIVE BANDS, TOP TO BOTTOM — the same room, five hours apart:
+
+Row 1 — <HOUR 0>: <the table just after the last meal. A plate pushed back, a
+        glass, warm lamplight from off-frame left, the window behind showing the
+        last of the evening>
+
+Row 2 — <HOUR 4>: <the same table, cleared. The lamp is off. The window is dark
+        blue. The room is lit only by what comes in from outside>
+
+Row 3 — <HOUR 12>: <the same table in full dark. The window is black. Only the
+        faintest edge light on the table's near edge>
+
+Row 4 — <HOUR 16>: <the same table before dawn. The window is a cold grey-blue
+        and it is the brightest thing in the frame. The room is still dark>
+
+Row 5 — <HOUR 24>: <the same table at first daylight. The window is pale and
+        bright; the room has begun to take shape but is still in shadow>
+
+
+=== AFTER GENERATING ===
+
+Check it came from this base, and that the waves did not move:
+
+    ../.venv/bin/python ../../engine/check_base.py <topic>.jpeg \
+        --base ../INPUT/base_<topic>.png
+
+Then look at the two ends of every band. The dial and the stage mark go there,
+and a lamp in the left sixth of row 2 is a lamp behind a number.
