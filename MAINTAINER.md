@@ -177,6 +177,26 @@ for command, and diff its output against the shipped clip. Theirs came out at
 correlation 1.000000 with a byte-identical cue file, which is the only version
 of "the prose now matches" that is worth reporting.
 
+**And the class is wider than prose.** Exercise ran every documented command in
+its folder rather than stopping at the block it had tripped over, and the grep
+would have found none of what that turned up: a badge builder writing to
+`work/ASSETS/Muscle/` while the overlay had read `work/icons/` since the
+three-folder layout landed, `--sheet` defaults resolving to `work/work/…`, and
+six prompt recipes running `add_labels.py` on the *base* rather than on the
+returned poster - following one would have captioned an empty base and thrown
+the generator's five athletes away at the last step. Stale prose and stale
+sibling paths in tools nobody has run lately are the same fault; only the first
+is greppable. What finds the second is running the commands.
+
+Swept across the four on 9 September. Nothing carries a stale `work/` prefix any
+more. Foods had one bare engine tool name in `ImageSwap.txt`, fixed here. Micro
+has the builder fault in its worse form and has been told: `micro_icons.py`
+writes to `work/ASSETS/Micro`, which does not exist, while `micro_overlay.py`
+reads `work/icons`, which holds the 41 real badges - and `--rebuild` reads
+`Micro/ASSETS/Vitamini`, which does not exist anywhere in the tree. The nine
+vitamin balls are recoverable from `e0020f1^`, where the three-folder move
+deleted them. Biohacks writes and reads `work/icons` in one place and is clean.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the

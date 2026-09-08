@@ -133,7 +133,8 @@ AFTER GENERATING
 
 Check the wave before animating:
 
-    .venv/bin/python check_base.py new_poster.png --base base_<topic>.png
+    ../.venv/bin/python ../../engine/check_base.py new_poster.png \
+        --base base_<topic>.png
 
 It reports how far each wave has drifted from the base layer. Under about two
 pixels the authored mask still fits. Above that, regenerate rather than animate:
