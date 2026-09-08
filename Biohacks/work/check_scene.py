@@ -41,7 +41,20 @@ rather than an opinion.
                   Nothing in this folder collides today - `5 FREE BIOHACKS`,
                   `YOUR FIRST HOUR`, `BLOOD SUGAR` are ours alone across 49
                   bases - but that is a fact about today's titles, not a
-                  property of the test.
+                  property of the test. **If this variant ever runs a series
+                  under one title**, the way Micro's superfoods run does, this
+                  goes quiet: SUPERFOODS 7 against the SUPERFOODS 12 base
+                  measures 5.4 and passes. Give each topic its own title, or
+                  accept that the old hazard - last topic's poster animated with
+                  this topic's base - is open again.
+
+    IF YOU EVER PUT ONE BACK, MOVE IT, DO NOT COPY IT. `shutil.move` preserves
+                  mtime, so a returned poster keeps its original timestamp and
+                  sinks back into `grab.py`'s newest-first ordering instead of
+                  surfacing at the front of it. That is why the session this was
+                  taken from still found the right file on its next grab. Nobody
+                  designed it and everybody now depends on it: restoring by
+                  copying would stamp it now and put it at the head of the queue.
 
     1. MARKS      is the LEFT circle painted over, or did the generator paint the
                   photograph around it and leave it standing? A flat disc has
@@ -88,13 +101,24 @@ from PIL import Image
 # A flat disc left standing measures std 0.8-8; a photograph painted over the
 # mark measures 24-79. Both ends measured on the two firsthour posters, so the
 # line between them is drawn where there is nothing near it.
-OURS_DIFF = 25.0            # mean |poster - base| over the title band. Ours
-                            # measures 0.0-3.2 over 37 posters; a foreign base
-                            # with a different title, 38-88. Anywhere from 10 to
-                            # 60 does the same job, which is the sign the test is
-                            # on something real rather than tuned - but see the
-                            # limit in the header: a foreign base with the SAME
-                            # title reads 2.41 and nothing here catches it
+OURS_DIFF = 8.0             # mean |poster - base| over the title band, measured
+                            # the same way engine/check_base.py --title-tol
+                            # measures it, so the two files mean one thing by 8.
+                            #
+                            # 25 was the first guess and it was too generous, in
+                            # a way worth keeping. Over 37 posters and 1332
+                            # mismatched pairs: own base 0.0-3.2, a foreign base
+                            # with a different title 38-88. So there is a wide
+                            # empty gap and almost any number in it works - which
+                            # is what made 25 feel safe - but 8 sits just above
+                            # the legitimate ceiling instead of in the middle of
+                            # the gap, and margin above 3.2 is the only margin
+                            # that does anything. Nothing lives between 3.2 and
+                            # 38 to be traded away for it.
+                            #
+                            # There is no value that separates every pair. The
+                            # closest mismatch in the repository is 2.41, BELOW
+                            # the worst legitimate match. See the header.
 TITLE = (191, 392)          # where recolor_base.py draws the title, at 1536
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
@@ -127,7 +151,13 @@ def main():
     bad = []
 
     ty0, ty1 = int(TITLE[0] * k), int(TITLE[1] * k)
-    ours = float(np.abs(img[ty0:ty1] - base[ty0:ty1]).max(axis=2).mean())
+    # Mean across channels, not max, because that is what
+    # engine/check_base.py --title-tol measures and both files carry the number
+    # 8. On the same poster max-across-channels reads 3.77 and mean reads 2.57,
+    # so an 8 defined the first way is a 5.4 defined the second - two tools
+    # measuring "the same thing" to the same threshold and disagreeing by half
+    # of it. Same definition, same number, or the number has to change name.
+    ours = float(np.abs(img[ty0:ty1] - base[ty0:ty1]).mean())
     print(f"{poster}  {W}x{H}")
     if ours >= OURS_DIFF:
         print(f"\n  THIS IS NOT A POSTER OF base_{a.topic}.png. The title band is "
