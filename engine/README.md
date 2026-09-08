@@ -300,11 +300,25 @@ explicit 1.00 and is right in outcome for a different reason: it chose that
 number by ear on a finished cut with its own 0.80 already in the mix, which is
 the general lesson - **the level that counts is the one measurable at the end.**
 
-Where it lands now, each figure with its basis and its meter: Micro 0.5dB under
-its quietest row, finished mix, by mean; Exercise 1.7dB under row 5 on the same
-basis, and on the sfx track 2.2dB over that row by mean while 1.0dB under it by
-peak. Nobody has heard either yet - the first clips through the corrected routing
-come with the next topic in each folder.
+Where it lands, on the first Exercise cut rendered through the corrected routing,
+measured three ways in the same windows of the same finished file:
+
+    momentary, 400ms K-weighted    chord +0.7, +0.2, +0.4 LU over rows 1, 4, 5
+    RMS mean, half-second          1.7 to 2.1 dB under them
+    sample peak                    1.4 to 2.0 dB under them
+
+Three meters, one window, three answers spanning 3dB - and **only one of them is
+a loudness model.** Momentary R128 is the one that says what a listener gets, and
+it says the cadence lands level with the rows it answers, marginally on the loud
+side, which is where a cadence belongs. The other two are measuring a chord that
+sustains against badges that spike, and K-weighting discounts the low sine under
+the chord that unweighted RMS was mostly counting. Reproduced from this side on
+the shipped file, independently K-weighted: -17.1, -16.6, -16.8 for the rows
+against -16.4 for the chord, the same three differences to the decimal.
+
+So quote momentary for this, and treat a level argument settled on unweighted RMS
+as unsettled. Micro measures 0.5dB under its quietest row by mean in the mix and
+has not been put through the same three yet.
 
 The limiter is idle at either level; the mix peak is set by a badge, not by the
 chord.
