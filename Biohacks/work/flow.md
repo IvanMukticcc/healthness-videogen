@@ -234,6 +234,15 @@ different answers.
 
 ### New here — scene mode
 
+- **A band drifting from light to mid is a warning, not a defect.** `longer` row
+  4 came back at luma 131 against a layout that says light, so `add_labels.py`
+  put near-black ink on honey-coloured cedar: measured contrast 101 and 94,
+  under the 110 the caption check wants. Looked at, both captions read
+  perfectly - near-black on a mid-tone is legible, and the number understates
+  it. What the flag is really guarding against is a band that goes properly
+  dark, where the same ink disappears. Treat a mid-tone reading as "regenerate
+  if you are regenerating anyway", not as a reason to spend a generation.
+
 - **The animator's two base-repair passes are wrong on a photograph** - and
   right everywhere else, so this is `--halo 0 --anchor-tol 0` **in scene mode**
   and nowhere near a general rule.
