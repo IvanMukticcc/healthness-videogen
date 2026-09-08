@@ -103,6 +103,67 @@ def disc(r, rgb, light, feather=2.0):
     return np.dstack([col, a * 255.0 * 0.97]).astype(np.float32)
 
 
+def backing(poster, cx, cy, r, mask=None, feather=2.0, lo=1.03, hi=1.12, n_ang=720):
+    """An opaque disc of the scene, to put under glass.
+
+    The dial's glass is 0.62-0.72 opaque, and the wave's right tip sits at the
+    circle's centre by construction - so on a scene poster the liquid shows
+    through the dial and the number sits on a stripe of its own wave. Making the
+    glass opaque would stop it being glass; painting the scene back under it
+    keeps both.
+
+    The scene is not available under the circle - the wave is drawn there in the
+    base and there is nothing behind it - so it is extended inward instead. For
+    every angle, the poster is sampled in a thin annulus just outside the disc
+    and that colour is carried to the centre. A photograph is locally smooth at
+    this scale, so a radial extension of its own edge is indistinguishable from
+    it; what it cannot do is continue an edge that crosses the circle, and there
+    should not be one, because the prompt asks for the right third to be plain.
+
+    **The annulus is sampled everywhere except on the liquid.** The wave enters
+    the circle from one side, so at that angle what lies just outside the disc IS
+    the wave - and carrying it inward puts a bright wedge of its own colour back
+    inside the dial, which is most of the fault this function exists to remove.
+    `mask` is the engine's authored ribbon mask, so the angles to skip are known
+    exactly rather than guessed from colour; they are filled by interpolating
+    across from the clean angles either side.
+
+    Smoothed around the circle before it is used. Without that, a hard edge in
+    the photograph at one angle becomes a spoke running to the centre.
+    """
+    H, W = poster.shape[:2]
+    D = int(round(r * 2))
+    th = np.linspace(0, 2 * np.pi, n_ang, endpoint=False)
+    rad = np.linspace(r * lo, r * hi, 6)
+    xs = np.clip(np.round(cx + np.cos(th)[:, None] * rad[None, :]), 0, W - 1).astype(int)
+    ys = np.clip(np.round(cy + np.sin(th)[:, None] * rad[None, :]), 0, H - 1).astype(int)
+    ring = np.median(poster[ys, xs], axis=1)                      # (n_ang, 3)
+
+    if mask is not None:
+        on_wave = mask[ys, xs].mean(axis=1) > 0.25
+        if on_wave.any() and not on_wave.all():
+            good = np.flatnonzero(~on_wave)
+            # Unwrapped by tiling, so an angle skipped at 0 radians interpolates
+            # across the seam instead of from the far side of the circle.
+            src = np.concatenate([good - n_ang, good, good + n_ang])
+            val = np.concatenate([ring[good]] * 3, axis=0)
+            for c in range(3):
+                ring[on_wave, c] = np.interp(np.flatnonzero(on_wave), src, val[:, c])
+
+    k = max(3, n_ang // 24) | 1
+    pad = np.concatenate([ring[-k:], ring, ring[:k]], axis=0)
+    ring = np.stack([np.convolve(pad[:, c], np.ones(k) / k, "same")[k:k + n_ang]
+                     for c in range(3)], axis=1)
+
+    yy, xx = np.mgrid[0:D, 0:D]
+    c = (D - 1) / 2.0
+    d = np.hypot(xx - c, yy - c)
+    a = np.clip((r - 1 - d) / feather, 0, 1)
+    ang = np.arctan2(yy - c, xx - c) % (2 * np.pi)
+    col = ring[(ang / (2 * np.pi) * n_ang).astype(int) % n_ang]
+    return np.dstack([col.astype(np.float32), a * 255.0]).astype(np.float32)
+
+
 def glass(r, light, feather=2.0):
     """The disc as glass, for a poster whose rows are photographs.
 

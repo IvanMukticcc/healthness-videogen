@@ -235,6 +235,27 @@ different answers.
 
 ### New here — scene mode
 
+- **The wave shows through the glass dial, and the fix is under it, not on it.**
+  The dial's glass is 0.62-0.72 opaque and the wave's right tip sits at the
+  circle's centre by construction, so on a scene poster the liquid runs on
+  through the dial and the number reads on a stripe of its own wave. 18 004 px -
+  6.1% of the five discs - with about 30% of it coming through. Making the glass
+  opaque would stop it being glass, so `dial.backing` paints the scene back
+  underneath instead: for every angle the poster is sampled in a thin annulus
+  just outside the disc and that colour is carried to the centre. A photograph
+  is locally smooth at this scale, so a radial extension of its own edge is
+  indistinguishable from it.
+
+  **Two things it needs to not make it worse.** Smoothed around the circle, or a
+  hard edge in the photograph at one angle becomes a spoke running to the
+  centre. And the annulus is sampled everywhere EXCEPT on the liquid - at the
+  angle the wave enters, what lies just outside the disc *is* the wave, and
+  carrying that inward puts a bright wedge of its own colour back inside the
+  dial, which is most of the fault the function exists to remove. The engine's
+  authored ribbon mask says which angles to skip exactly, and they are filled by
+  interpolating across from the clean angles either side, unwrapped so an angle
+  skipped at 0 radians does not interpolate from the far side of the circle.
+
 - **A band drifting from light to mid is a warning, not a defect.** `longer` row
   4 came back at luma 131 against a layout that says light, so `add_labels.py`
   put near-black ink on honey-coloured cedar: measured contrast 101 and 94,

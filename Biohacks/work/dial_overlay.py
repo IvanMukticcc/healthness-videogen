@@ -45,8 +45,8 @@ FIN_GLOW = 0.60
 IDLE = 0.34         # how present the resting zero is before the row fires
 
 
-def plan(rows, layout, W, H, times, fps, base=None, lead=LEAD, count=COUNT, dy=0.0,
-         material="row"):
+def plan(rows, layout, W, H, times, fps, base=None, mask=None, lead=LEAD,
+         count=COUNT, dy=0.0, material="row"):
     L = json.load(open(layout)) if isinstance(layout, str) else layout
     k = W / 1536.0
     n = max(2, int(round(count * fps)))
@@ -67,6 +67,11 @@ def plan(rows, layout, W, H, times, fps, base=None, lead=LEAD, count=COUNT, dy=0
             a, b = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
             bg = tuple(np.median(base[a + 8:b - 8, 4:20].reshape(-1, 3), axis=0))
         d = dial.build(h, r, bg, bool(row["light"]), font, n, k=k, material=material)
+        if material == "glass" and base is not None:
+            # Under the glass: the scene, extended in from just outside the
+            # circle. Without it the wave's tip shows through the dial and the
+            # number reads on a stripe of its own liquid.
+            d["backing"] = dial.backing(base, cx, cy, r, mask=mask)
         d.update(row=i, cx=cx, cy=cy, r=r, n=n, count=count,
                  t=(times[i] if i < len(times) else times[-1]) + lead,
                  name=h["name"], dir=h["dir"])
@@ -78,6 +83,8 @@ def paint(frame, pl, secs):
     for d in pl:
         D = d["D"]
         x0, y0 = int(round(d["cx"] - D / 2.0)), int(round(d["cy"] - D / 2.0))
+        if d.get("backing") is not None:
+            dial.blend(frame, d["backing"], 1.0, x0, y0)
         dial.blend(frame, d["disc"], 1.0, x0, y0)
         dial.blend(frame, d["track"], 1.0, x0, y0)
 
@@ -142,7 +149,7 @@ def build(args, ctx):
     if material == "auto":
         material = "glass" if getattr(args, "scene", "glyph") == "poster" else "row"
     pl = plan(hacks.resolve(args.hacks), ctx["layout"], ctx["W"], ctx["H"], times,
-              ctx["fps"], base=ctx["base"], lead=args.dial_lead,
+              ctx["fps"], base=ctx["base"], mask=ctx["mask"], lead=args.dial_lead,
               count=args.dial_count, dy=args.dial_dy, material=material)
     print(f"  dials sit on {material}")
     for d in pl:
