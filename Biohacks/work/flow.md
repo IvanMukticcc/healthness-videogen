@@ -158,22 +158,41 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
 
 ### New here — scene mode
 
-- **The animator's two base-repair passes are wrong on a photograph.** Both
-  `--halo` and the `--anchored` wipe exist to remove a guide mark the artwork
-  failed to cover, and both put the **clean base** back where they fire. On a
-  flat stripe that is invisible; on a photograph it is a block of flat row
-  colour cut into the picture. `--halo` left pale rectangles lying on the liquid
-  at the left tip of rows 2, 3 and 4, and the wipe left a flat rounded bar
-  behind the caption on row 2. Scene mode runs `--halo 0 --anchor-tol 0`: a
-  faint grey mark the generator did not quite cover is a far smaller fault than
-  a patch of flat colour.
+- **The animator's two base-repair passes are wrong on a photograph** - and
+  right everywhere else, so this is `--halo 0 --anchor-tol 0` **in scene mode**
+  and nowhere near a general rule.
 
-- **`--anchor-r` is not the flag for that and looks exactly like it is.**
-  `flowanim.py` never reads `args.anchor_r` or `args.anchor_l` - they belong to
-  `recolor_base.py` and `make_base.py`. The first scene render passed
-  `--anchor-r 0` believing the wipe was off; it printed "55559 px of guide
-  circle painted out" and nobody read the line. The wipe is `--anchor-tol`, the
-  seal inside a circle is `--halo`.
+  Both exist to remove a guide mark the artwork failed to cover, and both put
+  the **clean base** back where they fire. What that is worth depends entirely
+  on what is under the circle. Here it is a flat row colour, so restoring it
+  cuts a block of colour into the picture: `--halo` left pale rectangles lying
+  on the liquid at the left tip of rows 2, 3 and 4, and the wipe left a flat
+  rounded bar behind row 2's caption. A faint grey mark the generator did not
+  quite cover is a far smaller fault than either.
+
+  Exercise measured the opposite case and it is the reason this is written with
+  the condition attached rather than as a flag setting. Their rows are a drawn
+  disc with a cut-out athlete standing in it, so inside the circle the clean
+  base **is** what should be there, and sealing the feathered ring restores it
+  correctly - 401 to 543 px a clip, all of it inside the circles. Same flag,
+  opposite correct value. Written as "--halo 0" this note would break three of
+  their clips a week.
+
+- **`--anchor-r` is not the flag for that, and it does not merely fail to be -
+  its help text promises it is.** `flowanim.py:808` defines it as "guide circle
+  radius at 1536 wide; 0 disables". The only three uses of `anchor_r` in the
+  file - 690, 954, 1083 - are `L["anchor_r"]`, the layout's key for the right
+  circle's x. The wipe at 919-928 runs on `args.anchor_tol` and on the
+  difference between the anchored base and the clean base; no radius is
+  involved anywhere. So it parses, it documents a behaviour, and it does
+  nothing - which is worse than a flag that does not exist, because a missing
+  one fails at argparse instead of costing twenty minutes.
+
+  The first scene render passed `--anchor-r 0` believing the wipe was off, and
+  it printed "55559 px of guide circle painted out" on every render while
+  nobody read the line. Confirmed from the source by Exercise and raised with
+  the root as an engine item; wiring it up or removing it is theirs to decide.
+  The wipe is `--anchor-tol`, the seal inside a circle is `--halo`.
 
 - **Telling the generator to paint over a mark works; telling it the subject
   sits where the mark is does not.** The first scene prompt said "the subject
