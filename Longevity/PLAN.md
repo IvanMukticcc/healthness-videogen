@@ -1,116 +1,136 @@
 # Longevity — the plan
 
-Written at 00:30 on 9 September, before any code, because the brief is large and
-the first thing a large brief needs is a shape somebody can argue with. Every
-step below is a separate commit and a separate push. Nothing here is settled
-until the folder that owns it has said so.
+Second version. The first one is in the history at `d841fff` and was wrong in its
+axis; Biohacks took it apart within the hour and the argument that killed it is
+recorded below, because it is the useful part.
 
 ---
 
-## What this is not
+## What survives from the first version
 
-**Not a fifth category in the row.** The user said so outright, and the four
-existing ones already share a spine so completely that a fifth instance of it
-would be a Micro clip with different nouns:
+**The structural break.** All four existing variants share one spine — five rows,
+a wave each, cause on the left, effect on the right, the mechanism named between
+— and in all four **the five rows are five parallel facts**. Shuffle them and you
+lose only rhythm.
 
-    Foods       a food     ->  the organ it feeds
-    Micro       a food     ->  the organ, with the nutrients named between them
-    Exercise    a lifter   ->  a body, with the muscles lighting
-    Biohacks    a habit    ->  a dial counting what it changes
-
-Five rows. A wave per row. Cause on the left, effect on the right, the mechanism
-named in between. Four variants, one sentence.
-
-## The structural break
-
-In all four children, **the five rows are five parallel facts**. Nothing connects
-row 1 to row 5; you can shuffle them and lose nothing but a little rhythm.
-
-In the father, **the five rows are one thing that runs.** Top to bottom is time.
+The father makes the five rows **one thing that runs**. Top to bottom is time.
 The poster stops being a list and becomes a line.
 
-That is the twist, and the mechanism for it already exists without having been
-built for it: `--surge` runs the highlight down the rows with a 0.06 s stagger,
-and the finale fires when it arrives. Built last night to make an ending; it is
-actually a picture of something travelling through a life.
+And the mechanism for it already exists without having been built for it:
+`--surge` runs a highlight down the rows on a 0.06 s stagger and the finale fires
+when it arrives. Built to give the clips an ending; it is a picture of something
+travelling.
 
-## The shape
+## What was wrong, and how we know
 
-**Five rows are five decades.** 30s, 40s, 50s, 60s, 70s+.
+The first version made the five rows **five decades** — 30s through 70s — each
+naming the lever that buys most in that decade.
 
-Each row names **the one lever that buys the most in that decade**, and each
-lever comes from a different child category — so a Longevity clip is literally
-made of the other four, which is what "father" has to mean if it means anything.
+It fails its own check. This category's whole safety argument is that every row
+carries a source and an unsourced row does not ship, taken from Biohacks'
+`hacks.py`. **"The one lever that buys most in your 40s" has no study behind it
+and cannot have one:** cohort studies give effect sizes over a population, not
+decade-indexed rankings. Every row would have been refused by the checker the
+plan proposed to adopt. That is not a tooling gap, it is the concept saying it is
+not sourceable.
 
-    left circle     the lever, in the child category's own visual language
-    the wave        one life, running down the poster rather than across a row
-    right circle    a dial counting - not an organ, a NUMBER
-    the bar         what it is, in the app's own careful language
+Two more, from the same critique and both right:
 
-**The right circle counts.** Biohacks' `dial.py` already draws a dial that counts
-to a value and locks. Here it counts years, or a percentage, or a risk figure -
-and the finale is where all five have landed and the poster shows what they come
-to together. The other four categories end with everything lit; this one ends
-with everything **added up**.
+- **Four rows out of five are addressed to somebody else.** A 35-year-old has one
+  row. Every clip we make works because all five apply to the viewer today, in a
+  format whose pull is in the first second and a half.
+- **It is one poster, not a category.** The children have topics. What is the
+  second decades clip? The axis is spent on the first.
 
-## Why this one has a constraint the others never had
+## The axis: hours
 
-`fitcircle/Sources/Models/Fasting.swift` carries a comment that decides the tone
-of this whole category:
+`fitcircle/Sources/Models/Fasting.swift` ships six metabolic stages with hour
+thresholds, and they are not five facts about fasting — they are **five points on
+one fast**:
 
-> Phrased descriptively with "typically" / "commonly" — never as medical claims
-> (see privacy policy §11 Health Disclaimer).
+    anabolic       0-4 h    digesting the last meal
+    catabolic      4-12 h   glycogen typically becomes the main fuel
+    fat burning   12-16 h   fat stores typically become a primary source
+    ketosis       16-24 h   ketones typically rise as a fuel
+    autophagy     24-48 h   cellular clean-up is typically more active
+    deep ketosis    48+ h   prolonged; consult a clinician
 
-Foods can say "garlic, for the tonsils" and nobody is harmed. A longevity
-category says numbers about how long people live, and the app it advertises has a
-health disclaimer it must not contradict. So:
+**Top to bottom is hours elapsed.** The wave is the fast.
 
-- **every row carries a source**, and a row whose source is a placeholder does
-  not ship. Biohacks already built exactly this - `hacks.py` prints `NO` against
-  an unsourced entry and `check.py` refuses it at the end. That machinery
-  transfers whole.
-- **the language is the app's**: typically, commonly, associated with. Never
-  "adds 7 years". "Associated with" is not weaker copy, it is the copy that can
-  be defended, and defensible is what makes a claim shareable rather than
-  reportable.
+- **one continuous process**, not a metaphor for one. The structural break the
+  first version wanted, arrived at honestly
+- **every row is the viewer's.** You pass through all of them. Nobody watches
+  somebody else's row
+- **it is a category, not a poster.** Six protocols in the app — 13:11, 14:10,
+  16:8, 18:6, 20:4, OMAD 23:1 — are six clips from one shape, each reaching a
+  different depth. 16:8 arrives at ketosis; OMAD reaches autophagy's door
+- **sourced by construction.** Every stage in the app is already written as
+  "typically" and "commonly", under a comment at `Fasting.swift:222` saying
+  never as medical claims, see privacy policy §11. We are not translating claims
+  into compliant language. **The compliant language is the source.**
 
-This is the first category where being careful is part of the design instead of a
-tax on it.
+## Why this is the father
 
-## What it adds that the children do not have
+Not because it is a clip about our categories — nobody outside this repository
+cares about our taxonomy. Because **the fast is the day the other four hang off**.
+Foods and Micro are the feeding window. Water, the walk and the light are the
+fasting hours. Exercise sits where the protocol puts it. The father is the spine
+the children were already attached to, and the poster is the first place that
+spine has ever been drawn.
 
-**Fasting.** The app ships six protocols - 13:11, 14:10, 16:8, 18:6, 20:4, OMAD
-23:1 - and six metabolic stages with hour thresholds: anabolic 0-4, catabolic
-4-12, fat burning 12-16, ketosis 16-24, autophagy 24-48, deep ketosis 48+. That
-is a five-row structure that is *already* about time, already written in
-compliant language, and already in the product. It is the strongest single topic
-this repository has been handed and nobody has animated it.
+## The elements
 
-**Supplements.** Sixteen in `Supplement.swift`, from D3 to creatine to
-electrolytes, with units and micronutrient mappings - which means a supplement
-row can name what it actually contains rather than gesturing.
+    left circle    the hour. A dial that counts to it and locks
+    the wave       one fast, running down the poster
+    right circle   the stage: what the body is typically doing
+    the bar        0-24 h across all five rows, one mark per stage boundary
+    the caption    the app's own sentence, unedited
+
+**A dial survives when it counts a unit the viewer already has a scale for.**
+`16 H` needs nothing under it. `+7 YEARS` needs everything, which is why the
+first version's counting circle would have been a claim wearing a number's
+clothes. Biohacks' day bar transfers unchanged, relabelled 0-24 h.
+
+**No summing finale.** The first version ended by adding the rows up. Effect
+sizes across studies are not summable and the checker would refuse it — and it
+was the one place this category could have put an invented number in front of a
+health app's audience. On a fast there is nothing to invent: the total is hours
+elapsed, which is arithmetic. The finale is the protocol's own end.
+
+## The checker, generalised from `hacks.py` with two changes
+
+1. **`source` needs a kind.** Biohacks' are all studies. A fasting stage's source
+   is the app's own descriptive copy, which is not a study and must not be
+   dressed as one. So `claim: measured | described`, and the checker **refuses
+   any `described` row whose value carries a `%` or a `+`/`-` sign** — that is
+   precisely how a descriptive stage becomes a medical claim by accident, and it
+   is the one failure that could reach the app's disclaimer.
+2. **`dir` collapses.** Everything on a fast is time. Colour by stage instead,
+   which the design wants anyway.
 
 ## The steps
 
-Each is a commit and a push. Ordered so that the earliest ones are useful even if
-the later ones change.
+Each is a commit and a push.
 
-    1   this plan                                              <- you are here
-    2   longevity.py     the vocabulary: decades, levers, sources, dials
-    3   fasting.json     six protocols and six stages, from the app, with sources
-    4   the base         recolor_base with a palette that reads as time
-    5   life_overlay     the wave as one line: the surge, slowed and made the point
-    6   dial_overlay     the counting circle, generalised from Biohacks
-    7   the master prompt + PROMPTING.md, written from the four we have
-    8   check.py         sources, language, the claim audit
-    9   render.sh        and a test clip from material already on disk
+    1   this plan                                              <- revised
+    2   longevity.py    the vocabulary: stages, protocols, sources, claim kinds
+    3   fasting.json    six stages and six protocols, from the app, with sources
+    4   the base        a palette that reads as hours: night through to night
+    5   hour_overlay    the dial that counts hours, from dial.py
+    6   stage_overlay   the right circle, and the 0-24 h bar
+    7   the master prompt, and PROMPTING.md written from the four we have
+    8   check.py        sources, claim kinds, the % and +/- refusal
+    9   render.sh, and a test clip from material already on disk
     10  flow.md, README.md, CLAUDE.md
 
-## Open, and going to the other three tonight
+## Who is doing what
 
-- Biohacks is the only folder that has broken the format before. They are asked
-  to attack the shape above before step 2 is written.
-- Exercise draws the only human body here. A father category about a life may
-  want it, and `bodymap.py` may or may not generalise past muscles.
-- Micro has the most topics and the tightest prompt discipline. The master prompt
-  is theirs to tear apart.
+- **Biohacks writes step 2.** `longevity.py` is the generalisation of their
+  `hacks.py`, they know every way it fails, and they found the axis. Offered by
+  them, taken.
+- **Micro takes the master prompt apart** when it exists. Most topics, most
+  rejections, tightest prompt discipline of the four.
+- **Exercise on whether a body belongs here.** `bodymap.py` is the only human
+  figure in the repository and a fast happens to one. It may not generalise past
+  muscles and that is an answer too.
+- **The root** owns the folder, the base, the overlays and the integration.
