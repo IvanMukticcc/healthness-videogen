@@ -110,7 +110,24 @@ rather than an opinion.
                   reads badly, which is why they are the ones that judge
     4. RIGHT      is the right third quiet? Anything drawn there survives past
                   the dial's disc and nudges the wave's tip
-    5. FOOTER     is the strip under the last band empty? The day bar goes there
+    5. CAPTIONS   can the ten captions be read? add_labels.py picks its ink from
+                  the layout's light flag - 28 on a light band, 255 on a dark one
+                  - so the ink is known exactly and the only question is what is
+                  behind it. Two numbers, both direct rather than proxies: how
+                  far the background's mean luminance is from the ink, and how
+                  busy the background is.
+
+                  A caption fails only when it misses BOTH, which took a second
+                  pass to get right. `longer` row 2 put WALK DAILY on a sunlit
+                  path of grass and stones: contrast 97 against variation 72,
+                  and it was the one caption on that poster that could not be
+                  read. But the noise number alone also rejected `sleep`'s
+                  MORNING LIGHT at 169/70 and `firsthour`'s LONG EXHALES at
+                  123/74, both perfectly legible. Enough contrast survives a
+                  busy background and a quiet background carries weak contrast;
+                  it is the pair that kills.
+
+    6. FOOTER     is the strip under the last band empty? The day bar goes there
                   and has nothing to hide behind
 
     python3 check_scene.py firsthour
@@ -154,6 +171,13 @@ TITLE = (191, 392)          # where recolor_base.py draws the title, in a 2752
                             # found the same line in their own copy.
 MARK_STD = 15.0
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
+CAP_CONTRAST = 110.0        # ink to background mean, and how busy the background
+CAP_NOISE = 65.0            # is. A caption fails only when it misses BOTH.
+                            # Measured over three scene posters: the one that
+                            # could not be read ran 97 against variation 72,
+                            # while MORNING LIGHT reads fine at 169 against 70
+                            # and LONG EXHALES at 123 against 74. Either number
+                            # alone rejects captions that are perfectly legible
 # No JOIN threshold. See the header: the number is printed and not judged,
 # because it tracks the scene's brightness rather than the seam's coverage.
 
@@ -254,6 +278,34 @@ def main():
               f"{'ok ' if light_ok else 'NO '}   "
               f"{join:5.0f}      "
               f"{100*right:4.0f}% {'ok ' if right_ok else 'NO '}")
+
+    # the captions, whose ink was chosen before anyone saw the photograph
+    print()
+    for i, row in enumerate(L["rows"]):
+        c0 = int(row["cap_top"] * k)
+        c1 = int((row["cap_top"] + row["cap_h"]) * k)
+        ink = 28.0 if row["light"] else 255.0
+        for side, cx in (("left ", L["anchor_l"]), ("right", L["anchor_r"])):
+            m = (np.abs(xx - cx * k) < 190 * k) & (yy > c0) & (yy < c1)
+            b = 0.299 * img[m][:, 0] + 0.587 * img[m][:, 1] + 0.114 * img[m][:, 2]
+            con, noise = abs(float(b.mean()) - ink), float(b.std())
+            # Both together, never either alone. High contrast survives a busy
+            # background: sleep's MORNING LIGHT reads at 169 against variation
+            # 70 and firsthour's LONG EXHALES at 123 against 74, and both are
+            # perfectly legible. It is the pair that kills - 97 against 72.
+            ok = con >= CAP_CONTRAST or noise <= CAP_NOISE
+            if not ok:
+                bad.append(f"r{i+1} {side.strip()} caption is not readable - "
+                           f"contrast {con:.0f} (want {CAP_CONTRAST:.0f}) against a "
+                           f"background varying by {noise:.0f} (want under "
+                           f"{CAP_NOISE:.0f}). The bottom fifth of that band has to "
+                           f"be quiet; the ink was chosen before the photograph "
+                           f"existed. Contrast alone is fine at any noise, and a "
+                           f"quiet background is fine at any contrast - it is the "
+                           f"pair that kills")
+                print(f"  caption r{i+1} {side}  contrast {con:5.0f}  noise {noise:5.0f}  NO")
+            else:
+                print(f"  caption r{i+1} {side}  contrast {con:5.0f}  noise {noise:5.0f}  ok")
 
     # the footer, where the day bar goes
     f0, f1 = int(2476 * k), int(2585 * k)
