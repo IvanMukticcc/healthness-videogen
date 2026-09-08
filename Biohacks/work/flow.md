@@ -90,6 +90,17 @@ Out comes `../OUTPUT/<DD.MM>/<topic>_biohack.mp4` with the bed, the chips, the
 counters and the chord on it. `WIDTH=540 ./render.sh ...` while tuning: identical
 timing, a third of the wait.
 
+**4b. Grab with `--keep`.** `grab.py` moves rather than copies, and on a machine
+where several sessions generate into one Downloads folder that takes somebody
+else's poster away from them - which is exactly what happened here on 8
+September. `--keep` copies. It is not the engine's default and deliberately so:
+a copy removes the loss but re-opens the older accident, where a failed
+generation silently hands back the previous topic's poster instead of failing
+loudly. Move plus the title check is the safer pair; `--keep` is what you reach
+for when you know another session is generating.
+
+    ../../.venv/bin/python ../../engine/grab.py <topic> --keep
+
 **5. Check before delivering.**
 
 ```
@@ -190,9 +201,13 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
 
   The first scene render passed `--anchor-r 0` believing the wipe was off, and
   it printed "55559 px of guide circle painted out" on every render while
-  nobody read the line. Confirmed from the source by Exercise and raised with
-  the root as an engine item; wiring it up or removing it is theirs to decide.
-  The wipe is `--anchor-tol`, the seal inside a circle is `--halo`.
+  nobody read the line. **Gone from the engine now** - it was three dead flags,
+  not one (`--anchor-r`, `--anchor-l`, `--anchor-r-x`, none read since
+  `--layout` landed and the circles started coming from the layout file), and
+  they fail at argparse, which is the failure mode this was owed the first
+  time. Kept here because the trap is the lesson: a flag can parse, document a
+  behaviour in its help, and do nothing. The wipe is `--anchor-tol`, the seal
+  inside a circle is `--halo`.
 
 - **Telling the generator to paint over a mark works; telling it the subject
   sits where the mark is does not.** The first scene prompt said "the subject
