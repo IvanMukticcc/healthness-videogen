@@ -37,20 +37,33 @@ TOPIC="$1"; HACKS="$2"; shift 2
 # after it still goes to flowanim.py and still wins, argparse taking the last
 # value it is given.
 #
-#   --scene-disc glass  the row is a photograph and has no colour for a disc to
-#   --dial-disc glass   take: sampled at the left margin it returns a pixel of
+#   --scene poster      the generator owns the left circle. Once the prompt was
+#                       fixed to paint over the four alignment marks rather than
+#                       around them, there is nothing left to cover and a disc
+#                       there would only hide the photograph we asked for. Pass
+#                       --scene glyph --scene-disc glass to put it back, which is
+#                       what a poster that kept its marks needs
+#   --dial-disc glass   the row is a photograph and has no colour for a disc to
+#                       take: sampled at the left margin it returns a pixel of
 #                       sky or grass and our components end up wearing the scene
-#   --anchor-r 0        the generator paints AROUND the guide circles rather than
-#                       over them, so the poster still matches the anchored base
-#                       inside them - and the wipe would then punch a disc of
-#                       flat row colour into the photograph. Measured on the
-#                       first scene poster: |poster - base| is 2-3 levels inside
-#                       every circle, against std 47 in the photograph beside it
+#   --anchor-tol 0      no restoring the base. Both of the animator's base-repair
+#   --halo 0            passes exist to remove a guide mark the artwork failed to
+#                       cover, and both put the CLEAN BASE back where they fire -
+#                       which is a flat row colour, and on a photograph that is a
+#                       hard pale patch. --halo left pale rectangles lying on the
+#                       liquid at the left tip of rows 2, 3 and 4; --anchor-tol
+#                       left a flat rounded bar behind a caption. A faint grey
+#                       mark the generator did not quite cover is a far smaller
+#                       fault than a block of flat colour cut into the picture.
+#
+#                       (--anchor-r looks like the flag for this and is not:
+#                       flowanim.py never reads it. The wipe is driven by
+#                       --anchor-tol and the seal inside a circle by --halo.)
 PHOTO=""
 POSTER="${1:-}"
 if [ -n "$POSTER" ] && [ -f "$POSTER" ]; then
     shift
-    PHOTO="--scene-disc glass --dial-disc glass --anchor-r 0"
+    PHOTO="--scene poster --dial-disc glass --anchor-tol 0 --halo 0"
     echo "== scene mode: $POSTER"
 else
     POSTER="${TOPIC}_labelled.png"

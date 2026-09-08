@@ -156,6 +156,42 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
 - **A transverse wave through something that stays put is a flag, not a flow.**
   `--snake 0`, `--swell` low.
 
+### New here — scene mode
+
+- **The animator's two base-repair passes are wrong on a photograph.** Both
+  `--halo` and the `--anchored` wipe exist to remove a guide mark the artwork
+  failed to cover, and both put the **clean base** back where they fire. On a
+  flat stripe that is invisible; on a photograph it is a block of flat row
+  colour cut into the picture. `--halo` left pale rectangles lying on the liquid
+  at the left tip of rows 2, 3 and 4, and the wipe left a flat rounded bar
+  behind the caption on row 2. Scene mode runs `--halo 0 --anchor-tol 0`: a
+  faint grey mark the generator did not quite cover is a far smaller fault than
+  a patch of flat colour.
+
+- **`--anchor-r` is not the flag for that and looks exactly like it is.**
+  `flowanim.py` never reads `args.anchor_r` or `args.anchor_l` - they belong to
+  `recolor_base.py` and `make_base.py`. The first scene render passed
+  `--anchor-r 0` believing the wipe was off; it printed "55559 px of guide
+  circle painted out" and nobody read the line. The wipe is `--anchor-tol`, the
+  seal inside a circle is `--halo`.
+
+- **Telling the generator to paint over a mark works; telling it the subject
+  sits where the mark is does not.** The first scene prompt said "the subject
+  sits where the faint circle is now" and "the photograph may run straight
+  through it", and all twenty marks came back untouched - the photograph painted
+  around them, std 0.8 inside a circle against std 47 in the picture beside it,
+  matching the anchored base to 2-3 levels. Naming them as alignment marks,
+  saying the photograph is painted over them, and then listing what may not
+  replace them - a plain disc, a white circle, a dark circle, a blurred patch,
+  a glow - removed every left-hand one. The right-hand circles came back as
+  plain discs of a different colour, which is Micro's known failure exactly, and
+  which does not matter here because the dial covers them at 0.97 alpha.
+
+- **The liquid still animates over a photograph, and it is not close.** 87.0% of
+  the paintable wave moves more than 8 levels between frames, mean 44.3, every
+  row between 66% and 100%. The dark rows read lower because the wave has less
+  contrast against a dark photo, not because it moves less.
+
 ### New here
 
 - **A multiply clips, and it clips worst on the rows with the most gloss.** The
