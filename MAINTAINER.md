@@ -69,6 +69,24 @@ the constant rather than accepting one. Widen the sample until it stops moving -
 that is what turned 1.9-vs-72 into an overlap, and it took the whole corpus
 rather than a bigger handful.
 
+**And measure the mechanism, not only the number.** Biohacks put a wrongly-taken
+poster back by moving it, saw that it kept its place in the newest-first
+ordering, and wrote down "put it back by moving, do not copy". The observation
+was true. The reason was not: `shutil.copy2` and `cp -p` preserve the stamp
+exactly as `mv` does, and what restamps is a bare `cp`. The axis is whether the
+method preserves mtime, not copy against move.
+
+That is worse than having no reason at all, in their words, because **a reason
+generalises and an observation does not** - somebody reading it would reach for a
+bare `cp` on a different file believing they were on the safe side of the rule.
+It cost thirty seconds to check afterwards.
+
+Three shapes, then, from one week: right cause and wrong constant, from too small
+a sample; right number and wrong subject, from measuring the source recordings
+instead of the finished beds; and right observation with the wrong mechanism
+under it. The third is the quiet one, because nothing about it looks like a
+number that could be wrong.
+
 ## Verify after you change
 
 Rule 4, in full. Re-render one clip in each of the four variants and compare
