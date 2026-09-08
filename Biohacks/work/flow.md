@@ -519,6 +519,35 @@ different answers.
   it away - the noise floor above is 0.01 levels rather than forty thousand
   pixels - and that is the shape any measurement of this kind has to take.
 
+## Where the render's time actually goes
+
+Measured on `sugar` at 540 wide, 192 frames, so that nobody optimises this
+folder by guessing:
+
+    engine alone, no overlays          10.4 s
+    with all three overlays            12.6 s     <- this folder costs 2.2 s
+      of which the day bar               0.15 s
+      of which the pulse                 in the noise
+      of which the chip's shock ring     in the noise
+
+**83% of a render is the engine's liquid pass and 17% is everything this folder
+draws.** The day bar is the only element that builds PIL images every frame - a
+rounded fill and five dots, 1152 constructions over a clip - and it is 1.2% of
+the render. Rewriting it to blend pre-built sprites would save a tenth of a
+second and risk changing the output of the one element that has to be identical
+frame to frame.
+
+So: there is nothing worth optimising in here, and that is a measurement rather
+than an opinion. If a render needs to be faster the whole of the answer is in
+`engine/flowanim.py`'s per-frame `render_wave`, which is not this folder's to
+change - see rule 3.
+
+The one thing that IS worth knowing: everything expensive in here is already
+built once in `build()` and blended per frame. The dials pre-render one sprite
+per frame of the count, the glyphs pre-render two colours, the chips pre-render
+four layers. That is why the numbers above are what they are, and it is the
+pattern to keep.
+
 ## Invariants worth re-checking if something looks off
 
 ```
