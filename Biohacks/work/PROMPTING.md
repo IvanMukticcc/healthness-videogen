@@ -139,7 +139,7 @@ Cheap, and cheaper than a render. Say the number, name the row, give the whole
 prompt again with that row rewritten — never a diff, never "change only row 5".
 The person pasting it is holding one thing, not two.
 
-Since `engine/copy.py`, re-handing a corrected prompt costs exactly what the
+Since `engine/clip.py`, re-handing a corrected prompt costs exactly what the
 first one cost: pipe it through at handover and it is on the clipboard as well
 as on the screen. The last practical argument for a diff — that a hundred and
 fifty lines are tedious to select twice — is gone.

@@ -23,7 +23,7 @@ loop every other variant here follows and this folder is not an exception to it:
                                     over whole in the terminal - never a file,
                                     never a diff, never offered. PROMPTING.md
                                     is why it says what it says. Pipe it through
-                                    engine/copy.py at handover so it is on the
+                                    engine/clip.py at handover so it is on the
                                     clipboard as well as on the screen
     3. the user returns the image   grab.py, then check_base, check_scene
     4. caption it and render        add_labels.py, then ./render.sh with the
@@ -121,13 +121,13 @@ paste actions and both were being done by hand - dragging the base out of a
 Finder window, and selecting a hundred and fifty lines of terminal output
 without catching the shell prompt at the end.
 
-    ../../engine/copy.py image <topic>                 the base, size-checked
-    cat <the prompt> | ../../engine/copy.py prompt - --topic <topic>
-    ../../engine/copy.py prompt                        the same one again
+    ../../engine/clip.py image <topic>                 the base, size-checked
+    cat <the prompt> | ../../engine/clip.py prompt - --topic <topic>
+    ../../engine/clip.py prompt                        the same one again
 
 **This does not make the prompt a file and does not soften rule 8.** What that
 rule forbids is a `prompt_<topic>.txt` lying around to be pasted three revisions
-later. `copy.py` keeps one buffer in the temp directory, overwritten by the next
+later. `clip.py` keeps one buffer in the temp directory, overwritten by the next
 prompt, gone on reboot, printing its topic and its age on every re-copy and
 refusing outright past 45 minutes. A stale one announces itself instead of being
 pasted quietly, which is the whole of what rule 8 is protecting.
