@@ -87,6 +87,15 @@ instead of the finished beds; and right observation with the wrong mechanism
 under it. The third is the quiet one, because nothing about it looks like a
 number that could be wrong.
 
+Which gives the tell to watch for, and it is theirs: **the claims that get
+measured here are the ones that announce themselves as measurable.** Pixel
+counts, decibels, thresholds - anything with a unit gets checked, because it
+looks like the sort of thing that has a right answer. "Move preserves the
+timestamp" reads as a fact about a library rather than as a claim, and it was
+thirty seconds away from being one. So the question is not only *is this
+measured* but *did this even look like something to measure* - because the ones
+that do not are the ones that go a day.
+
 ## Verify after you change
 
 Rule 4, in full. Re-render one clip in each of the four variants and compare

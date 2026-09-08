@@ -43,6 +43,13 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    A variant is not the place from which the thing all four variants run gets
    changed.
 
+   The rule reads like a restriction and works like a division of labour. Four
+   engine-level things came out of one variant in a single day - the guide-circle
+   wipe's assumption, three dead flags, a poster grabbed by the wrong variant,
+   and a mechanism written from one observation - and its agent's report on the
+   cost was that not one of them took longer than the message describing it.
+   Every one was fixed at the root, once, for all four.
+
    When a variant needs something the engine does not do: **say so and stop.**
    Describe what is missing and what you would change. Do not edit `engine/`, do
    not copy a tool into your folder to edit it there, and do not work around it
