@@ -17,6 +17,7 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
 
     engine/                the seven tools, three authored wave assets, sfx/
     Foods/ Micro/ Exercise/ Biohacks/   four variants, three folders each:
+    Longevity/             the father: five rows are one fast, not five topics
         INPUT/             base_<topic>.png, and nothing else
         OUTPUT/            finished clips, a folder per day
         work/              everything else
