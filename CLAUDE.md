@@ -92,6 +92,15 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    `check_base.py` says so and it is right: the animation cannot correct a wave
    the generator redrew.
 
+   **Keep one archival copy of every shipped poster**, as
+   `<topic>_poster.jpeg` beside the working files. It is the only artefact in
+   this repository that no command can remake: a base comes back from
+   `recolor_base.py`, a labelled poster from `add_labels.py`, a clip from
+   `render.sh` - but an image model cannot be asked twice for the same picture,
+   and the wave in a poster is the wave that clip's animation was measured
+   against. Micro measured the exposure on 8 September: fourteen of its topics
+   existed only as untracked files, and a lost `work/` would have ended them.
+
    The one thing that is allowed is putting **base** pixels back. The row
    stripe, the wave, the guide circle and the caption bars exist on disk at
    pixel-exact geometry, and copying a region of the base over a poster that
