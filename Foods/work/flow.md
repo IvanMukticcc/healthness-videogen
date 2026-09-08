@@ -71,9 +71,9 @@ what does the work and goes in unchanged. Filled examples are in `Prompts.txt`.
 Both halves of that handover have a command, so neither is done with a mouse:
 
 ```
-../.venv/bin/python ../../engine/copy.py image <topic>    # the base, to attach
-... | ../.venv/bin/python ../../engine/copy.py prompt - --topic <topic>
-../.venv/bin/python ../../engine/copy.py prompt           # it back, after a clobber
+../.venv/bin/python ../../engine/clip.py image <topic>    # the base, to attach
+... | ../.venv/bin/python ../../engine/clip.py prompt - --topic <topic>
+../.venv/bin/python ../../engine/clip.py prompt           # it back, after a clobber
 ```
 
 Print the prompt whole as rule 8 requires **and** pipe it through the second

@@ -103,6 +103,19 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    hand and handed over whole, ready to paste. A saved copy goes stale in an
    afternoon.
 
+   What the rule forbids is a prompt **copied forward**: the poster that came
+   back from a prompt three revisions old came back because a file was lying
+   there and got pasted again. A prompt written down and never read back is a log
+   entry, not a source, and Micro keeps one per topic for exactly that - to
+   reprint after a regeneration, and to diff two passes of the same part. The
+   invariant that makes it safe is greppable, so state it that way: *the
+   generator writes `prompt_<topic>.txt` from `ImageSwap.txt`, and nothing in the
+   loop reads `prompt_<topic>.txt` back.* Check that, not whether a file exists.
+
+   `../../engine/clip.py prompt` is the handover, and it is not one of those
+   files: one buffer, overwritten by the next prompt, gone on reboot, refusing
+   past 45 minutes.
+
 ## Before writing code here
 
 Read the variant's `work/flow.md`. Its **what is already known to break** section

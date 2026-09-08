@@ -11,8 +11,8 @@ poster move is here, and **nowhere else**.
     grab.py             the poster the generator handed back, out of Downloads and
                         into <topic>.jpeg beside the caller. The size is the whole
                         safety net: nothing that is not 1536x2752 is renamed
-    copy.py             the other direction: `copy.py image <topic>` puts the base
-                        on the clipboard, `copy.py prompt` puts the last prompt
+    clip.py             the other direction: `clip.py image <topic>` puts the base
+                        on the clipboard, `clip.py prompt` puts the last prompt
                         handed over back on it. The two paste actions a topic costs
     check_base.py       is this poster even from this base, and did the generator
                         leave the waves alone?

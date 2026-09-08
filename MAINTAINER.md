@@ -143,8 +143,6 @@ files you touched, by name.
 - **The guide circles are never fully covered.** A faint halo survives behind
   most organs in the still poster. The video paints it out from the clean base;
   the poster carries it, which matters if a still is ever published.
-- **`Micro/work/make_prompt.py`** tells the user to put the returned poster in
-  `INPUT/`, which rule 7 forbids. Flagged to its agent; it is their file.
 - **The finale is half built.** The engine decides *when* it is (`--finale`,
   `cues`/`finale` on the seam) and runs the light through the liquid
   (`--surge`); what lights up inside the circles is each variant's and neither

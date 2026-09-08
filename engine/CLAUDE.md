@@ -16,6 +16,25 @@ That is the point of the folder, and it is also the risk.
   geometry and **every `base_<topic>.png` in every variant has to be rebuilt**,
   because the mask no longer fits. That is the one change that is never cheap.
 
+## If you are writing a tool here
+
+**Do not name it after a standard library module.** Python puts a script's own
+directory first on `sys.path`, so a file here is on the import path of every tool
+here - and a variant calling `../../engine/flowanim.py` gets `engine/` searched
+before the stdlib. `copy.py` lived for half an hour and broke `check_base`,
+`flowanim`, `recolor_base` and `add_labels` in all four variants at once: scipy
+imports numpy, numpy's f2py calls `copy.deepcopy` at import time, and it got the
+new file. `grab.py` survived only because it never imports scipy. Check the name
+against `sys.stdlib_module_names` before you write the file, not after.
+
+One more gotcha, because it cost a rewrite and it will not show up in your own
+testing. **`sys.stdin.isatty()` is false in every script, pipeline and agent
+subprocess** - which is to say, in exactly the context an engine tool runs in,
+and never in the context you tried it in by hand. `copy.py`'s first version read
+stdin when `not sys.stdin.isatty()`, so a bare `copy.py prompt` tried to read a
+prompt nobody was sending and failed instead of doing its job. Take stdin when it
+is asked for by name, never when it seems to be there.
+
 ## After you change anything
 
 Re-render one clip in each of the four variants and compare against what it

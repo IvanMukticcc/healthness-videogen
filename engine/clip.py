@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """
-copy.py - the two things that get handed to the generator, onto the clipboard.
+clip.py - the two things that get handed to the generator, onto the clipboard.
+
+Named clip and not copy, which is what it was for half an hour: a module in
+this folder shadows the standard library for every tool here, because Python
+puts a script's own directory first on sys.path. `engine/copy.py` broke
+check_base, flowanim, recolor_base and add_labels in all four variants at
+once - scipy imports numpy, numpy's f2py calls copy.deepcopy at import time,
+and it got this file instead. Nothing here may be named after a stdlib
+module.
 
 `grab.py` is the way back: the poster the generator returned, out of Downloads
 and into the variant. This is the way out. A topic costs two paste actions - the
@@ -8,9 +16,9 @@ base image and the prompt - and both of them were being done by hand: opening
 INPUT in Finder and dragging a file, and selecting a hundred and fifty lines of
 terminal output with a mouse without catching the shell prompt at the end.
 
-    ../../engine/copy.py image <topic>      base_<topic>.png -> clipboard
-    ../../engine/copy.py prompt             the last prompt handed over -> clipboard
-    ... | ../../engine/copy.py prompt -     hand one over: copy it, and remember it
+    ../../engine/clip.py image <topic>      base_<topic>.png -> clipboard
+    ../../engine/clip.py prompt             the last prompt handed over -> clipboard
+    ... | ../../engine/clip.py prompt -     hand one over: copy it, and remember it
 
 Run from a variant's work/, like every other engine tool. The base resolves at
 ../INPUT/base_<topic>.png, which is the one place rule 7 allows it to be.
@@ -20,7 +28,7 @@ Run from a variant's work/, like every other engine tool. The base resolves at
 Rule 8 says the prompt is written in the terminal for the topic at hand and
 handed over whole, because a saved copy goes stale in an afternoon. That rule is
 about *per-topic* files - prompt_liver.txt, three revisions old, pasted again
-because it was lying there. It is not about the clipboard, and `copy.py prompt`
+because it was lying there. It is not about the clipboard, and `clip.py prompt`
 does not create one of those files: there is a single buffer, in the system
 temp directory, holding only the last prompt handed over. It is overwritten by
 the next one, it does not survive a reboot, and every re-copy prints its age and
@@ -85,7 +93,7 @@ def cmd_image(args):
 def cmd_prompt(args):
     # Only ever stdin when asked for it by name. The first version guessed, with
     # `not sys.stdin.isatty()`, and that is false in every script, pipeline and
-    # agent subprocess - which is exactly where this runs. A bare `copy.py
+    # agent subprocess - which is exactly where this runs. A bare `clip.py
     # prompt` then tried to read a prompt nobody was sending and failed instead
     # of re-copying the last one.
     if args.text == "-":
@@ -102,7 +110,7 @@ def cmd_prompt(args):
 
     if not BUF.exists():
         raise SystemExit("no prompt has been handed over yet - pipe one in with "
-                         "`| copy.py prompt -`")
+                         "`| clip.py prompt -`")
     d = json.loads(BUF.read_text())
     age = (time.time() - d["at"]) / 60.0
     where = Path(d.get("cwd", "")).parent.name or "?"
