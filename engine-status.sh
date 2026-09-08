@@ -68,12 +68,43 @@ for v in "${VARIANTS[@]}"; do
         [ "$stale" -gt 0 ] || [ "$diverged" -gt 0 ] && status=1
     fi
 done
+# Does anything here shadow the standard library? engine/ is on the import path of
+# every tool in engine/, because Python searches a script's own directory first;
+# and flowanim.py does sys.path.insert(0, os.getcwd()) for --overlay, which puts
+# a variant's work/ ahead of the stdlib for the whole render. So a file called
+# copy.py, json.py or types.py in either place breaks tools that never mention
+# it, at import time, before any of them can report anything. engine/copy.py did
+# exactly that to all four variants on 9 September and it took somebody noticing
+# a render that would not start. This is the check that was missing.
+shadow=$(python3 - "$ROOT" "${VARIANTS[@]}" <<'PYEOF'
+import sys, os, glob
+root, variants = sys.argv[1], sys.argv[2:]
+std = sys.stdlib_module_names
+where = [os.path.join(root, "engine")] + [os.path.join(root, v, "work") for v in variants]
+for d in where:
+    for f in sorted(glob.glob(os.path.join(d, "*.py"))):
+        n = os.path.basename(f)[:-3]
+        if n in std:
+            print(f"      {os.path.relpath(f, root)}  shadows the stdlib module '{n}'")
+PYEOF
+)
+if [ -n "$shadow" ]; then
+    printf "\n  a filename here is on the import path of every tool that runs from it:\n"
+    printf "%s\n" "$shadow"
+fi
+
 echo
-if [ "$status" -eq 0 ]; then
+if [ "$status" -eq 0 ] && [ -z "$shadow" ]; then
     echo "  every variant is on the current engine"
-else
+fi
+if [ "$status" -ne 0 ]; then
     echo "  a stale copy is a variant running yesterday's fixes; a diverged one is a fork."
     echo "  Read the diff and decide per change: engine improvement -> engine/,"
     echo "  variant behaviour -> that variant's own module. Do not copy over."
+fi
+if [ -n "$shadow" ]; then
+    echo "  Rename it. Every tool that imports scipy fails at import time, saying"
+    echo "  nothing about the file that caused it, so this never presents as a"
+    echo "  naming problem - it presents as the engine being broken."
 fi
 exit 0

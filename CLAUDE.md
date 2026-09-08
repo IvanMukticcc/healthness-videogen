@@ -109,8 +109,12 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    entry, not a source, and Micro keeps one per topic for exactly that - to
    reprint after a regeneration, and to diff two passes of the same part. The
    invariant that makes it safe is greppable, so state it that way: *the
-   generator writes `prompt_<topic>.txt` from `ImageSwap.txt`, and nothing in the
-   loop reads `prompt_<topic>.txt` back.* Check that, not whether a file exists.
+   generator writes `prompt_<topic>.txt` from `ImageSwap.txt`, and **nothing may
+   read `prompt_<topic>.txt` back.*** Check that, not whether a file exists - and
+   read it as a prohibition rather than as an observation, because an agent
+   looking for "the prompt for superfoods15" will find that file before it finds
+   `ImageSwap.txt`, and reading it would be the whole failure recreated in one
+   step. The next topic is filled from the template, always.
 
    `../../engine/clip.py prompt` is the handover, and it is not one of those
    files: one buffer, overwritten by the next prompt, gone on reboot, refusing
