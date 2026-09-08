@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""
+check_scene.py - is a scene-mode poster good enough to spend a render on?
+
+`engine/check_base.py` answers the only question that can break the video: did
+the waves move. This answers the five that decide whether the picture is any
+good, and it answers them in numbers so that sending one back is a measurement
+rather than an opinion.
+
+    1. MARKS      is the LEFT circle painted over, or did the generator paint the
+                  photograph around it and leave it standing? A flat disc has
+                  almost no variance; a photograph has a lot, and that one number
+                  separates them cleanly.
+
+                  The right circle is not tested and does not matter: the dial
+                  covers it at 0.97 alpha whatever is underneath. The first
+                  version of this tested both, took the worse of the two, and
+                  sent back a poster whose left circles were all correct
+    2. LIGHTNESS  does each band still read the way the layout says it does?
+                  add_labels.py picks white or near-black ink from that flag
+                  before it has seen the photograph, so a band that flipped
+                  loses its caption entirely
+    3. SUBJECT    is the thing the row is about actually on the left? Measured as
+                  the centroid of the band's detail in x. A share-of-the-left-
+                  third test was tried first and is too weak: the STAND UP band,
+                  whose man is squarely in the middle, passed it at 35% against a
+                  34% floor. The centroid says so and there is no arguing with it
+    4. RIGHT      is the right third quiet? Anything drawn there survives past
+                  the dial's disc and nudges the wave's tip
+    5. FOOTER     is the strip under the last band empty? The day bar goes there
+                  and has nothing to hide behind
+
+    python3 check_scene.py firsthour
+"""
+import argparse
+import json
+import sys
+
+import numpy as np
+from PIL import Image
+
+# A flat disc left standing measures std 0.8-8; a photograph painted over the
+# mark measures 24-79. Both ends measured on the two firsthour posters, so the
+# line between them is drawn where there is nothing near it.
+MARK_STD = 15.0
+LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
+SUBJECT_X = 0.40            # the detail's centre of mass, as a fraction of the
+                            # width. The left circle sits at 16%, so a subject
+                            # built around it lands well under this
+
+
+def luma(a):
+    return float(np.dot(a.reshape(-1, 3).mean(axis=0), (0.299, 0.587, 0.114)))
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("topic")
+    p.add_argument("--poster")
+    p.add_argument("--layout")
+    a = p.parse_args()
+    poster = a.poster or f"{a.topic}.jpeg"
+    layout = a.layout or f"base_{a.topic}_layout.json"
+
+    img = np.asarray(Image.open(poster).convert("RGB")).astype(np.float32)
+    H, W, _ = img.shape
+    L = json.load(open(layout))
+    k = W / 1536.0
+    yy, xx = np.mgrid[0:H, 0:W]
+    bad = []
+
+    print(f"{poster}  {W}x{H}\n")
+    print("  band  left mark      lightness         detail centre   right third")
+    for i, row in enumerate(L["rows"]):
+        y0, y1 = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
+        band = img[y0:y1]
+        cy, r = row["cy"] * k, row["r"] * k
+
+        m = np.hypot(xx - L["anchor_l"] * k, yy - cy) < r * 0.6
+        std = float(img[m].std(axis=0).mean())
+        marks_ok = std >= MARK_STD
+
+        lu = luma(band)
+        want_light = bool(row["light"])
+        light_ok = (lu >= LIGHT_LUMA) == want_light
+
+        # Where the picture's detail is. A subject on the left puts it there; the
+        # empty half of a bright kitchen puts almost none anywhere.
+        det = np.abs(np.diff(band.mean(axis=2), axis=1))
+        cols = det.sum(axis=0)
+        tot = float(cols.sum())
+        cx_det = float((cols * np.arange(len(cols))).sum() / tot / len(cols)) if tot else 0.5
+        third = det.shape[1] // 3
+        share = float(det[:, :third].sum() / tot) if tot else 0.0
+        right = float(det[:, 2 * third:].sum() / tot) if tot else 0.0
+        subj_ok = cx_det <= SUBJECT_X
+        right_ok = right <= share
+
+        for ok, why in ((marks_ok, f"r{i+1} left circle still standing (std "
+                                   f"{std:.1f}, want >{MARK_STD:.0f}) - the "
+                                   f"photograph was painted around it, not over it"),
+                        (light_ok, f"r{i+1} is {'light' if lu >= LIGHT_LUMA else 'dark'} "
+                                   f"(luma {lu:.0f}) and the layout says "
+                                   f"{'light' if want_light else 'dark'} - the caption "
+                                   f"will be drawn in the wrong ink"),
+                        (subj_ok, f"r{i+1} subject is not on the left - the "
+                                  f"picture's detail centres at {100*cx_det:.0f}% "
+                                  f"of the width, want under {100*SUBJECT_X:.0f}%"),
+                        (right_ok, f"r{i+1} right third is busier than the left "
+                                   f"({100*right:.0f}% against {100*share:.0f}%)")):
+            if not ok:
+                bad.append(why)
+
+        print(f"   {i+1}    {std:5.1f} {'ok ' if marks_ok else 'NO '}   "
+              f"{lu:5.1f} {'light' if lu >= LIGHT_LUMA else 'dark ':<5} "
+              f"{'ok ' if light_ok else 'NO '}   "
+              f"at {100*cx_det:3.0f}% {'ok ' if subj_ok else 'NO '}   "
+              f"{100*right:4.0f}% {'ok ' if right_ok else 'NO '}")
+
+    # the footer, where the day bar goes
+    f0, f1 = int(2476 * k), int(2585 * k)
+    foot = img[f0:f1]
+    fd = float(np.abs(np.diff(foot.mean(axis=2), axis=1)).mean())
+    foot_ok = fd < 1.5
+    print(f"\n  footer strip y {f0}-{f1}: detail {fd:.2f} "
+          f"{'ok - empty, the day bar can go there' if foot_ok else 'NO - something is drawn there'}")
+    if not foot_ok:
+        bad.append("the strip under the last band is not empty")
+
+    if bad:
+        print(f"\nSEND IT BACK - {len(bad)} thing(s) to fix:")
+        for w in bad:
+            print(f"  - {w}")
+    else:
+        print("\nGOOD ENOUGH TO RENDER")
+    sys.exit(1 if bad else 0)
+
+
+if __name__ == "__main__":
+    main()
