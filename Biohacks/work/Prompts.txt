@@ -103,7 +103,7 @@ cut. Same trick as the sun in row 1.
 
 
 ================================================================================
-sugar      BLOOD SUGAR / FIVE FIXES, NO DIET               glyph
+sugar      BLOOD SUGAR / FIVE FIXES, NO DIET               scene
 ================================================================================
 
 ../../.venv/bin/python ../../engine/recolor_base.py \
@@ -117,8 +117,25 @@ sugar      BLOOD SUGAR / FIVE FIXES, NO DIET               glyph
   -l base_sugar_layout.json -o sugar_labelled.png \
   --labels 'VEG FIRST|SUGAR SPIKE,LUNCH WALK|GLUCOSE PEAK,STAND UP|GLUCOSE SWING,WALK MORE|DEATH RISK,EARLY DINNER|NIGHT GLUCOSE'
 
-./render.sh sugar 'auto:VEG FIRST@12:30,WALK AFTER LUNCH@13:20,STAND UP@15:00,7000 STEPS@18:00,LAST MEAL EARLY@20:00'
+./render.sh sugar 'auto:VEG FIRST@12:30,WALK AFTER LUNCH@13:20,STAND UP@15:00,7000 STEPS@18:00,LAST MEAL EARLY@20:00' sugar_labelled.png
 
+Scenes, and this is the set to copy the shape of - it passed every check on the
+first generation, which none of the others did:
+
+  1 dark   a wide bowl at the far left of a dark table heaped with roasted red
+           peppers and tomatoes, warm light from the left making the reds glow
+  2 light  legs mid-stride at the far left on a smooth pale path through a
+           bright sunlit park, vivid green lawn behind washing away to the right
+  3 dark   a person at a raised desk at the far left of a dim office, a tall
+           window right behind them so cool daylight floods past their shoulder
+  4 light  walking shoes mid-step at the far left on a broad pale pavement, low
+           golden-hour sun raking in from the left with one long soft shadow
+  5 dark   a laid dinner table at the far left of a dark room, a wide window
+           behind it with a deep rose dusk sky spilling that colour to the right
+
+Every one of the five puts a light source or a coloured mass at the far left and
+lets it carry rightwards. That is the whole trick, and it is why the joins came
+in at 117, 144, 33, 141 and 82 without a second attempt.
 All five dials are `down`, so all five rings are blue - which turns out to read
 as one argument rather than as five facts. Worth doing again on a topic that has
 one direction.
