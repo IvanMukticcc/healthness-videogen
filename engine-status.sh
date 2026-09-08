@@ -10,11 +10,16 @@
 #   same              a copy, byte for byte identical to the engine
 #   stale             a copy of an older engine, and which commit it came from
 #   diverged          a copy that has been changed, and by how much
+#
+# Both the variant folder and its work/ are looked in. The tools are called from
+# work/, so that is where a copy lands; until the folders were split on the 7th
+# they sat one level up, and old checkouts still have them there.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 ENGINE="$ROOT/engine"
 VARIANTS=(${1:-Foods Micro Exercise})
-FILES=(make_base.py recolor_base.py add_labels.py check_base.py flowanim.py
+FILES=(make_base.py recolor_base.py grab.py add_labels.py check_base.py flowanim.py
+       impact.py
        base_layer.png ribbon_mask.png ribbon_rgba.png source_wave_poster.jpeg)
 
 # every past version of engine/<file>, so a stale copy can be dated
@@ -35,23 +40,25 @@ for v in "${VARIANTS[@]}"; do
     [ -d "$ROOT/$v" ] || continue
     copies=0; same=0; stale=0; diverged=0; lines=""
     for f in "${FILES[@]}"; do
-        [ -f "$ROOT/$v/$f" ] || continue
+      for p in "$v/$f" "$v/work/$f"; do
+        [ -f "$ROOT/$p" ] || continue
         copies=$((copies + 1))
         a=$(shasum -a 256 "$ENGINE/$f" | cut -c1-64)
-        b=$(shasum -a 256 "$ROOT/$v/$f" | cut -c1-64)
+        b=$(shasum -a 256 "$ROOT/$p" | cut -c1-64)
         if [ "$a" = "$b" ]; then
-            same=$((same + 1)); lines+="      same       $f\n"; continue
+            same=$((same + 1)); lines+="      same       $p\n"; continue
         fi
         if from=$(past_commit "$f" "$b"); then
-            stale=$((stale + 1)); lines+="      stale      $f  (engine of $from)\n"; continue
+            stale=$((stale + 1)); lines+="      stale      $p  (engine of $from)\n"; continue
         fi
         diverged=$((diverged + 1))
         if [ "${f##*.}" = "py" ]; then
-            n=$(diff "$ENGINE/$f" "$ROOT/$v/$f" | grep -c '^[<>]')
-            lines+="      diverged   $f  ($n lines apart from the engine)\n"
+            n=$(diff "$ENGINE/$f" "$ROOT/$p" | grep -c '^[<>]')
+            lines+="      diverged   $p  ($n lines apart from the engine)\n"
         else
-            lines+="      diverged   $f\n"
+            lines+="      diverged   $p\n"
         fi
+      done
     done
     if [ "$copies" -eq 0 ]; then
         printf "  %-16s calls the engine, keeps no copy\n" "$v"

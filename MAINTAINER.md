@@ -6,7 +6,7 @@ too - then this.
 
 ## The job
 
-1. **Keep the engine one engine.** Five tools, three authored wave assets, one
+1. **Keep the engine one engine.** Six tools, three authored wave assets, one
    copy. `./engine-status.sh` must say every variant calls it and keeps none.
    When it stops saying that, someone forked a tool; read the diff and put the
    difference where it belongs before it grows.

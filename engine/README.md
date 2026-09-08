@@ -1,6 +1,6 @@
 # The engine
 
-Five tools and three authored assets. Everything that makes a Healthness Shorts
+Six tools and three authored assets. Everything that makes a Healthness Shorts
 poster move is here, and **nowhere else**.
 
     make_base.py        rebuilds base_layer.png, ribbon_mask.png and ribbon_rgba.png
@@ -8,6 +8,9 @@ poster move is here, and **nowhere else**.
                         same flags reproduce all three byte for byte
     recolor_base.py     a palette and a title -> base_<topic>.png, its _clean copy
                         and its _layout.json
+    grab.py             the poster the generator handed back, out of Downloads and
+                        into <topic>.jpeg beside the caller. The size is the whole
+                        safety net: nothing that is not 1536x2752 is renamed
     check_base.py       did the generator leave the waves alone?
     add_labels.py       the row captions, all ten at one size
     flowanim.py         the animator
@@ -23,7 +26,7 @@ poster move is here, and **nowhere else**.
 `../engine/<tool>.py` with its own python, and keeps only what is its own: its
 overlays, its prompt, its palettes, its output.
 
-This is not tidiness. Copies were how the same five tools ended up at three
+This is not tidiness. Copies were how the same tools ended up at three
 different generations at once: on 7 September 2026 Micro was running
 `add_labels.py` from the checkpoint of the 7th, `make_base.py` from the one after
 it and `check_base.py` from the 6th, while Exercise had quietly changed

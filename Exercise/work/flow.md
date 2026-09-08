@@ -41,7 +41,7 @@ Run everything from inside `Exercise/work/`. It writes nothing outside itself.
 | `muscle_overlay.py` | where the badges go and how they enter. Imported by `flowanim.py` |
 | `muscle_audio.py` | the hit, and the bed. Both synthesised |
 | `exercises.json` | lift → the muscles it works, prime mover first |
-| `grab.py` | takes the newest 1536×2752 image out of Downloads and names it `<topic>.jpeg` |
+| `../../engine/grab.py` | takes the newest 1536×2752 image out of Downloads and names it `<topic>.jpeg` |
 | `clean_poster.py` | puts the base back where the generator drew outside its brief |
 | `left_disc.py` | fills the left circle with that row's wave colour, in the base and its clean copy |
 | `render.sh` | animate, sound, mux |
@@ -93,7 +93,7 @@ what does the work and goes in unchanged. Filled examples are in `Prompts.txt`.
 The generator now fills **only the left circle**. Say so; it is the one thing
 about this version that a prompt copied from the food version gets wrong.
 
-**3. The user returns the generated poster.** It does not have to be moved by hand — `../.venv/bin/python grab.py <topic>` takes the newest file in Downloads whose size is exactly 1536×2752 and renames it `<topic>.jpeg` here. The size is the safety net: a screenshot or a photo is not that, and the generator's own filename changes every time. Then check it before spending time on it:
+**3. The user returns the generated poster.** It does not have to be moved by hand — `../.venv/bin/python ../../engine/grab.py <topic>` takes the newest file in Downloads whose size is exactly 1536×2752 and renames it `<topic>.jpeg` here. The size is the safety net: a screenshot or a photo is not that, and the generator's own filename changes every time. Then check it before spending time on it:
 
 ```
 .venv/bin/python check_base.py <poster> --base work/base_<topic>.png

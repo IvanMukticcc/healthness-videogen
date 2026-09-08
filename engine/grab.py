@@ -12,10 +12,11 @@ topic's base - which check_base.py catches only because the palette differs.
 So: newest image in Downloads whose size is exactly the poster's, moved in as
 <topic>.jpeg. The size check is the whole safety net. A screenshot, an app icon
 or a photo is not 1536x2752, and refusing is better than renaming the wrong file
-into place.
+into place. All three variants generate at that size, so the default fits them
+all; the poster lands where the caller stands, which is the variant's work/.
 
-    python3 grab.py forgotten
-    python3 grab.py forgotten --dir ~/Desktop --keep
+    ../.venv/bin/python ../../engine/grab.py forgotten
+    ../.venv/bin/python ../../engine/grab.py forgotten --dir ~/Desktop --keep
 """
 import argparse
 import os
