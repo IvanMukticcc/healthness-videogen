@@ -104,10 +104,16 @@ def main():
     if ours >= OURS_DIFF:
         print(f"\n  THIS IS NOT A POSTER OF base_{a.topic}.png. The title band is "
               f"{ours:.0f} levels from the base (ours measures ~4).\n"
-              f"  grab.py takes the newest 1536x2752 file in Downloads and cannot "
-              f"know whose it is,\n  and every variant shares this base geometry - "
-              f"so the wave check passes on someone\n  else's poster. Put it back "
-              f"where it came from and grab again.")
+              f"\n  It is almost certainly ANOTHER VARIANT'S, and there is nothing "
+              f"wrong with it.\n  Do not regenerate it. Put it back in ~/Downloads "
+              f"under its own name so whoever\n  it belongs to can still grab it, "
+              f"then grab again once ours has arrived.\n"
+              f"\n  Why nothing else caught it: grab.py takes the newest 1536x2752 "
+              f"file in\n  Downloads and cannot know whose it is - that size "
+              f"identifies a poster, not a\n  variant, and every variant generates "
+              f"at exactly it. And every variant shares\n  this base geometry, so "
+              f"check_base.py's wave test passes across variants by\n  construction. "
+              f"`grab.py --keep` copies instead of moving and avoids the whole class.")
         sys.exit(1)
     print(f"  from our base (title band {ours:.1f} levels off, limit {OURS_DIFF:.0f})\n")
     print("  band  left mark      lightness          the join     right third")
