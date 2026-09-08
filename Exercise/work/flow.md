@@ -116,8 +116,19 @@ identical in the two, so the animator reads it as design rather than as a guide
 mark to wipe. Both files are written in place, and nothing needs moving: the base
 is already in `../INPUT/`, which holds base images and nothing else.
 
-**2. Give the user the prompt**, whole and ready to paste, and tell them to
-attach `base_<topic>.png`. The template is in `ImageSwap.txt`; the opening
+**2. Give the user the prompt**, whole and ready to paste, and put the base on
+the clipboard for them in the same breath:
+
+```
+osascript -e 'set the clipboard to (read (POSIX file "'"$PWD"'/../INPUT/base_<topic>.png") as «class PNGf»)'
+```
+
+It lands as a PNG - `osascript -e 'clipboard info'` says `«class PNGf», 763267`
+against a 763 KB file - so it pastes straight into the generator with ⌘V and
+nobody has to find the folder. `open ../INPUT` is the fallback if the clipboard
+is wanted for something else.
+
+Tell them to attach `base_<topic>.png`. The template is in `ImageSwap.txt`; the opening
 paragraph is what does the work and goes in unchanged. Filled examples are in
 `Prompts.txt`. **`PROMPTING.md` is why it says what it says** - read it before
 changing a word of the template, because every line in it was paid for by a

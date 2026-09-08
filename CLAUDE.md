@@ -99,6 +99,17 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    what must be identical is never regenerated. Restoring is fine.
    Reconstructing is not.
 
+   **A base element that is gone is a regeneration, full stop** - stripes,
+   waves, bars, logo. No deciding whether it can be worked around. The user set
+   this on 9 September, after part 18 came back with artwork 15 to 64px into
+   caption bars 78px tall, on all ten bars, against a historic worst of 7.
+   Restoring the bars there would not have been putting base pixels back: what
+   had spilled into them was the bowls and the organs, so the restored bar would
+   have cut those shapes off with a hard horizontal edge. That is the boundary
+   the allowance above already had and did not say - restoration is for a region
+   with nothing that legitimately belongs over it. Where a case sits between the
+   two, it is a regeneration, because deliberating is how a bad poster ships.
+
 8. **The prompt is not a file.** It is written in the terminal for the topic at
    hand and handed over whole, ready to paste. A saved copy goes stale in an
    afternoon.

@@ -67,6 +67,39 @@ for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$BASE" \
          "$DIR/base_${TOPIC}_layout.json" "$BED"; do
     [ -f "$f" ] || { echo "missing: $f" >&2; exit 1; }
 done
+# Circle mode or scene mode, decided by the poster rather than by a flag. In
+# circle mode the row is a colour and the athlete stands on a drawn disc; in
+# scene mode the row is a photograph and the disc must not exist. The two want
+# opposite settings for four flags, and a flag somebody has to remember is a
+# flag somebody forgets at midnight - so the poster is asked instead. The left
+# margin of each stripe is the one place a circle-mode poster never draws:
+# measured over four of them it differs from the base by 1.1 to 2.3, and the
+# scene poster of 8 September 2026 by 26 to 114. Nothing lives between.
+SCENE=$(../.venv/bin/python - "$POSTER" "$BASE" "$DIR/base_${TOPIC}_layout.json" <<'PYMODE'
+import sys, json, numpy as np
+from PIL import Image
+poster, base, layout = sys.argv[1:4]
+p = np.asarray(Image.open(poster).convert("RGB")).astype(float)
+b = np.asarray(Image.open(base).convert("RGB")).astype(float)
+L = json.load(open(layout))
+m = [float(np.abs(p[r["stripe"][0] + 8:r["stripe"][1] - 8, 4:20]
+                  - b[r["stripe"][0] + 8:r["stripe"][1] - 8, 4:20]).mean()) for r in L["rows"]]
+print(1 if float(np.median(m)) > 10 else 0)
+PYMODE
+)
+if [ "$SCENE" = "1" ]; then
+    # Every one of these is wrong in the other mode. --halo and the anchored wipe
+    # both put the CLEAN BASE back where they fire, which on a photograph is a
+    # block of flat row colour cut into the picture; refine_art looks for the
+    # lifter by difference from the base, which on a full-bleed photograph is the
+    # whole band; and the body's disc has no row colour to take, so it goes on
+    # glass. Biohacks found the first two the same way and named them first.
+    SCENE_FLAGS="--halo 0 --anchor-tol 0 --lifter-r 0 --body-disc glass"
+    echo "== scene poster: rows are photographs, so no base is put back into them"
+else
+    SCENE_FLAGS="--anchor-tol $ANCHOR_TOL"
+fi
+
 # Is this a generated poster at all? render.sh writes straight into a day folder,
 # and a labelled BASE is a file that plausibly exists in here - the six recipes in
 # Prompts.txt were captioning the base until 8 September 2026. Handed one, every
@@ -105,7 +138,7 @@ echo "== liquid, badges and bodies"
     --base "$DIR/base_${TOPIC}_clean.png" \
     --anchored "$BASE" \
     --layout "$DIR/base_${TOPIC}_layout.json" \
-    --drops 0 --reach 0 --anchor-tol "$ANCHOR_TOL" \
+    --drops 0 --reach 0 $SCENE_FLAGS \
     --muscles "$MUSCLES" --muscle-times "$MUSCLE_TIMES" \
     --muscle-cues "${TOPIC}_cues.txt" \
     --finale auto --surge "$SURGE" --finale-cue "${TOPIC}_finale.txt" \

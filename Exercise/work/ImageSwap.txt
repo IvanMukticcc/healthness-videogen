@@ -1,6 +1,27 @@
 ADDING A TOPIC TO base_<topic>.png
 ==================================
 
+TWO MODES, AND THEY WANT DIFFERENT PROMPTS AND DIFFERENT BASES.
+
+  SCENE MODE   (from 8 September 2026, and what the user asked for)
+      Every row becomes a photograph of the place the lift happens - a gym at
+      night, a bright loft, a studio, a street - with the athlete in the room and
+      the liquid coming out of the movement. Build the base WITHOUT left_disc.py:
+      in this mode the circles are alignment marks the photograph is painted over,
+      not a disc anybody stands in. The prompt is the first one below.
+
+  CIRCLE MODE   (the first thirteen topics)
+      The athlete stands in a drawn disc in the row's own wave colour, cut out on
+      the row's flat colour. left_disc.py draws that disc into the base. The
+      prompt is the second one below.
+
+`render.sh` decides which one a poster is by measuring it rather than by being
+told: the left margin of each row stripe is the one place a circle-mode poster
+never draws, and it differs from the base by 1.1-2.3 there against 26-114 for a
+photograph. In scene mode it turns off the two base-repair passes, the lifter
+silhouette search and the row-coloured disc under the body, all four of which are
+right in the other mode and wrong here.
+
 The base layer already contains everything that must never change: the five row
 background stripes, the five liquid waves, the title and the Healthness logo.
 The waves are the animated part, and the animation reads them from
@@ -59,7 +80,54 @@ GEOMETRY OF THE BASE LAYER  (1536 x 2752)
   obeys the sentence rather than the mark. A fourteenth is 110, just outside them.
 
 
-=== THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
+=== THE PROMPT, SCENE MODE ===  (fill the five rows, attach base_<topic>.png)
+
+Use the attached image as the base. Keep everything I list as final and replace only what I ask for.
+
+THE FIVE COLOURED LIQUID WAVES ARE FINAL AND MUST NOT CHANGE. Do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss. Do not turn them into splashes, spray, droplets, mist or particles. Do not add a glow, a halo, a shadow or a reflection around them. They must come back pixel for pixel where they are now - everything else in the image is being replaced around them.
+
+EVERY WAVE IS OPAQUE AND STAYS OPAQUE. Nothing behind a wave shows through it: no window, no wall, no machine, no room. Do not make a wave glassy, translucent, transparent or misty, and do not soften it into light. It is a solid coloured liquid lying in front of the scene, and where anything in the room passes in front of it, that object is what covers it.
+
+THE TITLE AT THE TOP AND THE LOGO AT THE BOTTOM ARE FINAL. Do not redraw, move or restyle either. ADD NO LOGO ANYWHERE - there is exactly one logo in this image and it is at the very bottom; do not add a second one at the top, in a corner, or on a wall inside a photograph. ADD NO TEXT OF ANY KIND: no labels, no captions, no numbers, no watermarks. All text is added later, outside the generator.
+
+REPLACE EACH OF THE FIVE HORIZONTAL BANDS WITH A PHOTOGRAPH. Each band is a full-bleed photographic scene that fills its band from the left edge to the right edge and from its top edge to its bottom edge, running behind the liquid wave. The five bands are five separate photographs with a clean horizontal cut between them - they do not blend into each other. The photograph reaches all four edges of its band: no margin, no border, no strip of flat colour anywhere.
+
+KEEP EACH BAND'S LIGHTNESS EXACTLY AS IT IS NOW. Bands 1, 3 and 5 are dark and their photographs must be dark overall - night, shadow, deep tone. Bands 2 and 4 are light and their photographs must be light overall - bright, airy, pale. This is not a style preference: the text added afterwards takes its colour from that, and a band that changes its lightness loses its caption entirely.
+
+EACH BAND CONTAINS TWO FAINT CIRCLES AND TWO FAINT BARS. These are alignment marks, not artwork. The photograph is painted over all four of them, so that none of them is left anywhere in the finished image. Do not replace a mark with a plain disc, a coloured circle, a white circle, a dark circle, a blurred patch or a soft glow - there must simply be photograph there, continuous with the scene around it, as if the marks had never existed. Nobody stands inside a circle; the athlete stands in the room.
+
+THE ATHLETE IS AT THE FAR LEFT OF HIS BAND, HIS CENTRE ABOUT ONE SIXTH OF THE IMAGE WIDTH IN FROM THE LEFT EDGE - where the faint circle is now. He is the biggest thing in the band and fills most of its height. He is part of the photograph and bleeds into the scene: no circle, no disc, no frame, no vignette, no cut-out edge and no border behind him. Do not centre him, and let nothing else in the band compete with him.
+
+THE LIQUID MUST LOOK LIKE IT COMES OUT OF THE MOVEMENT. The coloured wave begins with a blunt cut about one sixth of the way in, and that cut must not be visible in the finished image: place the athlete so the wave's left end passes behind him or into him, and so the two overlap for a long distance rather than merely touching. Where they meet, the light in the scene is exactly the wave's own colour - the lit haze, the LED strip, the glow off the equipment is the same colour as the wave it feeds.
+
+THE EXERCISE NAMED IN EACH ROW IS THE EXERCISE THAT MUST BE IN IT. Every row below names one lift on one piece of equipment. Draw that lift, on that equipment, and nothing else: not a similar movement, not another exercise in the same gym, not a different tool that looks good in the frame.
+
+DO NOT DRAW ANY OBJECT IN THE RIGHT THIRD OF A BAND - no person, no second athlete, no ring, no diagram, no machine, no glow. Only the room's own background belongs there; finished artwork is placed over it later.
+
+KEEP THE BOTTOM LEFT OF EACH BAND QUIET - the lower left quarter is a plain even surface with no equipment, no bench, no cable, no rope, no bright edge and no busy texture. A caption is placed there afterwards and needs somewhere calm to sit. A plain floor or an even wall is what belongs there.
+
+THE SAFE AREA APPLIES TO THE ATHLETE, NOT TO THE BACKGROUND. The photograph reaches every edge; what stays one fourteenth of the width clear of the left and right edges is the athlete himself.
+
+Every athlete is caught at the hardest instant of the rep with the working muscle visibly under load, seen from a low three-quarter angle, never flat from the side and never resting between reps.
+
+Row 1 (dark): <THE ROOM, ITS LIGHT IN THE WAVE'S COLOUR - THE ATHLETE AT THE FAR
+LEFT DOING <LIFT 1>, CAUGHT AT ITS HARDEST INSTANT - WHAT THE LIGHT DOES AS IT
+CARRIES RIGHT - WHAT IS IN THE RIGHT THIRD AND ACROSS THE LOWER LEFT>
+
+Row 2 (light): <same four parts, and the room is bright>
+
+Row 3 (dark): <same four parts>
+
+Row 4 (light): <same four parts, and the room is bright>
+
+Row 5 (dark): <same four parts>
+
+The photographs are realistic and cinematic, shot on a real camera: shallow depth of field, natural or practical light, one clear subject, no studio backdrop, no illustration, no 3D render, no stock-photo staging.
+
+=== END OF PROMPT ===
+
+
+=== THE PROMPT, CIRCLE MODE ===  (fill the five rows, attach base_<topic>.png)
 
 Use the attached image as the finished background. Add elements on top of it.
 
@@ -131,15 +199,22 @@ generator behaviours.
   pass are both computed from the poster. That case is a regeneration.
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
+WHY THERE IS NO NEGATIVE PROMPT
 
-text, letters, caption, label, title, second person, figure on the right, body
-on the right, recoloured circle, white circle behind the athlete, black circle
-behind the athlete, second circle, resized circle, anatomy diagram, muscle chart, object in the right circle, gym
-background, floor, mirror, weight rack, changed liquid, redrawn wave, different
-wave shape, moved wave, recoloured wave, extra liquid, droplets, splash, spray,
-particles, sparkles, glow, halo, drop shadow, changed background colour, changed
-logo, watermark
+There was one here until 8 September 2026 and it was doing harm. It listed
+`text, letters, caption, label, title` and `changed logo` while the body of the
+same prompt says the title is already in the image, the logo is final, and the
+bars under the circles are reserved for text added later and must be left clear.
+Handed both, a generator can read the negative field as permission to remove
+exactly what the base drew - the caption bars among them.
+
+The body carries every one of those prohibitions already, and carries them in
+context: it names what is there and what it is. That is the difference between
+"the title is already drawn, do not add another" and the bare noun "title".
+PROMPTING.md has the long version.
+
+If some specific failure turns out to have been held back only by that list, it
+is a finding worth reporting - not a reason to put the block back.
 
 
 AFTER GENERATING

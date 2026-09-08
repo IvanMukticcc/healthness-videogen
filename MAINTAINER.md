@@ -148,6 +148,14 @@ files you touched, by name.
   generator, nineteen files - and the prediction was right. Splitting it is
   still the answer and still nobody's current task.
 
+  Micro's number for it, having done its own share: 21 files. Nineteen were
+  generated artefacts that had to be touched only because they are what the user
+  actually pastes - and they are also why the fault survived, since fixing the
+  template alone would have left nineteen live copies of the bad prompt in the
+  folder. So the test for whatever the split turns into is theirs: **changing one
+  sentence changes one file, and every generated prompt is a view rather than a
+  copy.**
+
 - **The prompt template is the third thing that exists in three copies.** After
   the tools and the badge synthesis, `ImageSwap.txt` is now forked across Foods,
   Micro and Exercise, and it drifts the same way: Micro measured three faults on

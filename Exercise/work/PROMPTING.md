@@ -11,18 +11,27 @@ poster that exists.
 
 ## The one sentence
 
-**The generator is being asked for one photograph per row, standing in a circle
-that is already drawn.** Not the circle - the base draws that, in the row's own
-wave colour, at 0.85 shade, identical on every row of every topic. Not the body
-on the right, not the wave, not the title, not the caption bars. One athlete,
-cropped by a disc he did not bring.
+There are two modes now and the sentence changes between them. **In scene mode
+the generator is being asked to paint five rooms around five things it must not
+touch.** In circle mode - the first thirteen topics - **it is being asked for one
+photograph per row, standing in a circle that is already drawn.**
 
-Everything hard about this prompt follows from that. An image model has no
-concept of *leave this alone*; it has a concept of *this is what the picture
-looks like*. So most of the prompt's length describes what is already correct in
-the attached image, in the language of finished artwork rather than of
-prohibition - and the one thing it does ask for is described as fitting a mark
-rather than as being placed somewhere.
+In circle mode, what it is *not* asked for is the load-bearing half: not the
+circle - the base draws that, in the row's own wave colour, at 0.85 shade,
+identical on every row of every topic - not the body on the right, not the wave,
+not the title, not the caption bars. One athlete, cropped by a disc he did not
+bring. In scene mode the same list holds minus the disc, and the row itself
+becomes the thing being asked for.
+
+Everything hard about this prompt follows from that, in both modes. An image
+model has no concept of *leave this alone*; it has a concept of *this is what the
+picture looks like*. So most of the prompt's length describes what is already
+correct in the attached image, in the language of finished artwork rather than of
+prohibition.
+
+The sections between here and **Scene mode** were measured in circle mode. Most
+of them carry over - the lightness rule, the named-row colour rule, naming a
+checkable instant rather than a dynamic pose - and where one does not, it says so.
 
 ---
 
@@ -184,6 +193,76 @@ Every one that has worked has the same four parts in the same order:
     frame.
       ^ what has to show, and what identifies the lift. The right caption names
         the muscle group, so the photograph has to earn it
+
+---
+
+## Scene mode, and what it cost to get right
+
+The user asked for it on 8 September after seeing the two variants side by side:
+the athlete in the room he trains in, not on a coloured coin, and the liquid
+merging with the picture rather than lying on it. Two generations, and the second
+shipped.
+
+**What the first one got wrong, and what fixed it.**
+
+- **it added a second logo.** 6764 px of one above the title, where the base
+  already carries one at the foot. The old wording said the logo was final, which
+  it read as "do not change the one that is there". What holds is naming the
+  count: *there is exactly one logo in this image and it is at the very bottom;
+  do not add a second one at the top, in a corner, or on a wall inside a
+  photograph.* 0 px the next time
+- **it made a wave translucent.** Row 2 came back with the room showing through
+  it - lovely, and inert: the animator will not paint over what differs from the
+  base, so **9.1% of that wave ever moved** against 20-51% on the rows it left
+  alone. The paragraph that fixed it says the wave is opaque, that nothing behind
+  it shows through, and that where something in the room crosses it, that object
+  is what covers it. All five waves came back at 3.0-5.6 mean difference and the
+  liquid ran 15-49%
+- **it drew a different exercise.** Row 5 asked for a kneeling cable crunch and
+  came back as battle ropes - a better photograph, the wrong lift, and the caption
+  and three badges above it would all have been lying. Naming the lift is not
+  enough; what worked was naming the apparatus, the position and then the
+  exclusions: *this is a kneeling cable crunch on a cable machine - not battle
+  ropes, not a rope slam, and there is no thick heavy rope anywhere in the
+  picture*
+
+**And two things that are ours rather than the prompt's.** A photographic row has
+no row colour to take, so the disc under the body goes on glass - near-black with
+a bright rim - and the figure is drawn for a dark ground on every row, because
+left on the row's own flag it came out charcoal on charcoal. `render.sh` decides
+which mode a poster is by measuring it: the left margin of each stripe differs
+from the base by 1.1-2.3 on a circle poster and 26-114 on a photograph.
+
+**The palette stops being free.** Biohacks records that a wave whose colour has
+no source in the photograph cannot be joined to it. Ours already may not be red,
+orange or amber because the badges are - which leaves magenta, violet, cyan, teal
+and lime, all of which exist as gym light. So the topic, the palette and the five
+rooms are now chosen together, not in that order and then patched.
+
+---
+
+## Why there is no negative prompt
+
+There was one until 8 September and it was doing harm. It listed `text, letters,
+caption, label, title` and `changed logo` beside a body that says the title is
+already in the image, that the logo is final, and that the bars under the circles
+are reserved for text added later and must be kept clear. The user's report is
+that the generator sometimes deletes what it was told to keep, the caption bars
+among them.
+
+**A negative field and a body that describe the same image are two prompts, and
+on the nouns they share the one with less context wins.** "The title is already
+drawn, do not add another" and the bare noun "title" are not the same
+instruction. The body says what a thing is and where it is; the list says only
+its name, and a name is as easy to read as *remove this* as *do not add this*.
+
+Nothing was lost by dropping it. Every prohibition in that list is in the body
+already and in context - `DO NOT CHANGE THE ATTACHED IMAGE`, `ADD NO TEXT OF ANY
+KIND`, `THE RIGHT CIRCLE IS ALREADY FINISHED ARTWORK`, and the sentence that
+names what may not be put in the right circle covers the anatomy diagram and the
+muscle chart the list used to carry. If some failure turns out to have been held
+back only by that list, that is a finding to report, not a reason to restore the
+block.
 
 ---
 

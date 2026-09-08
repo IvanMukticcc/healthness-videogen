@@ -50,6 +50,27 @@ FIN_LIFT = 0.62     # multiplied, not mixed towards white
 FIN_GLOW = 0.85     # the bloom carries the brightness the wash used to
 
 
+def _glass(r, feather=2.0):
+    """The ground for a photographic row, where there is no row colour to take.
+
+    A disc built from the stripe colour is right when the row IS that colour and
+    wrong the moment the row is a photograph: on the light scene rows of the
+    first CONSTANT TENSION poster it came out as a pale grey coin on a white
+    wall, which reads as a sticker rather than as an instrument. Biohacks met the
+    same thing with its dials and put them on glass. So: near-black, mostly
+    opaque, with a bright rim - it works over a bright room and a dark one alike
+    because it does not try to belong to either.
+    """
+    D = int(round(r * 2))
+    yy, xx = np.mgrid[0:D, 0:D]
+    d = np.hypot(xx - (D - 1) / 2.0, yy - (D - 1) / 2.0)
+    a = np.clip((r - 1 - d) / feather, 0, 1)
+    rim = np.clip((d - (r - 3.0)) / 2.0, 0, 1) * a
+    col = (np.float32([18, 18, 22])[None, None, :] * (1 - rim[:, :, None])
+           + np.float32([235, 235, 240])[None, None, :] * rim[:, :, None])
+    return np.dstack([col, a * 255.0 * 0.88]).astype(np.float32)
+
+
 def _disc(r, rgb, light, feather=2.0):
     """The ground the figure stands on: the row's colour, a touch away from it,
     with a rim. Not the row's exact colour - a disc that matches its background
@@ -86,6 +107,11 @@ def plan(rows, layout, W, H, times, stagger=0.09, base=None, scale=2.20,
         cx = L["anchor_r"] * k
         cy = row["cy"] * k + dy * k
         light = bool(row["light"])
+        # On glass the ground is near-black whatever the row is, so the figure is
+        # drawn for a dark ground even on a light row. Left on the row's own flag
+        # it comes out dark on dark: the first scene render put a charcoal figure
+        # on a charcoal coin and only the lit muscles were visible.
+        fig_light = light and disc != "glass"
         view = muscles.view_for(names)
 
         bg = (30, 34, 42)
@@ -101,7 +127,7 @@ def plan(rows, layout, W, H, times, stagger=0.09, base=None, scale=2.20,
         # this is 4.4r and the arms hang a quarter of the poster out either side.
         size = int(round(r * scale))
         tiers = {m: t for m, t in names}
-        fig, planes = bodymap.layers(view, size, tiers, light=light,
+        fig, planes = bodymap.layers(view, size, tiers, light=fig_light,
                                      height=size * 0.98, top=size * 0.01)
 
         muscle = []
@@ -121,7 +147,8 @@ def plan(rows, layout, W, H, times, stagger=0.09, base=None, scale=2.20,
 
         out.append(dict(row=i, cx=cx, cy=cy, r=r, size=size, view=view, fig=fig,
                         muscle=muscle, light=light,
-                        disc=_disc(r, bg, light) if disc else None))
+                        disc=(_glass(r) if disc == "glass"
+                              else _disc(r, bg, light) if disc else None)))
     return out
 
 
@@ -194,8 +221,11 @@ def add_arguments(p):
                    help="figure height as a multiple of the guide circle's radius; over "
                         "2.0 the head and feet run past the disc, which is what stops it "
                         "reading as a sticker inside a button")
-    p.add_argument("--body-disc", type=int, default=1,
-                   help="0 stands the figure straight on the wave")
+    p.add_argument("--body-disc", default="1",
+                   help="1 takes the row's own colour, which is right when the row IS "
+                        "a colour. 'glass' is for a photographic row, where there is no "
+                        "row colour to take and a stripe-coloured coin reads as a "
+                        "sticker. 0 stands the figure straight on the picture")
     p.add_argument("--lifter-r", type=float, default=200.0,
                    help="how far out from the left circle to look for the lifter, in "
                         "1536-wide poster pixels. 0 leaves the animator's own reading "
@@ -275,7 +305,9 @@ def build(args, ctx):
     # background colour instead of one grey for all five.
     pl = plan(muscle_overlay.resolve(args.muscles), ctx["layout"], ctx["W"], ctx["H"],
               times, stagger=args.muscle_stagger, base=ctx["base"],
-              scale=args.body_scale, dy=args.muscle_dy, disc=bool(args.body_disc))
+              scale=args.body_scale, dy=args.muscle_dy,
+              disc=("glass" if str(args.body_disc).lower() == "glass"
+                    else bool(int(args.body_disc))))
     print("  bodies: " + ", ".join(f"r{i + 1} {x['view']}" for i, x in enumerate(pl)))
     return pl
 
