@@ -148,7 +148,7 @@ They did not arrive the same way: the water beds are cut from CC0 recordings and
 `Exercise/work/muscle_audio.py --bed`, and is in no licence file because nothing
 was downloaded to make it.
 
-Four more water beds landed on 9 September - `flow_river`, `flow_brook`,
+Four more water beds landed on 8 September - `flow_river`, `flow_brook`,
 `flow_stones`, `flow_shore` - because the soft one reads as a tap running
 indoors. Measured here: `flow_soft` puts 39.9% of its energy over 2kHz with a
 2916Hz centroid, which is a spout hitting a basin a foot from the mic; the new

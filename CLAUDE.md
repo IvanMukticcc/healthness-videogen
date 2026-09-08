@@ -101,7 +101,7 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
 
    **A base element that is gone is a regeneration, full stop** - stripes,
    waves, bars, logo. No deciding whether it can be worked around. The user set
-   this on 9 September, after part 18 came back with artwork 15 to 64px into
+   this on 8 September, after part 18 came back with artwork 15 to 64px into
    caption bars 78px tall, on all ten bars, against a historic worst of 7.
    Restoring the bars there would not have been putting base pixels back: what
    had spilled into them was the bowls and the organs, so the restored bar would

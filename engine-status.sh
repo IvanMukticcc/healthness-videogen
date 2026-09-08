@@ -74,7 +74,7 @@ done
 # a variant's work/ ahead of the stdlib for the whole render. So a file called
 # copy.py, json.py or types.py in either place breaks tools that never mention
 # it, at import time, before any of them can report anything. engine/copy.py did
-# exactly that to all four variants on 9 September and it took somebody noticing
+# exactly that to all four variants on 8 September and it took somebody noticing
 # a render that would not start. This is the check that was missing.
 #
 # Test it in a throwaway tree, never by planting a file in a live work/. The

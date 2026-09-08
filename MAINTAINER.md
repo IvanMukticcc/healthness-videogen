@@ -132,7 +132,7 @@ files you touched, by name.
   agent is free, that file should call the engine's and keep only its bed. Until
   then the two are identical and nothing is at risk, but it is a copy.
 - **The prompt template has now been fixed by hand a fourth time.** On
-  9 September the negative-prompt block came out of every one of them, because a
+  8 September the negative-prompt block came out of every one of them, because a
   separate negative field contradicts the body of the prompt: every variant's
   list contained `text, letters, caption, label, title` and three of them
   `logo`, while the body says the title and the logo are *already in the image
@@ -283,7 +283,7 @@ flag. It executes, it prints, and it is believed. A command that cries wolf is
 worse than one that does not run. So the check has three levels - grep the prose,
 run the command, and read the number it prints knowing what it should say.
 
-Swept across the four on 9 September, and two things I wrote here that day were
+Swept across the four on 8 September, and two things I wrote here that day were
 wrong. Both were caught by the variant they were written about, and both are
 worth keeping as method rather than as apology.
 

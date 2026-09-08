@@ -805,7 +805,7 @@ def main():
                    help="how different from the anchored base still counts as leftover circle")
     p.add_argument("--layout", help="the _layout.json the base wrote")
     p.add_argument("--caption-w", type=float, default=380)
-    # --anchor-r, --anchor-l and --anchor-r-x were here until 9 September. All
+    # --anchor-r, --anchor-l and --anchor-r-x were here until 8 September. All
     # three predated --layout and none of them had been read since it landed:
     # the circles come from the layout file now, as L["anchor_l"], L["anchor_r"]
     # and row["r"]. They parsed, and --anchor-r's help promised an off switch for
