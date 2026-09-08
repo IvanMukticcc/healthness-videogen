@@ -164,9 +164,10 @@ def finale(t0, seconds, sr=SR, root=420.0, gain=0.398, lead=0.0, dur=1.5):
 
     The level returned is the level it has to arrive at. Summed into the badge
     track and scaled with it, the chord rides a constant it has nothing to do
-    with - 1.41 dB under in Micro at 0.85, 4.15 under in Exercise at 0.62 - and
-    the one number here arrives as three. Its own input at unity, or divided by
-    the gain it is about to be multiplied by.
+    with - it did, for a while: 1.41 dB under in Micro at 0.85 and 4.15 under in
+    Exercise at 0.62, so the one number here arrived as three. Both give it its
+    own input at unity now. Its own input, or divided by the gain it is about to
+    be multiplied by; never summed into a track that is about to be scaled.
 
     The limiter stays idle either way - the mix peak is set by a badge, not by
     this.

@@ -284,16 +284,27 @@ corrected Exercise cut the chord measures 2.2dB **over** row 5 by mean over half
 a second and 1.0dB **under** it by peak, on the same track in the same window.
 Neither is wrong. A level quoted with no meter on it is half a number.
 
-**And the level it returns is the level it has to arrive at.** All three
-variants currently sum the finale into the same wav as their badge hits and then
-scale that wav by their own pop gain in the mix - 0.85 in Micro, 0.62 in
-Exercise, 0.80 in Biohacks. The chord is not a badge and has no business riding
-the badge gain. Measured, that delivers it **1.41dB under the chosen level in
-Micro and 4.15dB under in Exercise**: one number in this file arrives as three,
-which is the drift it is here to prevent, one layer further down than anyone was
-looking. Give it its own input at unity, or divide by the gain it is about to be
-multiplied by. Biohacks is unaffected in outcome only because it chose its 1.00
-on a finished cut and has therefore already paid for its 0.80.
+**And the level it returns is the level it has to arrive at.** All three variants
+once summed the finale into the same wav as their badge hits and then scaled that
+wav by their own pop gain in the mix - 0.85 in Micro, 0.62 in Exercise, 0.80 in
+Biohacks. The chord is not a badge and has no business riding the badge gain:
+measured, that delivered it **1.41dB under the chosen level in Micro and 4.15dB
+under in Exercise**, so one number in this file arrived as three - the drift it
+is here to prevent, one layer further down than anyone was looking for it. It
+took two variants each reporting "still under the row" and neither being able to
+reproduce the other's figure before anyone thought to ask which signal path was
+being measured.
+
+Micro and Exercise now give it its own input at unity. Biohacks passes an
+explicit 1.00 and is right in outcome for a different reason: it chose that
+number by ear on a finished cut with its own 0.80 already in the mix, which is
+the general lesson - **the level that counts is the one measurable at the end.**
+
+Where it lands now, each figure with its basis and its meter: Micro 0.5dB under
+its quietest row, finished mix, by mean; Exercise 1.7dB under row 5 on the same
+basis, and on the sfx track 2.2dB over that row by mean while 1.0dB under it by
+peak. Nobody has heard either yet - the first clips through the corrected routing
+come with the next topic in each folder.
 
 The limiter is idle at either level; the mix peak is set by a badge, not by the
 chord.
