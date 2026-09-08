@@ -232,11 +232,21 @@ of itself and the gongs lose 3.0 - the biggest sounds in the collection are the
 most impressive of the nine in headphones and the weakest of them in a feed.
 This one loses 0.8.
 
-Measured in a finished cut on half-second windows, with the bed ducked 2.9dB
-under it: the finale is -22.3dB mean at a -4.2dB peak, against -20.5 and -2.2
-for a badge row and -23.1 for the water alone. So it currently sits *under* a
-badge landing, which is a level decision rather than a sound one - the limiter's
-ceiling is -1.72dB, so there are about 2.5dB free above it in `gain`.
+`gain` is 0.398, which is 2dB over the 0.316 the chord was auditioned at, and
+that 2dB was not a taste. Three variants measured the same thing independently
+and none of them was asked to: at the audition level the cadence arrived 2.4dB
+under a Micro badge row, 2.9dB under an Exercise one in the mix and 3.9dB on its
+hits track alone, and 0.5dB over the water - the quietest of the three things in
+its own half second. A sound that answers a count cannot be that. At 0.398 it
+lands level with the row it closes: -0.5dB against a Micro row, -1.3dB against
+Exercise's heavier three-hit ones. The limiter is idle at either level; the mix
+peak is set by a badge, not by the chord.
+
+It is one number here rather than one per variant, deliberately. The level a
+shared sound arrives at is part of the sound, and tuned separately in two
+folders it becomes two sounds - which is what this file exists to stop. A
+variant whose texture genuinely differs passes its own `gain` and says why in
+its file, the way it would pass its own `root`.
 
 `lead` puts a riser in front, and is 0 because that is how the chord was picked.
 It is the only sound in the clip that says something is *about* to happen -

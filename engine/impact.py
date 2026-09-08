@@ -136,13 +136,28 @@ def riser(sr=SR, dur=0.26):
     return (x - lo) * (t / dur) ** 2.2 * 0.30
 
 
-def finale(t0, seconds, sr=SR, root=420.0, gain=0.316, lead=0.0, dur=1.5):
+def finale(t0, seconds, sr=SR, root=420.0, gain=0.398, lead=0.0, dur=1.5):
     """The chord, and the weight under it, laid at `t0`.
 
     The voices are an octave over the root the badges use, so the finale answers
     them from above rather than in among them. Underneath, one sine an octave
     *below* the root: on a phone it is felt rather than heard, and on anything
     else it is the difference between a chime and an arrival.
+
+    `gain` is 0.398 and not the 0.316 the chord was auditioned at, because three
+    variants measured the same thing independently and none of them was asked
+    to: at 0.316 the cadence arrives 2.4 dB under a Micro badge row, 2.9 under
+    an Exercise one in the mix and 3.9 on its hits track alone, and 0.5 dB over
+    the water. A sound that answers a count cannot be the quietest thing in the
+    bar it lands on. 0.398 puts it level with the row it closes - 0.5 dB under
+    on Micro, 1.3 under on Exercise's heavier three-hit rows - and the limiter
+    stays idle either way: the mix peak is set by a badge, not by this.
+
+    It is one number here rather than one per variant on purpose. The level a
+    shared sound arrives at is part of the sound; tuned in two folders it
+    becomes two sounds, which is what this file exists to stop. A variant whose
+    texture genuinely differs passes its own `gain` and says why - Biohacks
+    does, over sixteen ticks and a lock.
 
     The tail is cut to what is left of the clip and faded, never left to run off
     the end: the clip loops in a feed, and a chord still ringing on the last
