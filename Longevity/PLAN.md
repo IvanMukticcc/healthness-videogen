@@ -78,6 +78,40 @@ fasting hours. Exercise sits where the protocol puts it. The father is the spine
 the children were already attached to, and the poster is the first place that
 spine has ever been drawn.
 
+## The picture: photograph the outside, draw the inside
+
+This is the second structural break and it is what stops the category being a
+fifth instance of anything.
+
+Nobody can photograph autophagy. Nobody can photograph glycogen running out.
+Every child variant solves the "show the mechanism" problem by generating a
+picture of it — a bowl, an organ, a lifter — and this one cannot, because at
+hour 16 of a fast **there is nothing on the outside to see.** That is not a
+limitation to work around. It is the subject.
+
+So the poster is one fast seen two ways at once:
+
+    the band       PHOTOGRAPHED. One room, five hours. The last plate cleared,
+                   the evening, the dark, first light, the empty morning
+                   kitchen. Continuous - the same place, the same window, time
+                   moving through it. This is what the generator is for and it
+                   is the only thing it is asked for
+    the right      DRAWN. What is happening inside, which no camera can reach:
+    circle         the stage, lit on a body. Identical on every clip because it
+                   is authored, which is the rule the whole design rests on
+    the left       DRAWN. The hour, on a dial that counts to it and locks
+    circle
+
+**Outside is a photograph because it is real and changes; inside is a drawing
+because it is invisible and must not change.** Foods and Micro generate the
+subject. Exercise generates the lifter and draws the body. Biohacks draws
+everything, or photographs the whole band. This one splits the frame along what
+a camera can actually see, and the split is the point being made.
+
+It also gives the master prompt the one job image models are best at: **the same
+place, five times, as the light changes.** Not five subjects that must agree with
+each other - one subject that must agree with itself.
+
 ## The elements
 
     left circle    the hour. A dial that counts to it and locks
