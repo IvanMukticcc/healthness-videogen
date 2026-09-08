@@ -33,11 +33,11 @@ __pycache__/
 # re-cut - and a poster is the harder case, because a recording can be downloaded
 # again and a generation cannot.
 #
-# PREFER THE JPEG. Measured: a _poster.png is 3.6 MB and the .jpeg it was
-# converted from is 0.9 MB. The PNG is a lossless copy of a lossy original, so it
-# is four times the size for not one bit more information - the conversion exists
-# because downstream tools want a png, not because the png is the better record.
-# Sixty topics as jpeg is about 53 MB; as png it would be 210.
+# PREFER THE JPEG. Measured across the four variants: 31 topic posters as jpeg
+# average 1.7 MB and total 52.7; the seven that were converted to _poster.png
+# average 3.5. Twice the size for not one bit more information, because a png of
+# a jpeg is a lossless copy of a lossy original - the conversion exists because
+# downstream tools want a png, not because the png is the better record.
 #
 # The browser-named downloads stay ignored: they are the same picture under a
 # name nobody chose, and Micro/work/PROVENANCE.md records which belongs to which.
