@@ -17,6 +17,19 @@ all; the poster lands where the caller stands, which is the variant's work/.
 
     ../.venv/bin/python ../../engine/grab.py forgotten
     ../.venv/bin/python ../../engine/grab.py forgotten --dir ~/Desktop --keep
+
+It moves, and `--keep` is not for routine use. The point of moving is that
+Downloads is left empty, so the next poster is the only thing in it and there is
+nothing to pick between - which is most of what makes the newest-file rule safe
+in the first place. A folder filling with copies is the thing this was written to
+stop somebody doing by hand.
+
+`--keep` was reached for once, in September, when four sessions were generating
+into one Downloads and a move took one session's poster away from another. That
+loss is real, but it is now caught at the next step instead: `check_base.py`
+compares the title band and refuses a poster from another base before any time is
+spent on it. Prevention moved downstream, so the flag went back to being what it
+is for - a one-off, when you know somebody else is mid-generation.
 """
 import argparse
 import os
