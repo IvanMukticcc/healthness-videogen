@@ -15,11 +15,24 @@ circle alone for the topics that want photographs. That is not a saving of five
 minutes. It is the difference between five clips a day and fifty, and on a feed
 the second number is the whole strategy.
 
-**It lights first.** The row reads left to right the way the liquid runs: the
-glyph at the cue, the chip 0.08s later, the dial 0.18s after that. Cause, cost,
-effect, in a quarter of a second. Lit together they are three things happening at
-once and the row has no direction; lit in order the viewer is told what caused
-what without a word being spent on it.
+**It lights first, and it sends something.** The row reads left to right the way
+the liquid runs:
+
+    t0 + 0.00   the glyph takes its colour        the hack
+    t0 + 0.02   a pulse leaves it down the wave   the effect, travelling
+    t0 + 0.08   the chip lands                    what it costs you
+    t0 + 0.30   the pulse arrives, the dial       what it changes
+                starts counting
+
+Lit together they are three things happening at once and the row has no
+direction. Lit in order they are a sentence, and nobody has to be told it.
+
+The pulse is why the liquid is here at all. In the food version the wave *is* the
+food, pouring into the organ it feeds - the whole design is that one image. A
+hack does not pour, so for three cuts this variant had a row where the glyph lit,
+a chip landed and a dial counted, with a river running underneath that belonged
+to none of it. The pulse joins them: the light leaves the thing you did and
+arrives at the thing that changed, and the dial starts on the frame it lands.
 """
 import json
 import os
@@ -68,6 +81,42 @@ LUMA_GAP = 60.0     # how far the lit glyph must clear its disc. Measured on the
 
 SCALE = 0.92        # the glyph's box as a fraction of the circle's diameter
 
+# The pulse. Light and nothing else, exactly like the engine's `--surge`, and for
+# the same reason: the surface travels a whole number of ribbon lengths over the
+# clip and that is what makes the loop seamless, so nothing may push the liquid
+# faster. What it can do is put more light in it and move the light.
+#
+# **Added, not multiplied**, and that is the second thing this got wrong.
+#
+# A multiply is what the engine's own surge does and what every other light pass
+# in this repository does, so it was the obvious choice. It clips. The palette
+# here is chosen by the hour of the day, so row 1 is dawn amber at luminance 177
+# with specular highlights already near 255, and 1.12x of 250 is 280 - the lift
+# is thrown away exactly where the wave is brightest. Measured against a control
+# render with the pulse off, one amount for all five rows gave:
+#
+#     r1 amber  luma 177   +3.89        r4 coffee luma  97   +8.61
+#     r2 blue   luma 113  +10.14        r5 violet luma 153   +7.20
+#     r3 lime   luma 183   +7.20
+#
+# A luminance trim was tried first - scale the multiply by 150/luma - on the
+# theory that a dark wave needs more of it. That is the wrong model twice over:
+# lift = luma x amount says the trim should have equalised them exactly, and it
+# did not, because the ceiling and not the luminance is what row 1 was hitting.
+#
+# Adding a fixed number of levels, bounded by the headroom each pixel actually
+# has, is equal across rows by construction and cannot clip. The wave's gloss
+# survives because the addition is small and uniform: a specular pixel at 250
+# takes what is left of 255 and a mid-tone at 120 takes all 7, so the highlight
+# stays the brightest thing in the liquid.
+PULSE = 10.0        # levels the crest adds at its centre
+PULSE_DUR = 0.28    # glyph to dial. Under 0.20 it is a flash with no direction
+PULSE_W = 0.13      # the crest's width, as a fraction of the ribbon's arc length
+PULSE_LEAD = 0.02   # after the glyph. Not 0: the eye needs the cause first
+PULSE_ROOM = 0.90   # of the headroom a pixel has left, at most
+
+_PARAMS = [PULSE, PULSE_DUR, PULSE_W]
+
 
 def wave_colour(base, mask, row, k, light):
     """The row's own liquid, as one colour, lifted until it reads on its disc.
@@ -97,6 +146,71 @@ def wave_colour(base, mask, row, k, light):
             break
         col = np.clip(col + (10.0 if lum(col) >= lum(ground) else -10.0), 0, 255)
     return tuple(float(v) for v in col)
+
+
+def pulses(layout, W, H, geo, mask, times, base=None, lead=PULSE_LEAD):
+    """One entry per row: which pixels of the liquid it lights, and where each of
+    them sits along the wave.
+
+    **In arc length, not in x.** The engine's own surge says why: a band placed
+    at a column is a vertical line, and a vertical line across a wave that is
+    climbing cuts across it instead of running with it. `ctx["geo"]` carries the
+    arc length of every column, which is the same coordinate the engine's streaks
+    and its finale highlight both use, so this travels the way they do.
+
+    The row's ribbon is found the way `wave_centre_curves` finds it - the geo
+    whose middle is nearest the layout row's centre - rather than by index, so a
+    row the animator failed to detect shifts nothing.
+    """
+    L = json.load(open(layout)) if isinstance(layout, str) else layout
+    k = W / 1536.0
+    m = mask > 0.5
+    out = []
+    for i, row in enumerate(L["rows"]):
+        cy = row["cy"] * k
+        g = min(geo, key=lambda g: abs(0.5 * (g["top"].mean() + g["bot"].mean()) - cy))
+        y0 = max(0, int(row["stripe"][0] * k))
+        y1 = min(H, int(row["stripe"][1] * k))
+        idx = np.nonzero(m[y0:y1])
+        if len(idx[0]) < 64:
+            print(f"    r{i + 1}: no liquid found in the stripe - no pulse")
+            continue
+        arc = np.asarray(g["arc"], np.float32)
+        span = float(arc[-1] - arc[0])
+        if span <= 1:
+            continue
+        a = (arc - arc[0]) / span
+        col = np.clip(idx[1] - g["x0"], 0, len(a) - 1)
+
+        lum = float(np.dot(np.median(base[y0:y1][m[y0:y1]], axis=0),
+                           (0.299, 0.587, 0.114))) if base is not None else 0.0
+        out.append(dict(row=i, y0=y0, iy=idx[0], ix=idx[1], pos=a[col].astype(np.float32),
+                        t=(times[i] if i < len(times) else times[-1]) + lead,
+                        px=int(len(idx[0])), lum=lum))
+    return out
+
+
+def paint_pulses(frame, ps, secs, amount=PULSE, dur=PULSE_DUR, width=PULSE_W):
+    """`amount` levels added to the liquid, and to nothing else.
+
+    Bounded by what each pixel has left before 255, so the crest never clips and
+    never turns a specular highlight into a flat white patch. See the note on
+    PULSE above for why this is not the multiply everything else here uses.
+    """
+    for e in ps:
+        s = secs - e["t"]
+        if s < 0 or s > dur:
+            continue
+        p = s / dur
+        p = p * p * (3 - 2 * p)                    # ease in and out of the run
+        band = np.exp(-((e["pos"] - p) / width) ** 2)
+        # Faded at both ends of its run, so the crest is never cut off mid-row by
+        # the clock running out - it arrives, and then it is gone.
+        band *= min(1.0, 4.0 * min(p, 1.0 - p) + 0.25)
+        sub = frame[e["y0"]:, :][e["iy"], e["ix"]]
+        room = (255.0 - sub) * PULSE_ROOM
+        frame[e["y0"]:, :][e["iy"], e["ix"]] = sub + np.minimum(
+            room, amount * band[:, None])
 
 
 def plan(rows, layout, W, H, times, base=None, mask=None, scale=SCALE, dy=0.0, lead=0.0):
@@ -154,7 +268,18 @@ def _glow(e, secs):
     return g
 
 
+class Plan(list):
+    """The glyphs, with the row pulses riding along, so the seam stays the three
+    functions wide it is meant to be rather than becoming a second plan the
+    engine has to know about. `micro_overlay.Plan` carries its organs the same
+    way and for the same reason."""
+    pulses = ()
+
+
 def paint(frame, pl, secs):
+    # Under the glyphs and under everything the other two modules draw: it is in
+    # the liquid, and the liquid runs behind all of it.
+    paint_pulses(frame, getattr(pl, "pulses", ()), secs, *_PARAMS)
     for e in pl:
         D = e["disc"].shape[0]
         dial.blend(frame, e["disc"], 1.0,
@@ -183,12 +308,13 @@ def add_arguments(p):
                                    "'auto:MORNING LIGHT,COLD FINISH,...'. Looked up in "
                                    "hacks.json, which carries the number and the study "
                                    "it came from")
-    p.add_argument("--hack-times", default="0.7,1.85,3.0,4.15,5.3",
+    p.add_argument("--hack-times", default="0.65,1.75,2.85,3.95,5.05",
                    help="when each row fires, in seconds. Not the 1,2,3.2,4.4,5.6 the "
                         "other two variants ship: a row here is a glyph, a chip and "
                         "then half a second of a dial counting, which is 0.55s longer "
                         "than a badge landing, and the finale needs the last one "
-                        "settled before it starts. Row 1 also fires at 0.7 rather than "
+                        "settled before it starts, and the pulse added 0.12s to a row. Row 1 "
+                        "also fires at 0.65 rather than "
                         "1.0, because a feed decides in about 1.5s and at 1.0 the first "
                         "number was not on screen until 1.28. And an even 1.15s beat "
                         "suits what this clip is - a day passing - better than their "
@@ -199,6 +325,14 @@ def add_arguments(p):
     p.add_argument("--scene-scale", type=float, default=SCALE,
                    help="the glyph's box as a fraction of the circle's diameter")
     p.add_argument("--scene-dy", type=float, default=0.0)
+    p.add_argument("--pulse", type=float, default=PULSE,
+                   help="levels the crest running the row adds at its centre. 0 turns it "
+                        "off and the liquid goes back to being a river that belongs "
+                        "to none of the three things happening on top of it")
+    p.add_argument("--pulse-dur", type=float, default=PULSE_DUR,
+                   help="how long the crest takes to cross. It should land on the "
+                        "frame the dial starts counting - see --dial-lead")
+    p.add_argument("--pulse-width", type=float, default=PULSE_W)
 
 
 def build(args, ctx):
@@ -207,9 +341,25 @@ def build(args, ctx):
     if not ctx["layout"]:
         raise SystemExit("--hacks needs --layout: the circles are where it says")
     times = [float(t) for t in args.hack_times.split(",")]
-    pl = plan(hacks.resolve(args.hacks), ctx["layout"], ctx["W"], ctx["H"], times,
-              base=ctx["base"], mask=ctx["mask"],
-              scale=args.scene_scale, dy=args.scene_dy)
+    pl = Plan(plan(hacks.resolve(args.hacks), ctx["layout"], ctx["W"], ctx["H"], times,
+                   base=ctx["base"], mask=ctx["mask"],
+                   scale=args.scene_scale, dy=args.scene_dy))
+    _PARAMS[:] = [args.pulse, args.pulse_dur, args.pulse_width]
+    if args.pulse > 0:
+        pl.pulses = pulses(ctx["layout"], ctx["W"], ctx["H"], ctx["geo"],
+                           ctx["mask"], times, base=ctx["base"])
+        land = [e["t"] + args.pulse_dur for e in pl.pulses]
+        print(f"  {len(pl.pulses)} pulses of {args.pulse:+.0f} levels cross the liquid and "
+              f"land at {', '.join(f'{t:.2f}' for t in land)}s"
+              f"  ({sum(e['px'] for e in pl.pulses)} px of liquid lit)")
+        for e in pl.pulses:
+            print(f"    r{e['row'] + 1}: wave luma {e['lum']:5.1f}, "
+                  f"{e['px']} px of liquid")
+        if abs((land[0] if land else 0) - (times[0] + args.dial_lead)) > 0.03:
+            print(f"    the pulse lands at {land[0]:.2f} and the dial starts at "
+                  f"{times[0] + args.dial_lead:.2f} - they are meant to be the same "
+                  f"instant, which is the whole of what the pulse is for",
+                  file=sys.stderr)
     print(f"  {len(pl)} glyphs drawn in the left circles, "
           f"lucide {glyphs.licence()} - no generator in the loop")
     for e in pl:

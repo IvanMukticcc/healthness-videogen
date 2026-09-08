@@ -30,7 +30,11 @@ import numpy as np
 import dial
 import hacks
 
-LEAD = 0.18         # after the row's cue, the dial starts
+LEAD = 0.30         # after the row's cue, the dial starts - and it is exactly
+                    # when scene_overlay's pulse arrives, which is the point of
+                    # both. Moved out from 0.18 when the pulse was added: a dial
+                    # that starts before the light reaches it is a dial answering
+                    # a question nobody asked it yet
 COUNT = 0.50        # and how long it takes. Under 0.35 the digits are a blur and
                     # the count reads as a glitch; over 0.7 the row outstays the
                     # rhythm and the finale has nowhere to go

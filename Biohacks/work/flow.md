@@ -115,17 +115,19 @@ before it were liquid and five empty rings. The rings now read `0%` from frame 0
 **It is even, 1.15 s apart**, where theirs accelerates. Theirs is a list being
 counted off; this is a day passing, and a day has a beat.
 
-**It ends where it has to.** A row here is a glyph, a chip and then half a second
-of a dial counting - 0.55 s longer than a badge landing - so `cues` reports the
-dial's **settle**, not its start, and the finale lands after it:
+**It ends where it has to.** A row here is a glyph, a pulse crossing the liquid,
+a chip and then half a second of a dial counting - so `cues` reports the dial's
+**settle**, not its start, and the finale lands after it:
 
-    last row fires        5.30
-    chip lands            5.38
-    dial counts           5.48 - 5.98
-    finale                6.48       (--finale-lead 0.50, not the engine's 0.60:
-    surge over 5 rows     6.48-7.02   the lead exists to clear what the last cue
-    dials settled         7.22        started, and the count is already over)
-    still hold            7.22-8.00
+    last row fires        5.05
+    pulse leaves          5.07
+    chip lands            5.13
+    pulse arrives         5.35   and the dial starts on the same frame
+    dial counts           5.35 - 5.85
+    finale                6.35       (--finale-lead 0.50, not the engine's 0.60:
+    surge over 5 rows     6.35-6.89   the lead exists to clear what the last cue
+    dials settled         7.09        started, and the count is already over)
+    still hold            7.09-8.00
 
 **The room is not bought with `--seconds`.** The surface travels a whole number
 of ribbon lengths, which is what makes the loop seamless, so the speed is
@@ -155,6 +157,41 @@ Each of these was found by measurement and cost an hour. Do not rediscover them.
   `--snake 0`, `--swell` low.
 
 ### New here
+
+- **A multiply clips, and it clips worst on the rows with the most gloss.** The
+  row pulse was a multiply, like the engine's surge and like every other light
+  pass in this repository. Measured against a control render with `--pulse 0`,
+  one amount over five rows gave r1 amber (luma 177) **+3.89** and r2 blue (luma
+  113) **+10.14** - the amber wave's specular highlights are already near 255,
+  and 1.12x of 250 is 280. The lift is thrown away exactly where the wave is
+  brightest.
+
+  A luminance trim was tried first, scaling the multiply by `150 / luma` on the
+  theory that a dark wave needs more of it. Wrong model twice over: lift =
+  luma x amount says the trim should equalise them exactly, and it did not,
+  because what row 1 was hitting was the ceiling and not its luminance.
+
+  The pulse **adds** levels now, bounded by the headroom each pixel has left. It
+  is equal across rows by construction and cannot clip. Re-measured: r1 +2.77,
+  r2 +4.34, r3 +4.33, r4 +3.99, r5 +3.67 - a 1.6x spread where the multiply gave
+  2.6x.
+
+- **A per-row effect has to be measured per row, and against the finale over the
+  whole poster.** The pulse read as louder than the finale on row 1's own pixels
+  (+13.0 against +10.9) and that comparison means nothing: the finale lights five
+  rows and a pulse lights one. Over the whole visible liquid the finale is
+  **1.26x** the loudest row, which is the number that was tuned to. It also
+  understates the ending, because the liquid is the only thing that measurement
+  sees and the finale is also five rings flashing, five glyphs blooming and the
+  day bar completing.
+
+- **The pulse is why the liquid is here at all.** In the food version the wave
+  *is* the food, pouring into the organ it feeds - the whole design is that one
+  image. A hack does not pour, and for three cuts this variant had a glyph
+  lighting, a chip landing and a dial counting with a river underneath that
+  belonged to none of them. `--dial-lead` moved 0.18 -> 0.30 so the count starts
+  on the frame the light arrives; that is the whole point of both, and
+  `scene_overlay.build` prints a warning to stderr if they drift apart.
 
 - **A white glyph on a light row is not a dim glyph, it is no glyph.** The first
   cut drew every disc a touch *lighter* than its row and every glyph white. On

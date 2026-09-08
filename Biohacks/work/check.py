@@ -109,7 +109,7 @@ def main():
     p.add_argument("topic")
     p.add_argument("--clip", help="default ../OUTPUT/<today>/<topic>_biohack.mp4")
     p.add_argument("--hacks", help="the same spec render.sh was given")
-    p.add_argument("--times", default="0.7,1.85,3.0,4.15,5.3")
+    p.add_argument("--times", default="0.65,1.75,2.85,3.95,5.05")
     p.add_argument("--tol", type=int, default=8, help="levels of change that count")
     p.add_argument("--settle", type=float, default=0.5,
                    help="how much of the tail must be still, in seconds")
