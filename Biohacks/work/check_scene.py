@@ -48,13 +48,24 @@ rather than an opinion.
                   accept that the old hazard - last topic's poster animated with
                   this topic's base - is open again.
 
-    IF YOU EVER PUT ONE BACK, MOVE IT, DO NOT COPY IT. `shutil.move` preserves
-                  mtime, so a returned poster keeps its original timestamp and
-                  sinks back into `grab.py`'s newest-first ordering instead of
-                  surfacing at the front of it. That is why the session this was
-                  taken from still found the right file on its next grab. Nobody
-                  designed it and everybody now depends on it: restoring by
-                  copying would stamp it now and put it at the head of the queue.
+    IF YOU EVER PUT ONE BACK, PRESERVE ITS TIMESTAMP. Newest-first is the
+                  whole of `grab.py`'s ordering, so a poster returned to
+                  Downloads with a fresh mtime sits at the head of the queue and
+                  the next grab takes it instead of the one just generated.
+
+                  The rule is the timestamp, not copy-versus-move - which is
+                  what the first version of this note got wrong, and the root
+                  caught. Measured here rather than reasoned:
+
+                      shutil.move   preserves      cp -p         preserves
+                      shutil.copy2  preserves      cp            RESTAMPS
+                      mv            preserves      shutil.copy   RESTAMPS
+
+                  So `grab.py --keep` is safe on this point too, because it uses
+                  `copy2`. What breaks it is a bare `cp`, or regenerating the
+                  file. The session this poster was taken from found the right
+                  file on its next grab because the return preserved the stamp -
+                  which was luck the first time and is a constraint now.
 
     1. MARKS      is the LEFT circle painted over, or did the generator paint the
                   photograph around it and leave it standing? A flat disc has
