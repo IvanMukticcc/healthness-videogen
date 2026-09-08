@@ -162,6 +162,12 @@ def finale(t0, seconds, sr=SR, root=420.0, gain=0.398, lead=0.0, dur=1.5):
     2.0. So the sfx track is the instrument and the mix is the outcome, and a
     figure with no basis named on it means nothing.
 
+    The level returned is the level it has to arrive at. Summed into the badge
+    track and scaled with it, the chord rides a constant it has nothing to do
+    with - 1.41 dB under in Micro at 0.85, 4.15 under in Exercise at 0.62 - and
+    the one number here arrives as three. Its own input at unity, or divided by
+    the gain it is about to be multiplied by.
+
     The limiter stays idle either way - the mix peak is set by a badge, not by
     this.
 

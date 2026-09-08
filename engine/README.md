@@ -251,6 +251,17 @@ here were wrong before this was understood, both derived by adding dB to a
 measurement taken elsewhere, and both were caught by the variant they were
 written about. The sfx track is the instrument; the mix is the outcome.
 
+**And the level it returns is the level it has to arrive at.** All three
+variants currently sum the finale into the same wav as their badge hits and then
+scale that wav by their own pop gain in the mix - 0.85 in Micro, 0.62 in
+Exercise, 0.80 in Biohacks. The chord is not a badge and has no business riding
+the badge gain. Measured, that delivers it **1.41dB under the chosen level in
+Micro and 4.15dB under in Exercise**: one number in this file arrives as three,
+which is the drift it is here to prevent, one layer further down than anyone was
+looking. Give it its own input at unity, or divide by the gain it is about to be
+multiplied by. Biohacks is unaffected in outcome only because it chose its 1.00
+on a finished cut and has therefore already paid for its 0.80.
+
 The limiter is idle at either level; the mix peak is set by a badge, not by the
 chord.
 
