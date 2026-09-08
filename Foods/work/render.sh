@@ -36,7 +36,12 @@ LAYOUT="$DIR/base_${TOPIC}_layout.json"
 # it came from even at equal LUFS. See engine/README.md, "Damping a bed makes it
 # louder".
 BED="${BED:-../../engine/sfx/flow_soft_warm_8s.m4a}"
-BED_GAIN="${BED_GAIN:-0.8}"
+# 1.0, not Micro's 0.8. Theirs is 0.8 because the bed competed with fifteen badge
+# pops; there are none here, so the bed is the clip. Measured: at 0.8 this lands
+# at -20.1 LUFS, two dB under every other variant, and at 1.0 it lands at -18.3 -
+# which is where all three beds are normalised and where the other three ship.
+# Carrying a constant across without its argument is the fault of the week.
+BED_GAIN="${BED_GAIN:-1.0}"
 FINALE="${FINALE:-6.38}"
 SURGE="${SURGE:-0.30}"
 DAY="$(date +%d.%m)"
