@@ -155,14 +155,23 @@ four run 2.1% to 27.5% and 330 to 2052Hz.
 finale sound - fourth-order high pass at 500Hz, where a phone speaker gives up -
 run over the whole shelf:
 
-    soft    -0.3 dB      stones  -1.3 dB      stream  -5.1 dB
-    brook   -0.7 dB      river   -1.3 dB      shore   -7.2 dB
+                RMS    LUFS                    RMS    LUFS
+    soft        -0.3/-0.1          river       -1.3/-0.9
+    brook       -0.7/-0.4          stream      -5.1/-0.7
+    stones      -1.3/-0.7          shore       -7.2/-5.6
 
-`flow_shore` is surf, 30.5% of it under 80Hz, and it loses 7.2dB of itself in a
-feed - the same trap the 40-inch tam-tam set in the finale audition, which lost
-7.6. The most impressive of them on headphones is the weakest of them on a
-phone, and that is twice now, so it is a property of the format rather than a
-coincidence. `flow_stream` has always had it too, at -5.1.
+**Two columns, because for this test one is not a number.** Unweighted RMS is
+how much energy the speaker fails to reproduce; the LUFS pair is how much
+quieter it will sound, and K-weighting has already discounted the bottom octaves
+the way an ear does before the high pass gets to them. `flow_stream` is where
+they part: 64% of it lies under 80Hz, so it reads -5.5 by RMS and -1.0 by LUFS,
+and neither is wrong.
+
+`flow_shore` is surf, 46% of it between 80 and 300Hz, and it loses 6.8 to 8.5dB
+on the speaker it will actually be heard through. That is the 40-inch tam-tam
+again from the finale audition, at -6.1 K-weighted and -7.6 by RMS. The most
+impressive of them on headphones is the weakest of them on a phone, twice in one
+evening, which makes it a property of the format rather than a coincidence.
 
 **A bed has no level. It has a level at an instant.** Measured here on the assets
 themselves, momentary R128 every half second across the clip: `lift_bed` spans
@@ -317,9 +326,15 @@ the root, a 40-inch tam-tam, cymbal rolls, all from the Iowa MIS collection and
 all free of restrictions. The synthesis won. One measurement from that audition
 is worth keeping whatever wins next time: **a phone speaker is gone below about
 500Hz.** Through a fourth-order high pass there, the 40-inch tam-tam loses 7.6dB
-of itself and the gongs lose 3.0 - the biggest sounds in the collection are the
-most impressive of the nine in headphones and the weakest of them in a feed.
-This one loses 0.8.
+of itself by unweighted RMS and 6.1 K-weighted, and the tuned gong 3.0 and 2.7:
+the biggest sounds in the collection are the most impressive of the nine in
+headphones and the weakest of them in a feed. This one loses 0.8 and 0.5.
+
+Both meters, because for this one figure neither is the whole answer. RMS is how
+much energy the speaker fails to reproduce; the K-weighted pair is how much
+quieter it will sound, since that weighting has already discounted the bottom
+octaves the way an ear does. They agree here and part by 4.5dB on a bass-heavy
+bed - see the shelf, below.
 
 `gain` is 0.398, which is 2dB over the 0.316 the chord was auditioned at, and
 that 2dB was not a taste. Three variants measured the same thing independently
