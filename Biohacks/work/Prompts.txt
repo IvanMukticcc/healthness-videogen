@@ -1,0 +1,177 @@
+TOPICS THAT HAVE SHIPPED, AND HOW TO REBUILD THEM
+=================================================
+
+`base_<topic>.png`, its clean copy and its layout are all gitignored - they come
+out of one `recolor_base.py` call and a tool can make them again in seconds. That
+is true only if the call is written down. It is written down here.
+
+Micro and Exercise both keep a file like this and this folder went four topics
+without one, which meant four palettes existed in exactly one place: a PNG that
+git does not carry.
+
+Each entry is everything needed to get back to a finished clip: the base, the
+captions, the hacks with their clocks, and which mode it shipped in.
+
+    GLYPH MODE   `./render.sh <topic> 'auto:...'` - no generator, about a minute
+    SCENE MODE   the poster round trip. `ImageSwap.txt` has the prompt; the
+                 filled scenes are kept with the topic below
+
+
+PALETTE RULE FOR THIS VARIANT
+-----------------------------
+
+**The wave takes the colour of the hour.** Foods gives its wave the colour of its
+food; a hack is not a colour, so this replaces it - dawn amber, morning ice,
+midday lime, afternoon coffee, night violet, read top to bottom.
+
+Two constraints on top of it, and the second only appeared with scene mode:
+
+- rows 1, 3, 5 are the dark stripe and 2, 4 the light one, so the bright wave
+  colours go on the dark rows. The glyph is drawn in its own wave's colour and a
+  pale wave on a pale row is a pale glyph on a pale disc
+- **in scene mode every wave should be something that exists in its own
+  photograph.** The join only works if the subject can match the wave's colour
+  where they meet, and a colour chosen for the arc alone leaves it nothing to
+  match. `sleep` is the first palette picked that way throughout: dawn gold,
+  coffee brown, the warm red of a lamp over dinner, screen indigo, night violet
+
+The palette is otherwise unrestricted, which is this variant's alone - the chips
+are glass and the dials have their own discs, so nothing on the liquid has a hue
+to collide with. Exercise has to keep its waves off red, amber and orange.
+
+
+================================================================================
+day        5 FREE BIOHACKS / ONE DAY, ZERO COST            glyph
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#0E1A20,#E8EEF0' \
+  --waves '#FFB020,#1B8FD6,#9BE04A,#B4471E,#A98CFF' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title '5 FREE BIOHACKS' --subtitle 'ONE DAY, ZERO COST' \
+  -o ../INPUT/base_day.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py ../INPUT/base_day.png \
+  -l base_day_layout.json -o day_labelled.png \
+  --labels 'MORNING LIGHT|BEDTIME,COLD FINISH|DOPAMINE,LUNCH WALK|GLUCOSE PEAK,LAST COFFEE|CAFFEINE LEFT,LIGHTS DOWN|MELATONIN'
+
+./render.sh day 'auto:MORNING LIGHT,COLD FINISH,WALK AFTER LUNCH,LAST COFFEE,LIGHTS DOWN'
+
+The first one. Clocks come from the table unchanged, which is why they run the
+whole day.
+
+
+================================================================================
+firsthour  YOUR FIRST HOUR / 5 FREE HACKS, 21 MINUTES      scene
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#101C1F,#EDF2F1' \
+  --waves '#FFC53D,#0E8FA8,#5B9BFF,#0E9E6E,#FF6B4A' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'YOUR FIRST HOUR' --subtitle '5 FREE HACKS, 21 MINUTES' \
+  -o ../INPUT/base_firsthour.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py <poster>.jpeg \
+  -l base_firsthour_layout.json -o firsthour_labelled.png \
+  --labels 'MORNING LIGHT|BEDTIME,GLASS OF WATER|ALERTNESS,COLD FINISH|DOPAMINE,LONG EXHALES|BREATH RATE,STAND UP|GLUCOSE SWING'
+
+./render.sh firsthour 'auto:MORNING LIGHT@06:40,HYDRATE FIRST@06:48,COLD FINISH@07:02,NOSE BREATHING@07:20,STAND UP@08:30' firsthour_labelled.png
+
+The subtitle is arithmetic on the chips: 10 + 1 + 2 + 5 + 3 = 21. If the doses
+change, that number is wrong and nothing checks it.
+
+Scenes that worked, third attempt (the first two are in flow.md under what is
+known to break):
+
+  1 dark   a low orange sun filling a bedroom window at the far left, the glass
+           blazing gold and the light spilling right across a dark unmade bed
+  2 light  a clear glass on a white counter at the far left, water pouring in
+           from above and splashing up, the pour the blue of the blue wave
+  3 dark   a man's bare shoulder and the back of his neck at the far left, seen
+           from behind, cold water sheeting down over his skin and running right
+  4 light  a woman cross-legged at the far left of a bright white room, head
+           back, mid-exhale, her breath a pale plume travelling right
+  5 dark   a man's forearms and hands at the far left pressing down on a desk
+           edge as he stands, a warm lamp directly BEHIND his hands, its glare
+           flaring out between them
+
+Row 5 is the one to copy the shape of. At "a man standing up, seen from the
+side" the join measured 27 and the wave's blunt start sat in the open; putting
+the lamp behind his hands took it to 83, because the flare is what covers the
+cut. Same trick as the sun in row 1.
+
+
+================================================================================
+sugar      BLOOD SUGAR / FIVE FIXES, NO DIET               glyph
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#141A22,#EAEEF2' \
+  --waves '#FF7043,#C08A1E,#0FA3A3,#B02A6B,#8B7BFF' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'BLOOD SUGAR' --subtitle 'FIVE FIXES, NO DIET' \
+  -o ../INPUT/base_sugar.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py ../INPUT/base_sugar.png \
+  -l base_sugar_layout.json -o sugar_labelled.png \
+  --labels 'VEG FIRST|SUGAR SPIKE,LUNCH WALK|GLUCOSE PEAK,STAND UP|GLUCOSE SWING,WALK MORE|DEATH RISK,EARLY DINNER|NIGHT GLUCOSE'
+
+./render.sh sugar 'auto:VEG FIRST@12:30,WALK AFTER LUNCH@13:20,STAND UP@15:00,7000 STEPS@18:00,LAST MEAL EARLY@20:00'
+
+All five dials are `down`, so all five rings are blue - which turns out to read
+as one argument rather than as five facts. Worth doing again on a topic that has
+one direction.
+
+The left caption is `WALK MORE`, not `7000 STEPS`, because the chip already says
+7000 STEPS and the row would spend its whole half second saying one thing twice.
+
+
+================================================================================
+sleep      SLEEP STARTS AT 6AM / NOT ONE FIX IS AT BEDTIME  glyph
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#0C1420,#E7EAF2' \
+  --waves '#FFB633,#8B4A16,#D14A2A,#3B4FC4,#8B5CF6' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'SLEEP STARTS AT 6AM' --subtitle 'NOT ONE FIX IS AT BEDTIME' \
+  -o ../INPUT/base_sleep.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py ../INPUT/base_sleep.png \
+  -l base_sleep_layout.json -o sleep_labelled.png \
+  --labels 'MORNING LIGHT|BEDTIME,LAST COFFEE|CAFFEINE LEFT,EARLY DINNER|NIGHT GLUCOSE,SCREENS OFF|SLEEP ONSET,LIGHTS DOWN|MELATONIN'
+
+./render.sh sleep 'auto:MORNING LIGHT@06:40,LAST COFFEE@14:00,LAST MEAL EARLY@20:00,NO SCREENS@21:30,LIGHTS DOWN@22:30'
+
+The clocks carry the argument and the day bar draws them: 06:40, then nothing
+until 14:00, then three crowding into the evening. One fix in the morning is
+what the title is about, and the bar is what proves it without a word.
+
+Scenes for the photographic version, if it is wanted:
+
+  1 dark   a hand pulling a bedroom curtain aside at the far left, dawn light
+           bursting through the gap and flooding right across a dark room
+  2 light  black coffee being poured into a white cup at the far left of a
+           bright table, the dark stream falling and splashing, afternoon light
+  3 dark   a plate set down on a dark table at the far left under a warm lamp,
+           steam rising off the food and drifting right
+  4 light  a hand laying a phone face-down on a pale bed sheet at the far left,
+           cool blue light escaping from under its edge and spilling right
+  5 dark   a bedside lamp at the far left dimmed almost out, a low violet glow
+           around it, the bedroom dark beyond
+
+
+================================================================================
+TITLES ARE THE ONE THING THAT MAY NOT REPEAT
+================================================================================
+
+`check_scene.py` and `engine/check_base.py` both catch a poster generated from
+another topic's base by comparing the title band, and both go quiet when two
+bases share a title - Micro's superfoods run measures 5.4 across its own topics
+and passes. Every title above is unique across all 49 bases in the repository.
+
+This is the variant most likely to break that, because it is built to run series
+fast and a series wants one title. If a series is wanted, number it into the
+title - `SLEEP FIXES 1`, `SLEEP FIXES 2` - rather than leaving it to the topic
+name, which the check never sees.
