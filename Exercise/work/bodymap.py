@@ -29,8 +29,22 @@ import os
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
+from scipy import ndimage
 
 import muscles
+
+def _erode(img, k):
+    """PIL's MinFilter, done in the time it should take.
+
+    A rank filter over a k x k window is O(k^2) per pixel in PIL, and this file
+    runs it on a 4x supersampled figure: 6.4 seconds of an 8-second clip's render
+    went through `rankfilter`. scipy's flat grey erosion is the same operation
+    with a separable implementation. Checked before it was used - on random
+    900x900 data at k = 5, 9 and 13 the two agree on every pixel including the
+    border, at 11 ms against 124, 310 and 628 - and the clip it was measured on
+    still renders byte for byte identical.
+    """
+    return ndimage.grey_erosion(np.asarray(img), size=(k, k), mode="nearest")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SS = 4                    # supersample; a 300px figure drawn straight is ragged
@@ -295,7 +309,7 @@ def layers(view, size, tiers=None, light=False, height=None, top=None):
         _fill(ImageDraw.Draw(one), pts, Wq, Hq, tq, hq, 255)
         oa = np.array(one).astype(np.float32) / 255.0
         line = np.maximum(line, np.clip(
-            oa - np.array(one.filter(ImageFilter.MinFilter(er_k))).astype(np.float32) / 255.0,
+            oa - _erode(one, er_k).astype(np.float32) / 255.0,
             0, 1))
     fillf = np.array(fill).astype(np.float32) / 255.0 * silf
     line *= silf
@@ -307,8 +321,7 @@ def layers(view, size, tiers=None, light=False, height=None, top=None):
     # A rim, so a white ghost on a pale wave still has an outline. Drawn as the
     # silhouette minus an eroded copy of itself rather than as a stroke: PIL
     # strokes a spline as a chain of round caps and the joins show.
-    er = np.array(sil.filter(ImageFilter.MinFilter(2 * max(1, int(SS * 1.3)) + 1))
-                  ).astype(np.float32) / 255.0
+    er = _erode(sil, 2 * max(1, int(SS * 1.3)) + 1).astype(np.float32) / 255.0
     a = np.maximum(a, np.clip(silf - er, 0, 1) * edge_a)
 
     body = np.dstack([rgb, a * 255.0])
@@ -333,8 +346,7 @@ def layers(view, size, tiers=None, light=False, height=None, top=None):
         # the same red, and glutes lighting next to hamstrings without it is one
         # red mass across the back of the legs with no anatomy left in it. The
         # rim also lifts the muscle off whatever colour the wave is behind it.
-        rim = np.clip(mf - np.array(m.filter(ImageFilter.MinFilter(er_k))
-                                    ).astype(np.float32) / 255.0, 0, 1)
+        rim = np.clip(mf - _erode(m, er_k).astype(np.float32) / 255.0, 0, 1)
         rgbm = np.zeros((Hq, Wq, 3), np.float32) + col
         rgbm *= (1.0 - 0.58 * rim)[:, :, None]
         plane = np.dstack([rgbm, mf * 255.0])

@@ -201,9 +201,24 @@ def paint(frame, pl, secs, ring=True):
             _ring(frame, b, s / RING)
 
         side = max(2, int(round(b["d"] * SHADOW * scale)))
-        im = Image.fromarray(np.clip(b["img"], 0, 255).astype(np.uint8), "RGBA")
-        im = im.resize((side, side), Image.LANCZOS)
-        arr = np.array(im).astype(np.float32)
+        # Both of these were being done 192 times per badge and neither depends
+        # on the frame. `img` never changes, so its clip to uint8 is computed
+        # once; and `side` only moves while the pop is running - about five
+        # frames of an eight-second clip - so the resized sprite is reused for
+        # every frame that asks for the same size. Identical inputs to a
+        # deterministic resize give identical output: the clip this was measured
+        # on comes back byte for byte, which is the only reason this is allowed.
+        src8 = b.get("_u8")
+        if src8 is None:
+            src8 = np.clip(b["img"], 0, 255).astype(np.uint8)
+            b["_u8"] = src8
+        cached = b.get("_rs")
+        if cached is not None and cached[0] == side:
+            arr = cached[1]
+        else:
+            im = Image.fromarray(src8, "RGBA").resize((side, side), Image.LANCZOS)
+            arr = np.array(im).astype(np.float32)
+            b["_rs"] = (side, arr)
         x0 = int(round(b["cx"] - side / 2.0))
         y0 = int(round(b["cy"] - side / 2.0))
         blend(frame, arr, alpha, x0, y0)
