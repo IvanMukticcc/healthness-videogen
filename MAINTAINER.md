@@ -13,7 +13,7 @@ too - then this.
 
 2. **Decide what is engine and what is variant.** The test that has held so far:
 
-   - Does the miss happen in all three? Engine.
+   - Does the miss happen in every variant? Engine.
    - Is it about what *this* variant puts in its circles, or draws on top? The
      variant's own module, through `--overlay` (`build`/`draw`) or `refine_art`.
    - Is it a number another variant might want different? A flag, with the
@@ -50,8 +50,8 @@ the constant rather than accepting one.
 
 ## Verify after you change
 
-Rule 4, in full. Re-render one clip in each of the three variants and compare
-against what it produced before:
+Rule 4, in full. Re-render one clip in each variant and compare against what it
+produced before:
 
     cd Foods/work    && ../.venv/bin/python ../../engine/flowanim.py <poster> ...
     cd Micro/work    && ./render.sh <topic> <topic>_labelled.png 'auto:...'
@@ -77,18 +77,41 @@ files you touched, by name.
   mark, nothing for the generator to fill, no ring to clean up afterwards.
 - **`refine_art` has no user yet.** It was added for Exercise's black-singlet
   case; if a second variant needs the same correction, that is the signal to
-  promote it into the animator.
+  promote it into the animator. Biohacks does not need it and is evidence about
+  why: it draws over both circles with its own discs, so there is nothing in a
+  circle for the animator to misread. The seam is for variants that put a
+  *photograph* in a circle, not for variants in general.
+
+- **`Biohacks/` is the fourth variant, and it needs no generator.** Both circles
+  are drawn at render time - a lucide glyph on the left, a counting dial on the
+  right - so a topic is a palette, a title and five rows of a table, and
+  `./render.sh <topic> 'auto:...'` is the whole loop. Nothing about it asks
+  anything of the engine that the engine does not already do; the three overlay
+  modules use `add_arguments`/`build`/`draw`/`cues`/`finale` and nothing else.
+  Its own `check.py` replaces `audit.py` rather than reusing it, because five
+  dials and a day bar move outside the wave mask on purpose.
+
+  The one thing it establishes that the other three could use: **a number on
+  screen carries its study in the data file**, and `resolve()` refuses an entry
+  whose source is missing. `nutrients.json` and `exercises.json` have no such
+  field.
 - **Exercise still carries its own copy of the strike synthesis.**
   `engine/impact.py` reproduces `muscle_audio.py`'s hits bit for bit; when its
   agent is free, that file should call the engine's and keep only its bed. Until
   then the two are identical and nothing is at risk, but it is a copy.
-- **The prompt template is the third thing that exists in three copies.** After
-  the tools and the badge synthesis, `ImageSwap.txt` is now forked across Foods,
-  Micro and Exercise, and it drifts the same way: Micro measured three faults on
-  part 11 and fixed its own copy, and Foods had every one of them. Ported by
-  hand this time. The shared half - the circles, the bars, the safe area, the no
-  text rule, the glass bowls - is most of the file; the variant half is the five
-  rows. Worth splitting before it is fixed by hand a third time.
+- **The prompt template is the third thing that exists in copies, and there are
+  four of them now.** After the tools and the badge synthesis, `ImageSwap.txt` is
+  forked across Foods, Micro, Exercise and Biohacks, and it drifts the same way:
+  Micro measured three faults on part 11 and fixed its own copy, and Foods had
+  every one of them. Ported by hand that time. The shared half - the circles, the
+  bars, the safe area, the no-text rule - is most of the file; the variant half
+  is the five rows. Worth splitting before it is fixed by hand a third time.
+
+  Biohacks' copy is the least urgent of the four and the most interesting: that
+  variant draws both circles itself, so its template is the *optional* path and
+  is only reached for a topic that wants photographs. If the split ever happens,
+  it is the one to write the shared half against, because it is the only one
+  nobody is depending on this week.
 - **`check_base.py`'s label check is unreliable** and only prints a note. Look at
   the poster before animating.
 - **The guide circles are never fully covered.** A faint halo survives behind

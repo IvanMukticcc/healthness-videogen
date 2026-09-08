@@ -17,7 +17,24 @@
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 ENGINE="$ROOT/engine"
-VARIANTS=(${1:-Foods Micro Exercise})
+# The variants, found on disk rather than listed here. A variant is a folder
+# with INPUT/, OUTPUT/ and work/ in it - that is what the root README says one
+# is, and it is a test rather than a name, so a fourth folder is covered the day
+# it exists. The list used to be `Foods Micro Exercise` and Biohacks was invisible
+# to the one script whose whole job is noticing that a folder has gone its own
+# way. A hardcoded list inside a drift detector is itself a thing that drifts.
+#
+# An explicit list is still honoured - `./engine-status.sh "Foods Micro"` - for
+# checking one folder without waiting on the others.
+if [ $# -gt 0 ]; then
+    VARIANTS=($1)
+else
+    VARIANTS=()
+    for d in "$ROOT"/*/; do
+        v="$(basename "$d")"
+        [ -d "$d/INPUT" ] && [ -d "$d/OUTPUT" ] && [ -d "$d/work" ] && VARIANTS+=("$v")
+    done
+fi
 FILES=(make_base.py recolor_base.py grab.py add_labels.py check_base.py flowanim.py
        impact.py
        base_layer.png ribbon_mask.png ribbon_rgba.png source_wave_poster.jpeg)

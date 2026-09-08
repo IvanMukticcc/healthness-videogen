@@ -1,7 +1,7 @@
 # Healthness Shorts
 
-Vertical clips where a food pours into the organ it feeds. Three variants of the
-same idea, one engine underneath them.
+Vertical clips where something pours across a row into what it changes. Four
+variants of the same idea, one engine underneath them.
 
 ## The two folders that matter
 
@@ -27,10 +27,15 @@ generated from a prompt three revisions old.
     Foods/       a food, a wave, the organ it feeds. The original
     Micro/       the same, with the vitamins and minerals popping onto the rows
     Exercise/    a lift, a wave, the muscles it works, lighting on a body
+    Biohacks/    a free habit, a wave, and a dial counting to what it moves
+
+`Biohacks/` is the one that needs no generator: it draws both circles itself, so
+a topic is a palette, a title and five rows of a table, and the clip comes out of
+one command. The other three still take a poster back from an image model.
 
 ## The engine
 
-    engine/      five tools, three authored wave assets, and the sound shelf
+    engine/      six tools, three authored wave assets, and the sound shelf
 
 `engine/README.md` is the one to read before changing anything in there. The
 short version: **a variant never keeps a copy of an engine file.** It calls

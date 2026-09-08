@@ -166,13 +166,30 @@ so a highlight that simply stopped at the circle's edge would draw ten hard
 edges, one at every bowl and every organ. Verified over the whole window at
 1080 wide: 0 px changed outside the wave mask, 0 px changed inside a circle.
 
-**On its own it is nearly invisible in two of the three variants.** Of the wave,
-22.7% is behind a bowl or an organ and 71.1% of what is left is behind a badge -
-a badge is 210px across and the wave is 94 - so only 22.3% of the liquid is
-visible at all once the overlays have drawn. The band showing through the gaps is
-not the effect. The effect is the badges lighting as it passes them, and that is
-variant work, so the engine publishes what the variant would otherwise have to
-guess:
+**How much of it is seen is the variant's decision, not this file's.** Of the
+wave, 22.7% is inside a guide circle and is never painted at all. What covers the
+rest is whatever the variant lays on the liquid, and the two answers so far are
+far apart:
+
+    Micro, Exercise   three badges a row, 210px across against a 94px wave
+                      -> 54.7% more covered, 22.6% of the liquid visible
+    Biohacks          one glass chip a row, 313x118
+                      -> 23.6% covered, 53.8% visible
+
+At 22.6% the band showing through the gaps is not the effect, and the effect has
+to be the badges lighting as it passes them. At 53.8% the band itself is the
+effect: measured there by rendering the same clip with and without `--surge`, the
+mean brightness of the visible liquid goes +2.33 at 6.58s, +5.00 at 6.75 and back
+to nothing by 7.00, against 0.01 levels of run-to-run difference.
+
+(Measure that with a spatial mean over a fixed region, never per pixel. x264 at
+crf 16 has lookahead, so changing what happens at 6.5s changes how frames at 2.0s
+are reconstructed, and a per-pixel diff of the two files reports 47 693 px of
+"difference" before the finale has begun.)
+
+Either way the variant needs to know when the crest reaches a given column, and
+that is arc length this file has and the variant does not, so it is published
+rather than guessed at:
 
     ctx["finale"]        the instant
     ctx["surge"]["at"]   at(row, x) -> seconds, when the crest passes column x
