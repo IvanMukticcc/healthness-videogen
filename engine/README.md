@@ -240,10 +240,19 @@ hits track alone, and 0.5dB over the water - the quietest of the three things in
 its own half second. A sound that answers a count cannot be that. At 0.398 it
 lands level with the row it closes. On the sfx track alone, where neither window
 carries the bed, that is 0.5dB under a Micro row and 1.9dB under Exercise's
-heavier three-hit ones; in the finished mixes, 0.4 and 0.9. Name which basis a
-number came from: on Micro the two agree to a tenth, on Exercise they are a full
-dB apart. The limiter is idle at either level; the mix peak is set by a badge,
-not by the chord.
+heavier three-hit ones; in the finished mixes, 0.7 and 2.8.
+
+**Measure a level, never derive one.** Every figure above was taken at its own
+gain. A mix window is half a second of bed and badge tails with the chord
+somewhere inside it, and it does not move with the chord: +2.00dB of chord moves
+that window 1.1dB on Micro and 0.3dB on Exercise, while on the sfx track, where
+the chord is the only thing in the window, it moves the full 2.0. Two figures in
+here were wrong before this was understood, both derived by adding dB to a
+measurement taken elsewhere, and both were caught by the variant they were
+written about. The sfx track is the instrument; the mix is the outcome.
+
+The limiter is idle at either level; the mix peak is set by a badge, not by the
+chord.
 
 It is one number here rather than one per variant, deliberately. The level a
 shared sound arrives at is part of the sound, and tuned separately in two

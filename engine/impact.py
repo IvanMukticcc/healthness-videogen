@@ -151,9 +151,19 @@ def finale(t0, seconds, sr=SR, root=420.0, gain=0.398, lead=0.0, dur=1.5):
     the water. A sound that answers a count cannot be the quietest thing in the
     bar it lands on. 0.398 puts it level with the row it closes: on the sfx
     track alone, where neither window carries the bed, 0.5 dB under a Micro row
-    and 1.9 under Exercise's heavier three-hit ones; in the finished mixes, 0.4
-    and 0.9. The limiter stays idle either way - the mix peak is set by a badge,
-    not by this.
+    and 1.9 under Exercise's heavier three-hit ones; in the finished mixes, 0.7
+    and 2.8.
+
+    Every one of those was measured at its own gain, and none of them derived by
+    adding dB to a figure taken at another. A mix window is half a second of bed
+    and badge tails with the chord somewhere inside it, so it does not move with
+    the chord: +2.00 dB here moves it 1.1 dB on Micro and 0.3 on Exercise. The
+    sfx track, where the chord is the only thing in the window, moves the full
+    2.0. So the sfx track is the instrument and the mix is the outcome, and a
+    figure with no basis named on it means nothing.
+
+    The limiter stays idle either way - the mix peak is set by a badge, not by
+    this.
 
     It is one number here rather than one per variant on purpose. The level a
     shared sound arrives at is part of the sound; tuned in two folders it
