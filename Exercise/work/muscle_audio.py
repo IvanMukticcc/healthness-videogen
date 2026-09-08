@@ -27,13 +27,27 @@ domain so they are exactly periodic over the clip and the loop has no seam. Cut
 noise in the time domain and the eighth second does not join the first, which on
 a feed that loops is a click every eight seconds forever.
 
-    python3 muscle_audio.py --cues-file work/push_cues.txt -o work/push_hits.wav
-    python3 muscle_audio.py --bed --seconds 8 -o ASSETS/lift_bed_8s.wav
+    ../.venv/bin/python muscle_audio.py --cues-file push_cues.txt \
+        --finale-cue push_finale.txt --finale-out push_chord.wav -o push_hits.wav
+    ../.venv/bin/python muscle_audio.py --bed --seconds 8 -o lift_bed_8s.wav
+
+The bed on the shelf, ../../engine/sfx/lift_bed_8s.m4a, is that second command's
+output and reproduces from it at waveform correlation 0.999983. Regenerate it
+here if it is ever needed; replacing the shelf copy is the engine's to do, not
+this folder's.
 """
 import argparse
+import sys
 import wave
+from pathlib import Path
 
 import numpy as np
+
+# The riser and the chord live in the engine, because both variants make the
+# same one. Called, never copied: a second generation of it here is exactly how
+# every other copy in this repository drifted.
+sys.path.insert(0, str(Path(__file__).resolve().parent / ".." / ".." / "engine"))
+import impact
 
 SR = 48000
 SCALE = [0, 2, 4, 7, 9]          # major pentatonic, one degree per row
@@ -178,6 +192,27 @@ def main():
     p.add_argument("--gain", type=float, default=0.72)
     p.add_argument("--bed", action="store_true", help="write the bed instead of the hits")
     p.add_argument("--bed-gain", type=float, default=0.39)
+    p.add_argument("--finale-cue", help="the file flowanim.py --finale-cue wrote. Its "
+                                        "instant is NOT in the badge cues and must not "
+                                        "be: laid there it would be sounded as a sixth "
+                                        "badge, on a frame where nothing lands")
+    p.add_argument("--finale-gain", type=float, default=None,
+                   help="an override, and normally not given. Unset, impact.finale "
+                        "keeps its own gain - the level the finale was chosen at, out "
+                        "of nine candidates, in a finished clip. The sound is shared "
+                        "with the other variants, so its level is one number in the "
+                        "engine rather than one per variant: two folders tuning it "
+                        "separately is exactly the drift impact.py exists to prevent. "
+                        "Measure it on an Exercise cut by all means, but report the "
+                        "number rather than setting it here")
+    p.add_argument("--finale-out",
+                   help="write the finale to its own file instead of summing it into "
+                        "the hits. It has to be its own file, because the mixer applies "
+                        "one gain to everything in a track: summed in here, the chord "
+                        "was multiplied by render.sh's 0.62 - a number chosen for badge "
+                        "hits - and arrived 4.15 dB under the level impact.finale "
+                        "returns it at. The level the engine returns is the level it "
+                        "has to arrive at, so this file is mixed at unity")
     p.add_argument("-o", "--out", required=True)
     args = p.parse_args()
 
@@ -209,8 +244,24 @@ def main():
                 per_row.append((r, j))
 
     x = build(cues, args.seconds, per_row, root=args.root, gain=args.gain)
+    fin = None
+    if args.finale_cue:
+        fin = float(open(args.finale_cue).read().strip())
+        # No gain unless one was asked for: the engine's own default is the
+        # level the sound was picked at, and passing a number here would make
+        # this variant's finale a different loudness from everyone else's.
+        gain_kw = {} if args.finale_gain is None else {"gain": args.finale_gain}
+        chord = impact.finale(fin, args.seconds, root=args.root, **gain_kw)
+        if args.finale_out:
+            write_wav(args.finale_out, chord)
+        else:
+            x = x + chord
     write_wav(args.out, x)
-    print(f"  {len(cues)} hits over {args.seconds}s -> {args.out}")
+    print(f"  {len(cues)} hits over {args.seconds}s"
+          + (f", finale at {fin:.2f}s" if fin is not None else "")
+          + f" -> {args.out}"
+          + (f", chord -> {args.finale_out} (mix it at unity)"
+             if fin is not None and args.finale_out else ""))
 
 
 if __name__ == "__main__":

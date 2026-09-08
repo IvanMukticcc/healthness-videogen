@@ -1,0 +1,8 @@
+# What a render makes here, on top of the shared list at the repository root.
+# Both are cues for a sound rather than sources for one: the finale's instant
+# comes out of flowanim.py the way the badge cues do, and the chord itself is
+# muscle_audio.py's output at impact.finale's own level - one command remakes
+# either of them. `tune` is the scratch topic the finale was auditioned on.
+*_finale.txt
+*_chord.wav
+tune_*.wav

@@ -38,8 +38,27 @@ BASE="${BASE:-../INPUT/base_${TOPIC}.png}"
 # right one to the base exactly, so the pixels that should be wiped differ by
 # almost nothing anyway. 256454 px still get wiped at 6, against 269416 at 20.
 ANCHOR_TOL="${ANCHOR_TOL:-6}"
+# The rows move earlier than they used to, and they move to make room. The
+# shipped rhythm 1,2,4,5.5,7 puts the last badge at 7.18 of an 8s clip, which
+# leaves 0.35s - not enough for anything to arrive in. The finale needs about
+# 1.8: 0.65 for the last row to settle, 0.8 for the finale itself and 0.4 of
+# hold, because the last frame is the one a feed freezes on. At 1,2,3.2,4.4,5.6
+# the last badge lands at 5.78, the finale at 6.38, and 0.8s of settled clip is
+# left after it.
+#
+# It cannot be bought with a longer clip instead. The surface travels a whole
+# number of ribbon lengths - that is what makes the loop seamless - so the speed
+# is ribbon/seconds and nothing else: 8s is 92px/s, 9s is 82, and there is no
+# value between them. The user settled on 92, so the clip is 8 seconds.
+MUSCLE_TIMES="${MUSCLE_TIMES:-1,2,3.2,4.4,5.6}"
+SURGE="${SURGE:-0.30}"
 BED="${BED:-../../engine/sfx/lift_bed_8s.m4a}"
 HIT_GAIN="${HIT_GAIN:-0.62}"
+# Unity, and it is not a free parameter: impact.finale already returns the chord
+# at the level the user picked it at, shared with the other variants. Anything
+# but 1.0 here is this folder quietly setting its own. If it is ever wrong, the
+# number to change is in engine/impact.py, once, for all of them.
+FINALE_GAIN="${FINALE_GAIN:-1.0}"
 BED_GAIN="${BED_GAIN:-1.0}"
 DAY="$(date +%d.%m)"
 OUT="../OUTPUT/$DAY/${TOPIC}_muscles.mp4"
@@ -58,14 +77,35 @@ echo "== liquid, badges and bodies"
     --anchored "$BASE" \
     --layout "$DIR/base_${TOPIC}_layout.json" \
     --drops 0 --reach 0 --anchor-tol "$ANCHOR_TOL" \
-    --muscles "$MUSCLES" --muscle-cues "${TOPIC}_cues.txt" \
+    --muscles "$MUSCLES" --muscle-times "$MUSCLE_TIMES" \
+    --muscle-cues "${TOPIC}_cues.txt" \
+    --finale auto --surge "$SURGE" --finale-cue "${TOPIC}_finale.txt" \
     -o "${TOPIC}_silent.mp4" "$@"
 
 SECONDS_USED=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "${TOPIC}_silent.mp4")
 
 echo "== hits"
+# The finale goes in through its own file, never into ${TOPIC}_cues.txt: the
+# cue file is a list of badge landings and muscle_audio.py would sound the
+# finale as a sixth badge, on a frame where nothing lands.
+# The finale comes out in its own file rather than summed into the hits, and the
+# mix takes it at unity. One track gets one gain: summed into ${TOPIC}_hits.wav
+# it was multiplied by HIT_GAIN below - 0.62, a number measured for badge hits -
+# and the chord arrived 4.15 dB under the level impact.finale returns it at. The
+# level the engine returns is the level it has to arrive at.
 ../.venv/bin/python muscle_audio.py --cues-file "${TOPIC}_cues.txt" \
+    --finale-cue "${TOPIC}_finale.txt" --finale-out "${TOPIC}_chord.wav" \
     --seconds "$SECONDS_USED" -o "${TOPIC}_hits.wav"
+
+# The bed steps back 2.9 dB under the finale and comes back up after it. Ducked
+# rather than mixed quieter throughout: the riser is the only sound in the clip
+# that says something is about to happen, and it needs the floor to itself for
+# half a second. The window is read from the finale's own instant, so it follows
+# the rhythm instead of being typed a second time.
+FIN=$(cat "${TOPIC}_finale.txt")
+DUCK_IN=$(awk -v t="$FIN" 'BEGIN{printf "%.2f", t-0.28}')
+DUCK_OUT=$(awk -v t="$FIN" 'BEGIN{printf "%.2f", t+1.12}')
+DUCK="volume='1-0.28*clip(min((t-${DUCK_IN})/0.20,(${DUCK_OUT}-t)/0.35),0,1)':eval=frame"
 
 echo "== bed, hits and picture"
 # Fixed gains and a limiter rather than loudnorm: the bed is already normalised
@@ -78,9 +118,10 @@ echo "== bed, hits and picture"
 # - the first cut of the food version measured -0.1 dBTP with the limiter
 # apparently on.
 ffmpeg -y -loglevel error \
-    -i "${TOPIC}_silent.mp4" -i "$BED" -i "${TOPIC}_hits.wav" \
-    -filter_complex "[1:a]volume=${BED_GAIN}[w];[2:a]volume=${HIT_GAIN}[p];\
-[w][p]amix=inputs=2:duration=first:normalize=0[m];\
+    -i "${TOPIC}_silent.mp4" -i "$BED" -i "${TOPIC}_hits.wav" -i "${TOPIC}_chord.wav" \
+    -filter_complex "[1:a]volume=${BED_GAIN},${DUCK}[w];[2:a]volume=${HIT_GAIN}[p];\
+[3:a]volume=${FINALE_GAIN}[f];\
+[w][p][f]amix=inputs=3:duration=first:normalize=0[m];\
 [m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[a]" \
     -map 0:v -map "[a]" -shortest \
     -c:v copy -c:a aac -b:a 192k -movflags +faststart "$OUT"
