@@ -1,0 +1,137 @@
+{
+ "_": [
+  "The vocabulary. One entry per hack, and every number on screen is in here",
+  "with the study it came from. A hack with no `source` does not ship - the",
+  "brand is a health app, and a number nobody can chase is worth less than no",
+  "number at all.",
+  "",
+  "  icon    a lucide name in icon-sources/package/icons/<name>.svg",
+  "  clock   where it sits in the day. Drives the day bar and the row order",
+  "  chips   what it costs the viewer. One is the shipped default: one chip",
+  "          read at arm's length beats two chips read by nobody",
+  "  metric  the caption under the dial - what changes",
+  "  value   what the dial counts up to. Text, so '+250%' and '-2 H' both work",
+  "  dir     up | down | time. The dial's colour, and nothing else",
+  "  source  the citation. Prose, because it is read by a person, not parsed"
+ ],
+
+ "morning light": {
+  "icon": "sunrise",
+  "clock": "06:40",
+  "chips": ["10 MIN"],
+  "metric": "BEDTIME",
+  "value": "-2 H",
+  "dir": "time",
+  "source": "Sharkey/Eastman, Sleep Med 2014-15: morning bright light on waking advanced sleep/wake timing and circadian phase markers by about 2 h. Also Leproult, JCEM 2001: dim->bright (150->4500 lux) in the early morning raises plasma cortisol within 15 min, which is the same clock being set."
+ },
+
+ "cold finish": {
+  "icon": "snowflake",
+  "clock": "07:05",
+  "chips": ["2 MIN"],
+  "metric": "DOPAMINE",
+  "value": "+250%",
+  "dir": "up",
+  "source": "Sramek et al., Eur J Appl Physiol 2000: immersion at 14 C raised plasma dopamine to 250% of baseline, rising gradually and staying up for hours with no crash after it. The 2 min chip is the shower-tail dose Huberman's synthesis settles on (1-3 min at 4-7 C), not the study's own hour."
+ },
+
+ "walk after lunch": {
+  "icon": "footprints",
+  "clock": "13:20",
+  "chips": ["10 MIN"],
+  "metric": "GLUCOSE PEAK",
+  "value": "-10%",
+  "dir": "down",
+  "source": "Sci Rep 2025 (s41598-025-07312-y): a 10 min walk taken immediately after glucose intake cut the peak from 181.9 to 164.3 mg/dL, p=0.028, d=0.73. That is -9.7%, rounded down. Self-selected pace, 3.8 km/h - a stroll, not a session."
+ },
+
+ "last coffee": {
+  "icon": "coffee",
+  "clock": "14:00",
+  "chips": ["10 H"],
+  "metric": "CAFFEINE LEFT",
+  "value": "-75%",
+  "dir": "down",
+  "source": "Caffeine's plasma half-life in healthy adults is about 5 h. Ten hours between the last cup and lights-out is two half-lives, so a quarter of the dose is left instead of the whole of it - 75% less than the same coffee taken at bedtime. Pure pharmacokinetics, no single trial: the number is arithmetic on a constant."
+ },
+
+ "lights down": {
+  "icon": "moon",
+  "clock": "22:30",
+  "chips": ["1 H"],
+  "metric": "MELATONIN",
+  "value": "+50%",
+  "dir": "up",
+  "source": "Phillips et al., PNAS 2019: evening room light suppresses melatonin, and the sensitivity spread is enormous - half the people tested lost 50% of their melatonin under less than 30 lux, which is dimmer than most living rooms. The dial states the benefit of dimming, which is the suppression not taken; the study measured the loss."
+ },
+
+ "nose breathing": {
+  "icon": "wind",
+  "clock": "17:30",
+  "chips": ["5 MIN"],
+  "metric": "BREATH RATE",
+  "value": "-1/MIN",
+  "dir": "down",
+  "source": "Balban et al., Cell Rep Med 2023 (Stanford): 5 min a day of cyclic sighing - long exhales - beat mindfulness meditation on both mood (p<0.05) and resting respiratory rate (p<0.05) over a month, and the people whose breathing slowed most were the ones whose mood rose most."
+ },
+
+ "hydrate first": {
+  "icon": "droplet",
+  "clock": "07:30",
+  "chips": ["500 ML"],
+  "metric": "ALERTNESS",
+  "value": "+14%",
+  "dir": "up",
+  "source": "Ganio et al., Br J Nutr 2011 and Armstrong et al., J Nutr 2012: mild dehydration around 1-2% of body mass degrades vigilance, working memory and mood in both men and women. The +14% is the vigilance-error recovery reported in Ganio; treat it as directional, and prefer the plain claim - the deficit shows up long before thirst does."
+ },
+
+ "stand up": {
+  "icon": "activity",
+  "clock": "11:00",
+  "chips": ["3 MIN/H"],
+  "metric": "GLUCOSE SWING",
+  "value": "-25%",
+  "dir": "down",
+  "source": "Dunstan et al., Diabetes Care 2012: breaking 5 h of sitting with 2 min of light walking every 20 min cut the postprandial glucose incremental AUC by 24.1% against uninterrupted sitting. Restated here at the dose people will actually do - a few minutes an hour - so read it as the effect's size, not its exact schedule."
+ },
+
+ "no screens": {
+  "icon": "eye",
+  "clock": "21:30",
+  "chips": ["1 H"],
+  "metric": "SLEEP ONSET",
+  "value": "-10 MIN",
+  "dir": "time",
+  "source": "Chang et al., PNAS 2015: reading on a light-emitting device before bed pushed melatonin onset later, cut evening sleepiness and lengthened the time taken to fall asleep by about 10 min against a printed book, over five nights."
+ },
+
+ "last meal early": {
+  "icon": "utensils",
+  "clock": "20:00",
+  "chips": ["3 H"],
+  "metric": "NIGHT GLUCOSE",
+  "value": "-18%",
+  "dir": "down",
+  "source": "Gu et al., J Clin Endocrinol Metab 2020: the same meal eaten at 22:00 rather than 18:00 left overnight glucose higher and fat oxidation lower in the same people. The magnitude is the study's own peak-glucose difference; the 3 h chip is the founder's own rule in CORE_STORY.md - last meal two or three hours before bed."
+ },
+
+ "heat then cold": {
+  "icon": "thermometer",
+  "clock": "19:00",
+  "chips": ["11 MIN /WK"],
+  "metric": "CARDIAC RISK",
+  "value": "-27%",
+  "dir": "down",
+  "source": "Laukkanen et al., JAMA Intern Med 2015 (Kuopio, 2315 men, 20 y): 2-3 sauna sessions a week associated with 27% lower cardiovascular mortality against once a week, and 4-7 a week with 50%. Observational, so association not cause - and the only entry here that is not free, which is why it is not in the shipped five."
+ },
+
+ "sleep window": {
+  "icon": "bed",
+  "clock": "23:00",
+  "chips": ["7-9 H"],
+  "metric": "RECOVERY",
+  "value": "+100%",
+  "dir": "up",
+  "source": "Placeholder - has no defensible number and must not ship until it does. Kept as the shape of an entry, not as content."
+ }
+}

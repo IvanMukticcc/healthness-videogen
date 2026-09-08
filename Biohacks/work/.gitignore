@@ -1,0 +1,25 @@
+# What a tool makes in here. The root .gitignore already covers *_silent.mp4,
+# *_cues.txt, *_pops.wav and *_hits.wav; this folder's derived files are named
+# for what they carry rather than for what made them, so they are named here.
+#
+# The three cue files are the whole reason render.sh is one command - flowanim.py
+# writes them and biohack_audio.py reads them, so neither is ever typed twice -
+# but they are outputs, and an output in history is an output somebody edits.
+*_chips.txt
+*_dials.txt
+*_finale.txt
+*_sfx.wav
+
+# /icons/ is the rasteriser's cache, and the leading slash is load-bearing: an
+# unanchored `icons/` also matches icon-sources/package/icons/, which is the one
+# directory in here that must be carried. It quietly excluded all 2077 svgs., keyed by name, size and colour. glyphs.py
+# rebuilds any of it in milliseconds from icon-sources/, which IS carried: it is
+# the licence and the 2077 svgs, and a build that needs the network is a build
+# that fails on a train.
+/icons/
+
+# The bed is carried. It is 8 seconds of authored sound whose parameters are in
+# biohack_audio.py, and it is deterministic - but so is base_layer.png, and that
+# is carried too, for the same reason: the thing every clip is mixed against
+# should not depend on nobody having touched a constant.
+!biohack_bed_8s.m4a

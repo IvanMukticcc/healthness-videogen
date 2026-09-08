@@ -1,0 +1,137 @@
+ADDING A TOPIC TO base_<topic>.png   —   THE OPTIONAL PATH
+==========================================================
+
+READ THIS FIRST: most Biohacks clips do not use this file.
+
+Both circles in this variant are drawn at render time - a lucide glyph on the
+left, a dial on the right - so `./render.sh <topic> 'auto:...'` produces a
+finished clip with no generator in the loop and nobody waiting on one. That is
+the shipped path and `flow.md` describes it.
+
+This file is for the topics where the left circle should be a photograph: a real
+sunrise through a real window, a real hand under a cold tap. It costs the round
+trip - write, paste, wait, fetch, check the waves survived, look at the circles
+by eye - and it buys warmth that a line icon does not have. Decide which you are
+making before you build the base, because the two want different left circles.
+
+    photographs:   ./render.sh <topic> 'auto:...' <topic>_labelled.png --scene poster
+    glyphs:        ./render.sh <topic> 'auto:...'
+
+
+THE RIGHT CIRCLE IS NEVER GENERATED, IN EITHER PATH
+
+It holds the dial, and the dial is drawn by dial.py. Five posters whose dials
+disagree about where a ring starts is five instruments instead of one, and the
+comparison the whole clip is about - this costs two minutes and moves that, the
+next costs ten and moves this - does not survive it. An image model cannot draw
+the same ring twice, so it is not asked to, for the same reason it is not asked
+to redraw the wave.
+
+
+GEOMETRY OF THE BASE LAYER  (1536 x 2752)
+
+  waves span x 229-1289          = 15% to 84% of the width
+  row 1 wave  y  491- 702        row stripes start at 412, 825, 1238, 1649, 2063
+  row 2 wave  y  904-1115        each stripe 413 tall
+  row 3 wave  y 1317-1527
+  row 4 wave  y 1729-1940
+  row 5 wave  y 2142-2353
+  title                          y ~191-392, drawn into the base
+  day bar                        y 2476-2585, drawn at render time. LEAVE CLEAR
+  logo                           y ~2586-2667, centred
+
+  guide circles   r 137, centred x 250 and x 1270, one per row over each wave tip
+  caption bars    380 x 78, centred under each circle, 20px below it
+
+  LEFT circle   what the generator fills, and the only thing it fills
+  RIGHT circle  the dial. Drawn over a disc that covers the circle exactly.
+                LEAVE IT ALONE
+  caption bars  add_labels.py writes into them. Leave them alone
+  the strip under the last row  the day bar. Nothing goes there
+
+  The safe area is one FOURTEENTH of the width, not one tenth. The circles reach
+  x 112 and x 1408, and a tenth of 1536 is 154 - so a tenth tells the model to
+  keep the subject out of the very circle it is told to fill, and it follows the
+  sentence over the mark. A fourteenth is 110, just outside them.
+
+
+=== THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no numbers, no clock times, no words under the pictures, nothing at all. Text is added later, outside the generator.
+
+EACH ROW HAS A FAINT CIRCLE ON THE LEFT, A FAINT CIRCLE ON THE RIGHT, and under each of them A FAINT BAR. Add one thing per row and one only: a photograph filling the circle ON THE LEFT, cropped by its edge, the way food sits in a bowl. THE RIGHT CIRCLE IS ALREADY FINISHED ARTWORK. Do not draw anything in the right circle, do not put a person, an object, a dial, a diagram or a number there, and do not draw anything in the empty space around it. The bars under the circles are reserved for text that is added later: keep them completely clear and do not draw on them. THE STRIP BETWEEN THE BOTTOM ROW AND THE LOGO IS ALSO RESERVED: keep it completely empty.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster.
+
+Every one of the five pictures is a close, warm, photorealistic shot of the moment the habit happens - not a person posing, not a product on a background, not a diagram. Shallow depth of field, one clear subject, natural light, no studio backdrop.
+
+Row 1: <HACK 1 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+
+Row 2: <HACK 2 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+
+Row 3: <HACK 3 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+
+Row 4: <HACK 4 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+
+Row 5: <HACK 5 AS A MOMENT>, photographed close and warm, shallow depth of field, natural light, the subject filling the frame.
+
+The five photographs are cleanly cut to their circles with no background outside them, no glow and no cast shadow. The liquid leaves each picture at its right-hand side. Keep every wave fully visible between the picture and the right circle.
+
+=== END OF PROMPT ===
+
+
+WRITING THE FIVE ROWS
+
+A hack is an action, and an action asked for as a noun comes back as a product
+shot. "Cold exposure" gives a photograph of a shower head on a white background;
+"a hand held under cold running water, droplets caught mid-air" gives the moment.
+Name the moment, not the category:
+
+  morning light   sunlight coming through a window onto a kitchen counter at
+                  dawn, low and orange
+  cold finish     a hand held under cold running water, droplets caught mid-air
+  lunch walk      a pair of feet mid-step on a pavement, seen from above
+  last coffee     a cup of black coffee on a table with afternoon light across it
+  lights down     a bedside lamp turned low in a dark room
+
+That is the same lesson the food version writes down as "an organ named on its
+own comes back as an object", and the exercise version as "caught at the hardest
+point of the rep" - a phrase the model can nod at is worth less than a thing it
+either draws or does not.
+
+
+NEGATIVE PROMPT, if the tool offers a separate field:
+
+text, letters, numbers, caption, label, title, clock, watch face, dial on the
+right, ring, gauge, chart, diagram, infographic, object in the right circle,
+anything under the bottom row, second circle, resized circle, recoloured circle,
+white circle behind the subject, black circle behind the subject, studio
+backdrop, product shot, stock photo watermark, changed liquid, redrawn wave,
+different wave shape, moved wave, recoloured wave, extra liquid, droplets,
+splash, spray, particles, sparkles, glow, halo, drop shadow, changed background
+colour, changed logo, watermark
+
+
+AFTER GENERATING
+
+    ../../.venv/bin/python ../../engine/grab.py <topic>
+    ../../.venv/bin/python ../../engine/check_base.py <topic>.jpeg \
+        --base ../INPUT/base_<topic>.png
+
+Under about two pixels of drift the authored mask still fits. Above that,
+regenerate rather than animate: the animation cannot correct a wave the generator
+has redrawn.
+
+Then look at the right circles and the day-bar strip by eye. The wave check
+covers neither. Anything the generator drew *inside* the right circle is covered
+by the dial's own disc, which is drawn at the full circle radius at 0.97 alpha;
+anything straddling its *edge* survives and also nudges the wave's tip, because
+the ribbon geometry is computed from the poster. That case is a regeneration.
+Anything in the day-bar strip is not covered by anything and is also a
+regeneration - the bar is a thin track on a wide empty band, and it has no disc.
