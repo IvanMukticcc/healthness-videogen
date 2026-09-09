@@ -17,6 +17,11 @@ __pycache__/
 *_hits.wav
 *_cues.txt
 *_protocol.txt
+*_finale.txt
+*_locks.wav
+*_chord.wav
+*_riser.wav
+*_hacks.txt
 *_sheet.png
 
 # the generated posters, and the finished videos
@@ -69,3 +74,11 @@ CHECKPOINT_*/*
 !CHECKPOINT_*/README.md
 OldCheckpoints/*/*
 !OldCheckpoints/*/README.md
+
+# archive/ checkpoints each carry a copy of the engine's authored wave source.
+# Un-ignoring *_poster.jpeg on 8 September - so that a shipped poster could
+# never again be ignored by name - exposed six of them, 13 MB, and all six are
+# byte-identical to engine/source_wave_poster.jpeg (9545a1a6999c), which is
+# tracked. The un-ignore exists to protect artefacts no command can remake;
+# this file is not one of them, because it is already in the repository.
+archive/**/source_wave_poster.jpeg
