@@ -25,7 +25,28 @@ and transparent enough to belong to the picture. Not a box - a pane.
 
     ../.venv/bin/python ../../engine/caption_glass.py \
         <topic>_clean.png <topic>_labelled.png \
-        -l base_<topic>_layout.json -o <topic>_labelled.png
+        -l base_<topic>_layout.json -o <topic>_glass.png
+
+**NEVER WRITE OVER AN INPUT, AND THIS TOOL WILL NOT LET YOU.** The whole method
+rests on `labelled` differing from `clean` by ink and nothing else. Run it once
+in place and that stops being true: the second run solves the plate as if it were
+letters, the bounding box grows to the plate's own edge, and the next plate is
+built around that one.
+
+Biohacks measured it on `longer` - pane 46-52px tall becoming 70, 320 wide
+becoming 372, 56 738 px changed with no error and no warning, just a heavier
+plate that looks deliberate. Reproduced here on `bigfive`: 85px to 94, 166 266 px
+changed. Only dark rows, because their rim is (210,210,220) and projects hard
+onto white ink, while a light row's (255,255,255) rim projects to nothing against
+near-black.
+
+There is no cheap test for "this one already has a plate". Fill fraction inside
+the ink's own bounding box was the obvious candidate and it does not separate
+them: letters measure 0.94-0.97 and an already-plated row 0.83-0.96. So the guard
+is structural rather than clever - the output path may not be an input path - and
+the documented invocation writes a third file. Keeping `_labelled.png` as the
+pure `add_labels` output also preserves the (clean, labelled) pair that every
+caption measurement in this repository is made from.
 
 WHY IT RUNS AFTER add_labels AND NOT BEFORE
 
@@ -43,6 +64,7 @@ the drawn pixels would carry a halo of the old background around every letter.
 """
 import argparse
 import json
+from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -110,6 +132,18 @@ def main():
                         "so a caption over plain concrete stays nearly transparent and "
                         "the one over the black sled does not")
     args = p.parse_args()
+
+    # The one guard that is not a heuristic. See the docstring: a second pass
+    # reads its own plate as letters, and nothing in the image says which pass
+    # this is.
+    out = Path(args.out).resolve()
+    for name, src in (("clean", args.clean), ("labelled", args.labelled)):
+        if Path(src).resolve() == out:
+            raise SystemExit(
+                f"  -o is the same file as {name}: {src}\n"
+                f"  This tool needs `labelled` to differ from `clean` by ink alone,\n"
+                f"  so writing over either destroys the input the next run needs.\n"
+                f"  Write a third file - <topic>_glass.png - and keep the pair.")
 
     clean = np.asarray(Image.open(args.clean).convert("RGB"), dtype=np.float32)
     lab = np.asarray(Image.open(args.labelled).convert("RGB"), dtype=np.float32)
