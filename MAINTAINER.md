@@ -313,6 +313,26 @@ poster's real route, `<topic>.jpeg` from `grab.py` converted to a lossless
 the next silently expected a png. Biohacks writes and reads `work/icons` in one
 place and is clean.
 
+## A check that cannot fail loudly is not a check
+
+Twice in one evening, in two different sessions, from the same shape.
+
+The root ran `>/dev/null 2>&1` around a render and compared the output with
+`cmp -s`. The render died on `FileNotFoundError` - its input had been renamed
+hours earlier by the archival rule - and `cmp -s` on two files that do not exist
+exits non-zero exactly like a real difference. So the terminal said DIFFERS, the
+commit said byte-identical, and neither statement had a render behind it.
+
+Biohacks ran four renders with `2>/dev/null` an hour later, got four "FAILED",
+and the real error was `AttributeError: 'Namespace' object has no attribute
+'dial_lead'` - one overlay reads a flag another declares, so the three cannot be
+run separately at all and the isolation plan behind those renders was never going
+to work. The message that would have said so was the one being thrown away.
+
+So: **never send stderr to /dev/null around something whose success you are about
+to assert.** And when comparing two artefacts, check they exist first - a missing
+file and a different file are the same exit code, and only one of them is news.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the
