@@ -1,6 +1,6 @@
 # The engine
 
-Seven tools and three authored assets. Everything that makes a Healthness Shorts
+Eight tools and three authored assets. Everything that makes a Healthness Shorts
 poster move is here, and **nowhere else**.
 
     make_base.py        rebuilds base_layer.png, ribbon_mask.png and ribbon_rgba.png
@@ -16,6 +16,9 @@ poster move is here, and **nowhere else**.
     clip.py             the other direction: `clip.py image <topic>` puts the base
                         on the clipboard, `clip.py prompt` puts the last prompt
                         handed over back on it. The two paste actions a topic costs
+    caption_glass.py    a plate of frosted glass under a caption that lands on a
+                        photograph, where add_labels' light/dark flag stops being
+                        a guarantee. Runs after it, and reads the ink back out
     check_base.py       is this poster even from this base, and did the generator
                         leave the waves alone?
     add_labels.py       the row captions, all ten at one size

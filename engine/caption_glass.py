@@ -2,6 +2,14 @@
 """
 caption_glass.py - put a plate of frosted glass under the left captions.
 
+In the engine because the failure is not one variant's. `add_labels.py` picks its
+ink from the layout's light/dark flag, which is a guarantee on a flat row and a
+guess on a photograph - so every variant that ships a scene mode inherits it.
+Exercise wrote it after losing SLED PUSH to a black sled on a light row; Biohacks
+asked for it rather than copying it, having measured its own thinnest shipped row
+at a luminance gap of 86 where the rest run 153-243. Two users is the signal, the
+same one that promoted `refine_art`.
+
 On a coloured row the caption is safe: `add_labels.py` takes its ink from whether
 the row is light or dark, and the row is one flat colour, so white-on-dark and
 black-on-light always read. On a photographic row that guarantee is gone. The
@@ -15,7 +23,8 @@ The fix is the one the user's own app uses for text over photographs: a rounded
 plate of blurred background behind the words, light enough to sit under the ink
 and transparent enough to belong to the picture. Not a box - a pane.
 
-    ../.venv/bin/python caption_glass.py <topic>_clean.png <topic>_labelled.png \
+    ../.venv/bin/python ../../engine/caption_glass.py \
+        <topic>_clean.png <topic>_labelled.png \
         -l base_<topic>_layout.json -o <topic>_labelled.png
 
 WHY IT RUNS AFTER add_labels AND NOT BEFORE

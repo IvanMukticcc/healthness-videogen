@@ -18,7 +18,8 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 ENGINE="$ROOT/engine"
 VARIANTS=(${1:-Foods Micro Exercise Biohacks})
-FILES=(make_base.py recolor_base.py grab.py clip.py add_labels.py check_base.py flowanim.py
+FILES=(make_base.py recolor_base.py grab.py clip.py add_labels.py caption_glass.py
+       check_base.py flowanim.py
        impact.py
        base_layer.png ribbon_mask.png ribbon_rgba.png source_wave_poster.jpeg)
 
