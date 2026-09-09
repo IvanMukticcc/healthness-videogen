@@ -186,16 +186,50 @@ pixels do. Split there:
 
 The tips are pinned to their circle centres by the line above; the ribbon's ends
 are fixed and the surface scrolls through them. **A tip that moved would be the
-bug.** So a whole-rim frozen fraction has a floor near a quarter before anything
-is wrong, the reported 17-23% and 26.8% are largely the same design constant read
-through slightly different rim definitions, and a circle-mode-versus-scene-mode
-gap in that number is two tip geometries rather than two amounts of fault.
+bug.** Exercise reproduced this independently at their own geometry - `desk`
+32.5% whole rim, `legs` 31.2%, both 100.0% at the tips, tips a quarter of the rim
+in both modes. So **a whole-rim frozen fraction has a floor near a quarter before
+anything is wrong, and the tips must come out before comparing anything with
+anything.**
 
-**Exclude the tips before comparing rim motion between anything and anything.**
-The residue where the wave actually travels is 3.3-3.9%, and whether that is a
-fault is still open. One clip, one variant, three timestamps, rendered with
-`--drops 0 --reach 0` so no badge is near the rim - the structure transfers
-because every variant shares `ribbon_mask.png`, the digits do not.
+**Two things this note first claimed are wrong, and the correction is the more
+useful half.** It said Exercise's 17-23% and this 26.8% were one design constant
+read through two rim definitions, and that their circle-versus-scene gap was two
+tip geometries. Neither holds. Their numbers were already tip-excluded (x
+restricted to 360-800) and measured on the **outside** band - `dilation(mask)`
+minus mask, the 4px fringe where the animator's deliberate 9x9 overshoot peters
+out - against the **inside** band here, mask minus `erosion(mask)`. Two different
+populations in two different places, never comparable. The gap does dissolve on a
+single definition, but for a different reason than given: same rim, travel zone,
+`desk` 25.1% against `legs` 25.4%.
+
+**Name which band.** Measured on the same clip, same window, same travel zone,
+the two bands differ by more than most faults do:
+
+    Longevity, authored PNG    inside 3.6%   outside 5.9%
+    Exercise desk (jpeg)       inside 10.3%  outside 25.1%
+    Exercise legs (jpeg)       inside 8.6%   outside 25.4%
+
+**Jpeg contributes, and is not the whole of it.** Exercise ran the lossless
+control at their own geometry - `flowanim.py` on `base_legs_clean.png`, the file
+`recolor_base.py` wrote, no generated content anywhere - and got 6.1% in the
+travel zone against 8.6% and 10.3% from jpeg posters. So jpeg is worth about 2.5
+to 4.2 points there, a third to two fifths of the residue, and 6.1% survives with
+no jpeg in the clip's history at all. A negative result worth not repeating: rows
+with more wave-to-row contrast do not freeze more (contrast 114-151 against
+frozen 6.4-12.7%, n=5, and the second-highest-contrast row is the least frozen),
+so the residue is not simply proportional to edge contrast.
+
+**The floor is not the same in every variant, and nobody knows why yet.** Two
+authored PNGs, no jpeg in either, same rim, same split, same five-frame window:
+
+    Longevity, base_hour168_clean.png    3.6%
+    Exercise,  base_legs_clean.png       6.1%
+
+Either the topics differ or the two ribbons behave differently despite sharing
+`ribbon_mask.png`. It is open. What is settled is that a rim-motion number means
+nothing without three words attached: **which band, which zone, and whether a
+jpeg was ever involved.**
 
 ## The overlay seam
 
