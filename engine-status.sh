@@ -17,7 +17,21 @@
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 ENGINE="$ROOT/engine"
-VARIANTS=(${1:-Foods Micro Exercise Biohacks})
+# Discovered, not listed. A variant is a folder here with an INPUT/ and a work/.
+# It was a hardcoded list of four until 9 September and Longevity - the fifth,
+# added the day before - was never checked by it: the loop skips a name with no
+# folder, so the omission could not announce itself. A check whose coverage is
+# typed by hand goes quietly out of date on the day somebody adds the thing it
+# was supposed to cover.
+discover() {
+    local d
+    for d in "$ROOT"/*/; do
+        d="${d%/}"
+        [ -d "$d/INPUT" ] && [ -d "$d/work" ] && basename "$d"
+    done
+}
+if [ $# -ge 1 ]; then VARIANTS=($1); else VARIANTS=($(discover)); fi
+[ ${#VARIANTS[@]} -gt 0 ] || { echo "no variants found under $ROOT" >&2; exit 2; }
 FILES=(make_base.py recolor_base.py grab.py clip.py add_labels.py caption_glass.py
        check_base.py flowanim.py
        impact.py

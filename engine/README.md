@@ -96,8 +96,8 @@ Change any of that and every `base_<topic>.png` in every variant has to be
 rebuilt, because `ribbon_mask.png` no longer fits. That is the one change that is
 never cheap.
 
-Two things the geometry does **not** guarantee, both found by Biohacks and worth
-knowing before a fifth variant rediscovers them.
+Three things the geometry does **not** guarantee, all three found by Biohacks and
+worth knowing before a sixth variant rediscovers them.
 
 **The guide-circle wipe assumes the generator painted over the mark.** With
 `--anchored`, a pixel that still matches the anchored base where the anchored
@@ -122,6 +122,44 @@ flat row stripe none of it reads; on a bright photograph it does, which is why i
 took a photographic variant to surface. Not reproduced from this side - the
 poster is not on disk here - so it is one variant's number on one render, and the
 shape of it is what to trust rather than the digits.
+
+**The erase band repaints with the clean base's flat row colour.** As the surface
+travels, `render_wave` clears the strip the liquid has vacated - `tile[erase] =
+bgc` - and `bgc` comes from the clean base. That is exactly right when the poster
+equals the base behind the wave, which is what a flat row stripe is; it is wrong
+everywhere on a photograph, where it lays a band of flat row colour over the
+picture and reads as a small deformed patch of colour hugging the liquid. The
+user saw it on Biohacks and Exercise clips and not on Micro, and drew the
+reasonable conclusion that a fixed background prevents it. **It does not - it
+hides it.** Exercise measured the same fault in circle mode, slightly worse, so
+Micro is not the control it looks like.
+
+`--erase-from poster` samples the replacement from the poster instead, which
+costs nothing extra because `ribbon_geometry` already takes a 12px strip clear of
+the wave and smooths it along the ribbon. Default is `base`, so Micro and Foods
+are byte-identical either way, verified at 2 777 191 bytes. Measured on `crash`,
+with the guide circles and caption bars excluded:
+
+    --erase-from base      387 px/frame   worst cluster 131
+    --erase-from poster    146 px/frame   worst cluster  50
+
+What is left is not the fault returning. The replacement is a smoothed sample
+from 12px outside the ribbon, so it is an approximation of what is behind the
+wave, and it misses wherever the photograph has strong local detail right at the
+edge: a hard bright window frame at the wave's left end keeps 41px, a cyclist on
+flat dark road keeps 2. **The wrong-coloured band is fixed; the right colour at
+slightly the wrong value is not, and is a different order of thing.**
+
+**The instrument that measures this has a blind spot, and it matters before
+quoting any number from it.** The test asks whether a pixel sits within 12 levels
+of the clean base while the poster is more than 40 away - sharp on a dark row
+against a mid-tone photograph, blunt wherever base and photograph agree in tone.
+On `defence`, a bleached tennis court on rows whose base is `#EDF0EE`, the three
+dark rows measure 2, 1 and 7 px a frame while the two light rows carry 100 of the
+111. Comparing two topics with it is therefore partly comparing how pale their
+light rows are. **For a number that travels between variants, restrict it to dark
+rows** - `defence` gives 10 px/frame that way. The same lesson as naming the
+meter, one axis over: name what you selected on.
 
 ## The overlay seam
 

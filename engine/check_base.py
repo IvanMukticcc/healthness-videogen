@@ -94,10 +94,14 @@ def main():
         if t > args.title_tol:
             raise SystemExit(
                 f"  title band differs by {t:.1f} (over {args.title_tol:.0f})\n"
-                f"  This poster was not generated from {args.base}. It is somebody\n"
-                f"  else's, or this topic's own base is not the one passed in.\n"
-                f"  Do not regenerate it - nothing is wrong with the poster. Find\n"
-                f"  the base it belongs to, or leave the file for whoever made it.")
+                f"  This poster belongs to a different base than {args.base}.\n"
+                f"  Check your own other topics first - the commonest cause by far is\n"
+                f"  a generator serving its previous result, so the file is an earlier\n"
+                f"  topic of yours and byte-identical to the copy you already have.\n"
+                f"  Failing that it is another variant's, picked up from the same\n"
+                f"  Downloads folder, or this topic's own base is not the one passed in.\n"
+                f"  Do not regenerate it - nothing is wrong with the poster. Find the\n"
+                f"  base it belongs to, or leave the file for whoever made it.")
         print(f"  title band matches the base ({t:.1f})")
 
     lab, n = ndimage.label(ref)
