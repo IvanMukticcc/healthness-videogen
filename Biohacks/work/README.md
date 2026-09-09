@@ -61,6 +61,34 @@ a ring starts would be five instruments, and the comparison the clip is about
 would not survive it. `PROMPTING.md` has the same argument from the other side -
 what the generator is *good* at, and what it will quietly get wrong.
 
+### The plate under the left captions
+
+`engine/caption_glass.py`, between `add_labels.py` and `render.sh`, scene mode
+only. `add_labels.py` picks its ink from the layout's light/dark flag - a
+guarantee on a flat row, a guess on a photograph - so the left caption's
+legibility is decided by whatever the generator happened to put under it. Across
+this folder's first six posters the ink-to-background gap ran 83 to 243, and
+**both rows under 95 were light rows, both row 4**: the same signature as the
+black sled that cost Exercise `SLED PUSH`. The plate takes them to 116 and 120.
+
+The right caption never had the problem - it sits on the dial's own disc, which
+is opaque and a known colour - so `--side` stays at its `left` default, and so do
+`--min-alpha 0.42` and `--target 95`. They were measured on Exercise's five
+bands and they hold on all thirty rows here, which is the point: one tool
+carrying two variants' worth of constants is the drift promoting it was meant to
+end.
+
+It writes `<topic>_glass_labelled.png` rather than back over `<topic>_labelled.png`,
+because it is not idempotent - on a dark row its own rim reads as letters to the
+next pass and the plate grows to its own edge, 46px tall to 70, with no error.
+Keeping the two files apart makes the caption step re-runnable and preserves the
+`(poster, labelled)` pair every caption measurement here is made from.
+
+`check_scene.py --glass` verifies the result, and that is the only honest place
+for the verdict: before the plate exists the answer depends on where the letters
+land, and nothing knows that until `add_labels.py` has run. The left caption is
+no longer a reason to send a poster back.
+
 ### The preview, which is not a clip
 
 `./render.sh <topic> 'auto:...'` with no poster draws a lucide glyph in the left

@@ -181,6 +181,11 @@ TITLE = (191, 392)          # where recolor_base.py draws the title, in a 2752
                             # the one place the difference is invisible. Exercise
                             # found the same line in their own copy.
 MARK_STD = 15.0
+LUMA = np.float32([0.299, 0.587, 0.114])
+CAP_TARGET = 95.0          # engine/caption_glass.py's --target, and it stays
+                           # its number. Two files disagreeing about what a
+                           # readable caption is would be the drift that
+                           # promoting the tool was meant to end
 LIGHT_LUMA = 150.0          # over this a band reads light, under it dark
 CAP_NEAR = 60.0             # luminance within which the ink is lost
 CAP_LOST = 0.20             # and how much of the strip may be that close.
@@ -211,6 +216,11 @@ def main():
     p.add_argument("--poster")
     p.add_argument("--layout")
     p.add_argument("--base")
+    p.add_argument("--glass", help="the poster after engine/caption_glass.py. "
+                                   "Given it, the left captions are verified "
+                                   "against the plate rather than guessed at")
+    p.add_argument("--labelled", help="the poster after add_labels.py and "
+                                      "before the plate")
     a = p.parse_args()
     poster = a.poster or f"{a.topic}.jpeg"
     layout = a.layout or f"base_{a.topic}_layout.json"
@@ -289,8 +299,9 @@ def main():
                                    f"photograph was painted around it, not over it"),
                         (light_ok, f"r{i+1} is {'light' if lu >= LIGHT_LUMA else 'dark'} "
                                    f"(luma {lu:.0f}) and the layout says "
-                                   f"{'light' if want_light else 'dark'} - the caption "
-                                   f"will be drawn in the wrong ink"),
+                                   f"{'light' if want_light else 'dark'} - both "
+                                   f"captions get the wrong ink, and only the "
+                                   f"left one gets a plate under it"),
                         (right_ok, f"r{i+1} right third is busier than the left "
                                    f"({100*right:.0f}% against {100*share:.0f}%)")):
             if not ok:
@@ -314,8 +325,8 @@ def main():
             lost = float((np.abs(b - ink) < CAP_NEAR).mean())
             con = abs(float(b.mean()) - ink)
             ok = lost <= CAP_LOST
-            if not ok:
-                bad.append(f"r{i+1} {side.strip()} caption disappears over "
+            if not ok and side.strip() == "right":
+                bad.append(f"r{i+1} right caption disappears over "
                            f"{100*lost:.0f}% of its strip (limit {100*CAP_LOST:.0f}%) - "
                            f"something bright is sitting under the ink. Its mean "
                            f"contrast is {con:.0f}, which is why a mean does not "
@@ -324,8 +335,15 @@ def main():
                 print(f"  caption r{i+1} {side}  lost {100*lost:5.1f}%  "
                       f"(mean contrast {con:3.0f})  NO")
             else:
+                # The left caption is no longer a reason to send a poster back:
+                # engine/caption_glass.py puts a plate under it, and a plate is
+                # cheaper than a round trip through a person and an image model.
+                # The number is still worth printing - it ranks how hard the
+                # plate will have to work - but it is verified after the plate
+                # exists, by --glass below, not guessed at from the poster.
+                mark = "ok " if ok else "thin"
                 print(f"  caption r{i+1} {side}  lost {100*lost:5.1f}%  "
-                      f"(mean contrast {con:3.0f})  ok")
+                      f"(mean contrast {con:3.0f})  {mark}")
 
     # the footer, where the day bar goes
     f0, f1 = int(2476 * k), int(2585 * k)
@@ -336,6 +354,48 @@ def main():
           f"{'ok - empty, the day bar can go there' if foot_ok else 'NO - something is drawn there'}")
     if not foot_ok:
         bad.append("the strip under the last band is not empty")
+
+    # 6. THE PANE, once it exists. The only place the left caption question can
+    # be answered honestly: before the plate is drawn, the answer depends on
+    # where the letters land, and nothing knows that until add_labels has run.
+    if a.glass:
+        print()
+        lab = np.asarray(Image.open(a.labelled or f"{a.topic}_labelled.png")
+                         .convert("RGB")).astype(np.float32)
+        gls = np.asarray(Image.open(a.glass).convert("RGB")).astype(np.float32)
+        if not (img.shape == lab.shape == gls.shape):
+            sys.exit("the poster, the labelled poster and the paned one differ in size")
+        half = L.get("caption_w", 380) / 2 + 14
+        cx = L["anchor_l"]
+        for i, row in enumerate(L["rows"]):
+            # add_labels.py's own ink, not caption_glass.py's near-match: this
+            # measures what was drawn.
+            inkv = np.float32([28, 28, 28] if row["light"] else [255, 255, 255])
+            ikl = float(inkv @ LUMA)
+            y0, y1 = int(row["cap_top"] * k) - 8, int((row["cap_top"] + row["cap_h"]) * k) + 8
+            x0, x1 = int(max(0, cx * k - half * k)), int(min(W, cx * k + half * k))
+            C, B, G = img[y0:y1, x0:x1], lab[y0:y1, x0:x1], gls[y0:y1, x0:x1]
+            kk = inkv[None, None, :] - C
+            den = (kk * kk).sum(2)
+            al = np.clip(np.divide(((B - C) * kk).sum(2), den,
+                                   out=np.zeros(den.shape, np.float32), where=den > 1e-6), 0, 1)
+            ys, xs = np.where(al > 0.06)
+            if len(xs) == 0:
+                bad.append(f"r{i+1} left: no caption found under the plate")
+                print(f"  pane r{i+1} left   no caption found        NO")
+                continue
+            bx = (slice(ys.min(), ys.max() + 1), slice(xs.min(), xs.max() + 1))
+            under = al[bx] < 0.06
+            before = abs(ikl - float((B[bx] @ LUMA)[under].mean()))
+            after = abs(ikl - float((G[bx] @ LUMA)[under].mean()))
+            if after < CAP_TARGET:
+                bad.append(
+                    f"r{i+1} left caption sits {after:.0f} from its plate, under the "
+                    f"{CAP_TARGET:.0f} caption_glass.py aims for. The plate has already "
+                    f"gone as far as it will go, so this is the photograph rather than "
+                    f"the plate - the band needs a quieter place for the caption")
+            print(f"  pane r{i+1} left   {before:5.0f} -> {after:5.0f}  "
+                  f"({after-before:+4.0f})  {'ok ' if after >= CAP_TARGET else 'NO '}")
 
     if bad:
         print(f"\nSEND IT BACK - {len(bad)} thing(s) to fix:")

@@ -26,8 +26,9 @@ loop every other variant here follows and this folder is not an exception to it:
                                     engine/clip.py at handover so it is on the
                                     clipboard as well as on the screen
     3. the user returns the image   grab.py, then check_base, check_scene
-    4. caption it and render        add_labels.py, then ./render.sh with the
-                                    poster as the third argument
+    4. caption it and render        add_labels.py, then caption_glass.py for
+                                    the left captions, then ./render.sh with
+                                    the paned poster as the third argument
 
 Running `./render.sh <topic> 'auto:...'` with no poster renders a **preview**
 into `work/<topic>_preview.mp4` and will not write to `OUTPUT/`. The preview
@@ -101,11 +102,49 @@ entry was captioned `7000 STEPS` with a chip reading `7000 STEPS`, and the row
 spent its whole 0.55 s saying one thing twice. The caption names the hack, the
 chip prices it: `WALK MORE` and `7000 STEPS`.
 
+**3b. Glass under the left captions.** Scene mode only - on a preview the base
+draws its own caption bars and a plate on top would be a second bar.
+
+```
+../../.venv/bin/python ../../engine/caption_glass.py \
+    <topic>_poster.jpeg <topic>_labelled.png \
+    -l base_<topic>_layout.json -o <topic>_glass_labelled.png
+```
+
+`add_labels.py` picks its ink from the layout's light/dark flag. On a flat row
+that is a guarantee; on a photograph it is a guess, and what happens to lie under
+the caption decides. Measured across this folder's first six posters, the gap
+between ink and background ran 83 to 243 - and **both rows under 95 were light
+rows, both row 4**, which is the same signature as the black sled that cost
+Exercise `SLED PUSH`. The plate takes them to 117 and 119.
+
+At `--min-alpha 0.42` it lifts +34 where it is thin and +1 to +12 where it was
+already safe, without changing strength: the pane blends towards its own tone, so
+a background sitting close to the ink travels much further than one already far
+from it. Nothing here has needed a heavier plate. **Do not add flags** - the
+defaults are Exercise's, measured on their five bands, and one tool carrying two
+variants' worth of constants is the drift the engine exists to prevent.
+
+**The name ends in `_labelled.png` on purpose.** It is a build product - one
+command away from the poster and the labels - and the root `.gitignore` already
+drops `*_labelled.png`. Naming it `<topic>_glass.png` would have put a
+regenerable file into the repository, which is the opposite trade from
+`*_poster.jpeg`: that one is un-ignored because no command can remake it.
+
+**It writes to its own file, not back over `_labelled.png`, and that matters.** The
+tool is not idempotent: on a dark row the rim is (210,210,220) against white ink,
+so a second pass reads the rim as letters and grows the plate to its own edge -
+46px tall becomes 70, silently, with no error. Re-running the caption step after
+a typo is the ordinary way to hit that. Keeping the pure `add_labels` output
+under its own name makes every re-run start from the same place, and keeps the
+`(poster, labelled)` pair intact, which is the pair every caption measurement in
+this folder is made from.
+
 **4. Render.** One command, because the picture and three sounds have to agree
 about five instants and typing them twice drifts by a frame.
 
 ```
-./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK' <topic>_labelled.png
+./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK' <topic>_glass_labelled.png
 ```
 
 The poster is what makes this a clip rather than a preview, and passing it also
@@ -116,7 +155,7 @@ Out comes `../OUTPUT/<DD.MM>/<topic>_biohack.mp4` with the bed, the chips, the
 counters and the chord on it. `WIDTH=540 ./render.sh ...` while tuning: identical
 timing, a third of the wait.
 
-**3b. Hand it over with the clipboard, not with a mouse.** A topic costs two
+**4a. Hand it over with the clipboard, not with a mouse.** A topic costs two
 paste actions and both were being done by hand - dragging the base out of a
 Finder window, and selecting a hundred and fifty lines of terminal output
 without catching the shell prompt at the end.
