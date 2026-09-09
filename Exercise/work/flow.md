@@ -201,7 +201,8 @@ in near-black on it and disappeared: 36 luminance between the ink and its
 background, against 231 on the row above.
 
 ```
-../.venv/bin/python caption_glass.py <topic>_clean.png <topic>_labelled.png \
+../.venv/bin/python ../../engine/caption_glass.py <topic>_clean.png \
+    <topic>_labelled.png \
     -l base_<topic>_layout.json -o <topic>_labelled.png
 ```
 
@@ -220,6 +221,17 @@ setting that suits them the sled stays unreadable.
 
 Circle mode does not want this. There the base draws the caption bars itself and
 the ink is guaranteed against them; a pane on top would be a second bar.
+
+It lives in the engine now rather than here (58d7e5c). The fault is not this
+variant's: `add_labels.py` takes its ink from the layout's light/dark flag, which
+is a guarantee on a flat row and a guess on a photograph, so every variant with a
+scene mode inherits it. Biohacks measured the same signature on their own posters
+- thinnest ink-to-background gap 86 against 153-243 elsewhere, four of the five
+thinnest on light rows, which is our sled at 36 in milder form - and asked for the
+tool rather than copying it. The tuning is still ours: `--min-alpha 0.42` and
+`--target 95` were measured on five Exercise bands, and if another folder's
+measurement argues for different numbers that is one conversation, not two sets
+of constants.
 
 **4. Animate, sound it, ship it.** One command, because the animator and the
 sound have to agree on when the badges land — and that instant is also when the
