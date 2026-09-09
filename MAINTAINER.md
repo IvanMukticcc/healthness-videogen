@@ -333,6 +333,76 @@ So: **never send stderr to /dev/null around something whose success you are abou
 to assert.** And when comparing two artefacts, check they exist first - a missing
 file and a different file are the same exit code, and only one of them is news.
 
+## A check whose spec is typed is a check on the typist
+
+The evening of 9 September produced three of these, and they are one fault, not
+three. The first two are above: a check that threw away the stderr that was the
+finding, and a check whose coverage was a hand-typed list that silently stopped
+covering a whole variant on the day the variant was added. The third names the
+family.
+
+Biohacks' `check.py` verifies that every number in a clip carries its study. Its
+`--hacks` flag was documented as "the same spec render.sh was given", which is a
+promise by the person typing, not a fact from a file. Pointed at the **shipped**
+`defence` clip with five hacks belonging to a different topic, it verified all
+five, found all five sources, and printed CLEAN. The one test that makes this a
+health brand rather than a content farm was reading a sentence off the command
+line. It also built its chip-exclusion mask from the wrong chips, which moved the
+stray total from 134 to 233 px, and it still passed. Fixed in that folder:
+`render.sh` now writes `<topic>_hacks.txt` beside the three cue files and
+`check.py` reads it when the flag is absent.
+
+The measured version of the same thing in `Micro/work/audit.py`, on
+`cholesterol_silent.mp4`, from this side:
+
+    --cues and --finale, as render.sh runs it     4 windows    0 px   clean
+    --cues only                                   5 windows   60176   look at it
+    neither, just the video                       1 window     0 px   clean
+
+**The least-informed invocation gives the most reassuring answer.** Not because
+the audit is lenient but because it samples three frame pairs *per window*, so
+dropping the spec does not widen the search, it thins it - twelve sampled pairs
+become three, spread across a whole clip, and the three land where nothing
+happens to be moving. Both print `clean`, in the same words, with no number
+between them that says one saw four times as much as the other. Exercise's
+`audit.py` has the same structure and no `--finale` at all.
+
+So, for anything in this repository that ends by printing a verdict:
+
+**Take the spec from the step that produced the artefact, never from the person
+asking about it.** `render.sh` already writes cue files precisely so that a tick
+train typed twice cannot drift by a frame - Biohacks' own header says the three
+steps agree through files, never through typing - and then the check was exempted
+from the rule the script states in capitals. A flag for re-checking an older clip
+by hand is worth keeping; it is the *default* that must come from disk.
+
+**Print the coverage next to the verdict.** `clean` from three samples and
+`clean` from twelve are the same word about different amounts of looking. A check
+that cannot say how much it examined cannot be compared with itself a week later,
+which is the only comparison anybody actually makes.
+
+**Ask which way it fails.** These fail toward CLEAN, which is the expensive
+direction: a false alarm costs a look, a false clean ships. When the two
+directions are not equally cheap, the check should be built to fail toward the
+cheap one.
+
+## Prose drifts from the table under it, not the other way round
+
+Biohacks found `flow.md` opening its rhythm section with "it is even, 1.15 s
+apart" and "the first count starts at 0.88", eight lines above its own table
+saying the last row fires at 5.05. The table was right and every cue file on disk
+agreed with it: rows at 0.65 to 5.05, 1.10 apart, first count 0.95. No clip was
+ever wrong.
+
+That is the worse direction of the two. **A table is read to check a number; the
+prose above it is read to learn one**, by someone who does not yet know enough to
+notice the disagreement. It is also the direction that survives longest, because
+the table gets regenerated and the sentence does not.
+
+When a number changes, grep the prose for the old value before committing - and
+when reading a document to learn how something works, read the table first and
+treat the paragraph above it as a claim about the table.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the
