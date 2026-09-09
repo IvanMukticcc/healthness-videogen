@@ -131,6 +131,11 @@ drops `*_labelled.png`. Naming it `<topic>_glass.png` would have put a
 regenerable file into the repository, which is the opposite trade from
 `*_poster.jpeg`: that one is un-ignored because no command can remake it.
 
+**The engine's own error message says `<topic>_glass.png`. Do not use that name
+here.** It refuses `-o` pointing at either input now, and its wording suggests a
+third file by that name - which is right everywhere except this folder, where
+nothing would ignore it. The instruction is the third file; the name is ours.
+
 **It writes to its own file, not back over `_labelled.png`, and that matters.** The
 tool is not idempotent: on a dark row the rim is (210,210,220) against white ink,
 so a second pass reads the rim as letters and grows the plate to its own edge -

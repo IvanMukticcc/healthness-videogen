@@ -78,11 +78,16 @@ bands and they hold on all thirty rows here, which is the point: one tool
 carrying two variants' worth of constants is the drift promoting it was meant to
 end.
 
-It writes `<topic>_glass_labelled.png` rather than back over `<topic>_labelled.png`,
-because it is not idempotent - on a dark row its own rim reads as letters to the
-next pass and the plate grows to its own edge, 46px tall to 70, with no error.
-Keeping the two files apart makes the caption step re-runnable and preserves the
-`(poster, labelled)` pair every caption measurement here is made from.
+It writes `<topic>_glass_labelled.png` rather than back over `<topic>_labelled.png`.
+The tool was not idempotent - on a dark row its own rim read as letters to the next
+pass and the plate grew to its own edge, 46px tall to 70, with no error - and its
+documented invocation was that failure path. `engine/caption_glass.py` refuses an
+`-o` that names either input since `eff231a`, so the third file is the rule rather
+than this folder's precaution. Its error message suggests calling it
+`<topic>_glass.png`; here it ends in `_labelled.png` instead, because that is what
+the root `.gitignore` drops and the file is one command from the poster and the
+labels. Keeping the pair also preserves `(poster, labelled)`, which every caption
+measurement here is made from.
 
 `check_scene.py --glass` verifies the result, and that is the only honest place
 for the verdict: before the plate exists the answer depends on where the letters
