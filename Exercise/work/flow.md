@@ -192,6 +192,35 @@ picks it, so a single long one shrinks all ten: `CONCENTRATION CURL` gave 30px
 where `SUITCASE CARRY` gives 40. If one label is much longer than the rest,
 shorten that one rather than accepting the size it forces.
 
+**3c. On a photographic poster, put the captions on glass.** On a coloured row
+`add_labels.py` is safe: it takes its ink from the row's light/dark flag and the
+row is one flat colour. On a photograph that guarantee is gone - the flag still
+says light, and what actually lies under the caption is whatever the picture put
+there. On NO GYM REQUIRED row 4 that was the black sled, so `SLED PUSH` was drawn
+in near-black on it and disappeared: 36 luminance between the ink and its
+background, against 231 on the row above.
+
+```
+../.venv/bin/python caption_glass.py <topic>_clean.png <topic>_labelled.png \
+    -l base_<topic>_layout.json -o <topic>_labelled.png
+```
+
+It runs **after** `add_labels.py`, not before, because the width of a pane is the
+width of its words and only the tool that drew them knows that. Given the poster
+before and after labelling it solves `labelled = a*ink + (1-a)*clean` for the
+ink's coverage, which gives both the box to fit and a way to lay the words back
+down without the halo that copying drawn pixels would carry.
+
+Each pane is the lightest one that still separates its ink by 95 luminance, so
+the four captions that already read barely change and the one over the sled is
+lifted: 36 to 95 there, 112 to 139 and 144 to 166 on the two middling rows, 231
+and 198 left alone. One fixed strength cannot do that - at the setting that
+rescues the sled the other four are heavier than they need to be, and at the
+setting that suits them the sled stays unreadable.
+
+Circle mode does not want this. There the base draws the caption bars itself and
+the ink is guaranteed against them; a pane on top would be a second bar.
+
 **4. Animate, sound it, ship it.** One command, because the animator and the
 sound have to agree on when the badges land — and that instant is also when the
 muscle lights:
