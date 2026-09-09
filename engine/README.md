@@ -161,6 +161,42 @@ light rows are. **For a number that travels between variants, restrict it to dar
 rows** - `defence` gives 10 px/frame that way. The same lesson as naming the
 meter, one axis over: name what you selected on.
 
+**The pinned tips put a floor under any whole-rim motion metric, and two
+variants spent a day measuring it.** Exercise reported 17 to 23% of the 4px rim
+identical across five consecutive frames and read it as a fault - jpeg speckle on
+the wave's edge leaving unpainted pixels standing still was the standing
+hypothesis, and every poster in a photographic variant is a jpeg by construction,
+so it fitted.
+
+Longevity is the control, because it is the one variant with no poster on disk:
+its preview renders from `INPUT/base_<topic>.png`, an authored PNG that has never
+been through a jpeg encoder. It measures **26.8%** - higher than either Exercise
+number. x264 was the next suspect and is also out: frozen-pixel density by
+macroblock phase is flat (x mod 16 spans 0.89-1.11, y mod 16 0.79-1.16) and the
+clusters fill 0.13-0.20 of their bounding boxes, where an encoder artefact is a
+filled rectangle on the grid.
+
+The five largest clusters sit at x 162-272 and 792-898 of a rim spanning 162-897.
+They are the ends. 24% of the rim lies in the outer eighths and 90% of the frozen
+pixels do. Split there:
+
+    t=1.5   whole rim 27.5%   at the tips 100.0%   where it travels 3.9%
+    t=3.0   whole rim 26.8%   at the tips  98.6%   where it travels 3.5%
+    t=4.5   whole rim 25.3%   at the tips  93.2%   where it travels 3.3%
+
+The tips are pinned to their circle centres by the line above; the ribbon's ends
+are fixed and the surface scrolls through them. **A tip that moved would be the
+bug.** So a whole-rim frozen fraction has a floor near a quarter before anything
+is wrong, the reported 17-23% and 26.8% are largely the same design constant read
+through slightly different rim definitions, and a circle-mode-versus-scene-mode
+gap in that number is two tip geometries rather than two amounts of fault.
+
+**Exclude the tips before comparing rim motion between anything and anything.**
+The residue where the wave actually travels is 3.3-3.9%, and whether that is a
+fault is still open. One clip, one variant, three timestamps, rendered with
+`--drops 0 --reach 0` so no badge is near the rim - the structure transfers
+because every variant shares `ribbon_mask.png`, the digits do not.
+
 ## The overlay seam
 
 A variant that wants to draw on top of the finished frames does not fork the
