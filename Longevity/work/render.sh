@@ -55,6 +55,12 @@ echo "== the fast"
     --fast-cues "${TOPIC}_cues.txt" --finale-cue "${TOPIC}_finale.txt" \
     -o "${TOPIC}_silent.mp4" "$@"
 
+# The protocol goes to disk beside the cue files, for the same reason they do:
+# so check.py reads what this render was GIVEN rather than what somebody types
+# at it afterwards. Biohacks' check.py verified another topic's five hacks
+# against a shipped clip on 9 September because its spec arrived by hand.
+echo -n "$PROTOCOL" > "${TOPIC}_protocol.txt"
+
 SECONDS_USED=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "${TOPIC}_silent.mp4")
 
 # The lock a dial makes when it arrives on its hour, and the chord at the end.
