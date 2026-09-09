@@ -208,7 +208,8 @@ def flatten_along_flow(arr, mask, span):
 
 
 
-def ribbon_geometry(keep, arr, gap_tol=12, pad=10, taper_right=True, bgsrc=None):
+def ribbon_geometry(keep, arr, gap_tol=12, pad=10, taper_right=True, bgsrc=None,
+                    erase_from="base"):
     """Per ribbon: edges, the background hidden underneath, and arc length.
 
     Everything is stored in the ribbon's own column range. Smoothing the edges
@@ -275,7 +276,27 @@ def ribbon_geometry(keep, arr, gap_tol=12, pad=10, taper_right=True, bgsrc=None)
         # the bowl overlaps the start of the wave, so the pixels above it are
         # glass, and repainting with those leaves a pale smear under the pour.
         # The base layer has nothing there but the row's own background.
-        bsrc = arr if bgsrc is None else bgsrc
+        # What colour to repaint the strip the wave vacates each frame.
+        #
+        # The clean base is correct exactly when the poster equals the base
+        # behind the wave, which on a flat row is true by construction - so for
+        # Foods and Micro this is right and invisible. On a scene poster it is
+        # false everywhere the liquid has moved off, and the erase paints the
+        # row's flat colour over a photograph: measured by Biohacks on `swaps`,
+        # 332 px a frame sitting 6.6 levels from the clean base and 51.0 from
+        # the poster, largest cluster 112 px, on both edges and more below than
+        # above. That is the coloured fringe the user reported, and the same
+        # shape as --halo being right for a drawn disc and wrong for a
+        # photograph: one line, opposite correctness, decided by what is behind
+        # the liquid.
+        #
+        # The poster is the better source there because a photograph is locally
+        # smooth at this scale - the same argument dial.backing already makes one
+        # level down - and the sampling below already does the two things that
+        # needs: it takes a 12px strip clear of the wave rather than a single
+        # row, and it smooths along the ribbon so one hard edge in the picture
+        # cannot become a streak running down the band.
+        bsrc = arr if (bgsrc is None or erase_from == "poster") else bgsrc
         bgc = np.zeros((L, 3), np.float32)
         for j in range(L):
             hi = int(top[xs[j]]) - 14
@@ -797,6 +818,13 @@ def main():
     p.add_argument("--art-cap", type=float, default=0.25,
                    help="how much of a row's wave the artwork search may claim by "
                         "connectivity before it is treated as a repainted wave")
+    p.add_argument("--erase-from", dest="erase_from", default="base",
+                   choices=("base", "poster"),
+                   help="where the colour comes from that repaints the strip the wave "
+                        "vacates. 'base' is right on a flat row and is what every clip "
+                        "before 9 September used; 'poster' is right when there is a "
+                        "photograph behind the liquid, where the base's flat row colour "
+                        "is not what should show through")
     p.add_argument("--halo", type=int, default=1,
                    help="seal the feathered ring the generator leaves inside the circles")
     p.add_argument("--halo-edge", type=float, default=15,
@@ -1106,7 +1134,8 @@ def main():
         clean = ~art
         print(f"  background read from {args.base}"
               f"  ({100 - clean.mean() * 100:.0f}% of the frame is new artwork)")
-    geo = ribbon_geometry(mask > 0.5, base, args.gap, taper_right=args.reach <= 0, bgsrc=bgsrc)
+    geo = ribbon_geometry(mask > 0.5, base, args.gap, taper_right=args.reach <= 0,
+                          bgsrc=bgsrc, erase_from=args.erase_from)
     if args.reach > 0:
         geo = ribbon_reach(base, diff, geo, args.tol, args.anchor)
         solid = ndimage.binary_opening(diff > args.tol, np.ones((3, 3)))
