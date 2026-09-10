@@ -149,21 +149,32 @@ def behind_frames(path, width=BEHIND_W):
             for i in range(n)], (width, h)
 
 
-def title_survival(base_png, size=(1080, 1920), **kw):
-    """How much of a poster's own title still reads through the glass.
+def ghost(base_png, y0, y1, size=(1080, 1920), ref=None, **kw):
+    """How lively the frost is in the band you intend to put type into.
 
-    The criterion, and it is comparative rather than absolute: **the title band
-    must not be livelier than an ordinary band of the same poster.** If it is,
-    act one's heading is competing with act two's, which sits in the same place.
+    Returns `(spread, reference)` in luminance levels: the range within your
+    band, and the range within a band of the same poster taken as ordinary. The
+    criterion is comparative - **your band must not be livelier than the
+    poster's ordinary content** - because act two's type has to compete with
+    whatever act one left underneath it.
 
-    Measured on the two posters that set the range:
+    `y0`/`y1` are in the delivered frame's coordinates, so pass the band you are
+    actually drawing in. That is the whole correction: this used to sample a
+    fixed slice at 0.073-0.130 of the height and call it "the title band", which
+    answered a question nobody was asking. Macro draws its heading at y 72-130,
+    where the frost measures 5.9 on breakfast - while the fixed slice reported
+    42.6 from y 140-249 and said nothing about where the type goes. micro-bb
+    found it by moving a title out of a card and having the ghost move with it
+    rather than disappear.
 
-        Macro breakfast, white on navy   title 42.6   ordinary band 81.2   passes
-        Micro pressure,  white on green  title 73.6   ordinary band 14.5   fails
+    Two posters, for scale:
 
-    Navy goes to grey under the whitening and takes its white type with it. A
-    mid-tone green does not, so the type stays. Nothing is wrong with either
-    poster; `FROST` was tuned against the first one.
+        Macro breakfast   heading y72-130   5.9    title band y140-249   42.6
+        Micro pressure    heading y72-130  27.8    title band y140-249   74.3
+
+    Macro's heading is safe because of what its poster has NOT got in the top
+    140 px, not because the frost handles it. A base with anything up there puts
+    the heading on a live band, and nothing warns you.
     """
     import numpy as np
     im = Image.open(base_png).convert("RGB")
@@ -171,9 +182,21 @@ def title_survival(base_png, size=(1080, 1920), **kw):
     f = np.asarray(frost(small, size, **kw)).astype(float)
     lum = 0.2126 * f[..., 0] + 0.7152 * f[..., 1] + 0.0722 * f[..., 2]
     h = size[1]
-    title = lum[int(h * 0.073):int(h * 0.130), :]
-    other = lum[int(h * 0.156):int(h * 0.188), :]
-    return float(title.max() - title.min()), float(other.max() - other.min())
+    r0, r1 = ref if ref else (int(h * 0.156), int(h * 0.188))
+    band = lum[max(0, int(y0)):min(h, int(y1)), :]
+    other = lum[r0:r1, :]
+    return float(band.max() - band.min()), float(other.max() - other.min())
+
+
+def title_survival(base_png, size=(1080, 1920), **kw):
+    """The poster's own title band, for when that is what you are asking about.
+
+    A thin wrapper on `ghost` kept because it names a real question - "will act
+    one's heading read through the glass" - but it is NOT the question "is it
+    safe to draw here". Use `ghost` with your own band for that.
+    """
+    h = size[1]
+    return ghost(base_png, h * 0.073, h * 0.130, size, **kw)
 
 
 def frost(im, size, amount=None, sat=None, blur=None):
