@@ -90,6 +90,35 @@ def _disc(d, colour, value, label, shadow=0.34):
 ATWATER = {"carbs": 4.0, "protein": 4.0, "fat": 9.0}
 
 
+def _plate(d):
+    """The empty ring, drawn from the first frame. It is furniture, not an event.
+
+    THE WAVE HAS TO END IN SOMETHING. Foods and Micro put an organ in the right
+    circle and the generator draws it, so the liquid's tapered tip is behind a
+    solid object from frame zero and is never once seen ending. Macro took that
+    circle for itself and then only started drawing in it at the row's cue, which
+    left five naked tips tapering into flat colour for the first second of the
+    clip - and left the poster itself looking unfinished, because a still has no
+    cue to wait for.
+
+    So the plate and the empty track arrive with the poster and only the coloured
+    arcs and the number pop. An empty ring is not a placeholder either: it is a
+    ring at zero, which is what the app draws before you have eaten anything.
+    """
+    n = int(d * SS)
+    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(im)
+    # Fully opaque, not 235. At 92% the liquid's tip showed through as a dark
+    # wedge just inside the left edge - the tip was hidden and its shadow was
+    # not, which is the same fault one step quieter.
+    dr.ellipse([0, 0, n, n], fill=(18, 38, 43, 255))
+    pad = n * 0.085
+    dr.ellipse([pad, pad, n - pad, n - pad], outline=(255, 255, 255, 38),
+               width=int(n * 0.085))
+    return np.asarray(im.resize((n // SS, n // SS), Image.LANCZOS),
+                      dtype=np.float32) / 255.0
+
+
 def _kcal(d, f):
     """The right-hand circle: the calories, and where in the food they come from.
 
@@ -111,15 +140,11 @@ def _kcal(d, f):
     dr = ImageDraw.Draw(im)
     cx = cy = n / 2
 
-    # a plate, so the number reads on a light row and a dark one alike
-    dr.ellipse([0, 0, n, n], fill=(18, 38, 43, 235))
-
     energy = {k: f[k] * v for k, v in ATWATER.items()}
     total = sum(energy.values()) or 1.0
     pad = n * 0.085
     wid = n * 0.085
     box = [pad, pad, n - pad, n - pad]
-    dr.ellipse(box, outline=(255, 255, 255, 38), width=int(wid))
     a0 = -90.0
     for key, colour, _ in ORDER:
         sweep = 360.0 * energy[key] / total
@@ -187,9 +212,11 @@ def build(args, ctx):
             x += d + g
         if args.macro_kcal != "0":
             rd = row["r"] * 2 * k * 0.92
-            out.append(dict(img=_kcal(rd, f),
-                            cx=L["anchor_r"] * k, cy=row["cy"] * k, d=rd,
-                            row=i, t=t0 + 2 * args.macro_stagger + 0.06, kind="kcal"))
+            rx, ry = L["anchor_r"] * k, row["cy"] * k
+            out.append(dict(img=_plate(rd), cx=rx, cy=ry, d=rd, row=i,
+                            t=0.0, kind="plate", still=True))
+            out.append(dict(img=_kcal(rd, f), cx=rx, cy=ry, d=rd, row=i,
+                            t=t0 + 2 * args.macro_stagger + 0.06, kind="kcal"))
 
     if args.macro_cues:
         with open(args.macro_cues, "w") as fh:
@@ -240,11 +267,14 @@ def draw(frame, plan, t):
     if not plan:
         return frame
     for b in plan:
-        p = (t - b["t"]) / POP
-        if p <= 0:
-            continue
-        scale = _ease(min(p, 1.0)) if p < 1.0 else 1.0
-        alpha = min(1.0, (t - b["t"]) / RISE) if p < 1.0 else 1.0
+        if b.get("still"):
+            scale, alpha = 1.0, 1.0
+        else:
+            p = (t - b["t"]) / POP
+            if p <= 0:
+                continue
+            scale = _ease(min(p, 1.0)) if p < 1.0 else 1.0
+            alpha = min(1.0, (t - b["t"]) / RISE) if p < 1.0 else 1.0
         img = b["img"]
         want = max(2, int(round(img.shape[1] * scale)))
         if want != img.shape[1]:

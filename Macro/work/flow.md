@@ -71,6 +71,24 @@ command can remake (`../../CLAUDE.md` rule 9).
 
 ## What is already known to break
 
+**The wave has to end in something, from the first frame.** Foods and Micro put
+an organ in the right circle and the generator draws it, so the liquid's tapered
+tip is behind a solid object from frame zero and is never once seen ending. This
+folder took that circle for itself and then only started drawing in it at the
+row's cue - five naked tips tapering into flat colour for the first second, and
+a labelled poster that looks unfinished because a still has no cue to wait for.
+The plate and the empty track are furniture now and arrive with the poster; only
+the coloured arcs and the number pop. An empty ring is not a placeholder, it is
+a ring at zero, which is what the app draws before you have eaten anything.
+
+The plate is **opaque**, not 92%: at 235 alpha the tip was hidden and its shadow
+was not, which is the same fault one step quieter. And it is deliberately
+smaller than the guide mark it sits on - the mark is removed by
+`flowanim.py --anchored`, not covered. Verified on the worst case, the generator
+handing the base back untouched: 420562 px of guide circle painted out, and the
+outer band of the mark clear of the wave comes back within 3 levels of flat row
+colour.
+
 **An overlay must draw INTO the frame it is given.** `flowanim.py` calls
 `m.draw(out, pl, t)` and throws the return value away — the array it hands in is
 the array it writes to ffmpeg. A `draw` that builds a new frame and returns it
