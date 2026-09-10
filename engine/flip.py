@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""flip.py - one card, two faces: act one turns over and act two is behind it.
+"""flip.py - one card, two faces: the first act turns over and the second is behind it.
+
+Lived in `Macro/work/` until 10 September 2026, when Micro became the second
+variant to turn a card over. That is the promotion rule this repository runs on
+and it is written into `Macro/CLAUDE.md`: one variant flips, and if a second one
+ever does, that is when it moves - the way `grab.py` and `caption_glass.py` got
+here, after a second user appeared and not before. Nothing about it changed on
+the way; a variant that wants a different turn passes different arguments.
 
 A cut between the poster and the app screen would be two videos in a row. The
 turn is what makes them one object - the thing you were looking at is the thing

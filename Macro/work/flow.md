@@ -72,7 +72,7 @@ command can remake (`../../CLAUDE.md` rule 9).
 ## What is already known to break
 
 **The goal is a person, and the footer naming them is load-bearing.**
-`profile.py` computes the day's goal the way the app does - Mifflin-St Jeor for
+`dailygoal.py` computes the day's goal the way the app does - Mifflin-St Jeor for
 adults, Schofield under 18, times the activity factor, times the fitness-goal
 factor - and the macro goals from `User.dailyCarbsGoal` and its siblings. It
 replaced the EU reference intake, which was defensible for a reason that has now
@@ -81,7 +81,7 @@ day" was a fact about a packet. A goal from 172 cm and 66 kg is a statement abou
 a person, and the line naming who it was computed for is the only thing between
 that and an implied recommendation. **It does not get shortened for space.**
 
-`./profile.py --verify` checks the constants against `BodyEnergy.swift` and
+`./dailygoal.py --verify` checks the constants against `BodyEnergy.swift` and
 `OnboardingState.swift` rather than trusting the transcription.
 
 **Two places the arithmetic will not close, and they are not the same place.**

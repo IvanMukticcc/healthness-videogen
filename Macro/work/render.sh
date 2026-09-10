@@ -167,7 +167,7 @@ ffmpeg -v error -sseof -0.05 -i "$TMP/act1shown.mp4" -frames:v 1 -update 1 "$TMP
 mkdir -p "$TMP/bd"
 ffmpeg -v error -i "$TMP/act1.mp4" \
     -vf "select='gte(n\,${CUT_N})*lt(n\,${CUT_N}+${FLIP_N})'" -vsync 0 "$TMP/bd/f%03d.png" -y
-../.venv/bin/python flip.py "$TMP/a.png" "$TMP/b.png" \
+../.venv/bin/python ../../engine/flip.py "$TMP/a.png" "$TMP/b.png" \
     --out-dir "$TMP/turn" --frames "$FLIP_N" --backdrop-dir "$TMP/bd"
 ffmpeg -v error -framerate "$FPS" -i "$TMP/turn/f%05d.png" \
     -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p "$TMP/turn.mp4" -y

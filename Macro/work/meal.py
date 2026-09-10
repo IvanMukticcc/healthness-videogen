@@ -247,7 +247,7 @@ class Plan:
 
     def __init__(self, rows, tot, title="TODAY'S BOWL", seconds=7.5, who=None):
         self.rows, self.tot, self.title, self.seconds = rows, tot, title, seconds
-        self.who = who or __import__("profile").goals(**DEFAULT_PROFILE)
+        self.who = who or __import__("dailygoal").goals(**DEFAULT_PROFILE)
         n = len(rows)
         self.settle = 0.35                      # the card arriving out of the flip
         self.food0, self.foodgap = 0.55, 0.42
@@ -458,7 +458,7 @@ def main():
     ap.add_argument("-o", "--out", required=True)
     a = ap.parse_args()
 
-    import profile as prof
+    import dailygoal as prof
     who = prof.goals(a.body_weight, a.body_height, a.age, a.sex, a.activity, a.goal)
     rows, tot = foods.meal(foods.parse_meal(a.meal))
     plan = Plan(rows, tot, a.title, a.seconds, who)

@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""profile.py - whose day is this? The app's own goal, for a stated person.
+"""dailygoal.py - whose day is this?
+
+Named `profile.py` for about an hour, which shadows the stdlib `profile`
+module - the same fault as `copy.py` on 8 September, which broke four variants
+for half an hour because every tool importing scipy failed at import time
+saying nothing about the file that caused it. `engine-status.sh` grew a check
+for exactly this after that, and it caught this one. I had simply not run it
+after adding the file, which is the only reason it survived an hour. The app's own goal, for a stated person.
 
 Act two used to measure a meal against the EU reference intake: 2000 kcal, C
 260, P 50, F 70. That is the labelling yardstick and it is honest, but it is not
@@ -30,8 +37,8 @@ our arithmetic with Atwater's 4/4/9 will find that gap. It is the app's design,
 it is the number the user sees in the product, and `--check` prints it rather
 than leaving it to be discovered.
 
-    ./profile.py --sex male --age 30 --height 172 --weight 66 --goal mild_gain
-    ./profile.py --verify        the constants, against the app's source
+    ./dailygoal.py --sex male --age 30 --height 172 --weight 66 --goal mild_gain
+    ./dailygoal.py --verify        the constants, against the app's source
 """
 import argparse
 import os
