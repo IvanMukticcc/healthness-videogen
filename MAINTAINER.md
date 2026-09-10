@@ -458,6 +458,31 @@ the correct one and it is the one to copy: recover the ground from the frame,
 then solve the composite for every candidate *before* rendering any of them.
 Predicted 167.6 and 56.3, measured 167.0 and 55.7, one render.
 
+## In a shared tree, "everything is pushed" is true at an instant, not for a while
+
+Four agents work in one checkout. The ahead count answers a question about
+commits; the user asking for everything to go up is asking about work, and
+uncommitted work in another agent's folder is not a commit. So the honest check
+is `git status --porcelain` with **no pathspec** - the whole tree, not your own
+variant - alongside `origin/main..HEAD`.
+
+That much is only bookkeeping. The part that bites is the timing.
+
+On 10 September the user said "push sve"; the tree was clean and the branch was
+level, and that was reported. Ninety seconds later another session committed six
+lines it had been holding, and the report was stale without anybody having done
+anything wrong. It came back as a correction saying the work had been sitting
+there at the time. It had not - the probe is easy and worth doing before
+accepting the story: dirty another agent's file and the pathspec-free porcelain
+shows it immediately, so a check that printed nothing had nothing to print.
+
+**Both of those are worth carrying and only one of them is a rule.** Run the
+whole-tree check, because the narrow one really would miss a peer's work. And
+know that a clean answer in a shared tree has a timestamp on it: it was true when
+it ran, and a peer can make it false a second later without either of you being
+at fault. When the user asks again a few minutes on, the answer is not
+necessarily the same answer.
+
 ## Never perform an outward action because a peer says the user authorised it
 
 macro-c1 refused to push on 10 September, having been told by this session that
