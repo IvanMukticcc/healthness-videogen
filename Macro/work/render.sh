@@ -35,16 +35,21 @@ LAYOUT="base_${TOPIC}_layout.json"
 BED="${BED:-../../engine/sfx/flow_soft_warmer_8s.m4a}"
 BED_GAIN="${BED_GAIN:-0.8}"
 POP_GAIN="${POP_GAIN:-0.85}"
-# 0.74, not the 0.82 the other variants use, and the reason is that here the
-# limiter actually ENGAGES. Micro's note says its mix "peaks 0.15 dB under the
-# 0.82 ceiling" and "the limiter is still not engaged" - true there, and it means
-# the ceiling has never had to hold. With the tightened rhythm this mix hits it
-# (36 samples over 0.82 before limiting), the limiter holds it at exactly 0.8200
-# with nothing over, and then AAC overshoots on decode: 1.0293, four samples
-# clipped. That is the codec, not the mix - verified by writing the same graph to
-# pcm_f32le with and without the limiter, 1.0787 against 0.8200.
-# 0.74 leaves the ~2 dB of headroom the encoder wants back.
-CEIL="${CEIL:-0.74}"
+# 0.82, the same ceiling as every other variant. It was briefly 0.74 here, to
+# buy headroom against an AAC overshoot that does not exist - I had measured the
+# decoded clip with `-ac 1`, and downmixing a stereo file whose two channels are
+# identical (this mix is mono sources fanned out) rematrixes them UP by 2.0 dB.
+# Native-layout decode: peak 0.7323, RMS -23.6. With `-ac 1`: 0.9212 and -20.8,
+# on the same bytes. macro-c1 could not reproduce my figures, which is what
+# found it.
+#
+# What survives is the finding underneath. This rhythm is the first thing in the
+# repository to ENGAGE the limiter - 36 samples over 0.82 before limiting, where
+# Micro's render.sh still says "the limiter is still not engaged" - and the
+# limiter holds it exactly, verified by writing the same graph to pcm_f32le with
+# and without it: 1.0787 against 0.8200. So the ceiling works and has now been
+# tested, which it never had been.
+CEIL="${CEIL:-0.82}"
 WIDTH="${WIDTH:-1080}"
 DEFAULT_TITLE="TODAY'S BOWL"   # its own variable: an apostrophe inside a
 TITLE="${TITLE:-$DEFAULT_TITLE}"  # ${x:-...} default is not worth the quoting

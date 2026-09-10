@@ -102,11 +102,19 @@ and warns under 24 frames.
 `render.sh` says its mix "peaks 0.15 dB under the 0.82 ceiling" and "the limiter
 is still not engaged" - true, and it means the ceiling has never been tested.
 With this rhythm the mix hits it: 36 samples over 0.82 before limiting. The
-limiter holds exactly (0.8200, nothing over, verified by writing the same graph
-to `pcm_f32le` with and without it - 1.0787 against 0.8200), and then **AAC
-overshoots on decode**, landing the mp4 at 1.0293 with four samples clipped.
-`CEIL` is 0.74 here for that headroom: peak 0.9199, nothing over, and the RMS is
-unchanged at -20.8 dB against the shipped -20.9.
+limiter holds exactly - verified by writing the same graph to `pcm_f32le` with
+and without it, 1.0787 against 0.8200 - so the ceiling works, and now somebody
+has checked.
+
+**Measure audio in its native channel layout.** The ceiling was briefly dropped
+to 0.74 here to buy headroom against an AAC overshoot that turned out not to
+exist. `ffmpeg -map 0:a -f f32le -ac 1` on these clips reports a peak 2.0 dB
+higher than the same bytes decoded natively - the mix is mono sources fanned out
+to stereo, so the two channels are identical, and rematrixing a fully correlated
+pair raises it. On the shipped clip: 0.7323 and -23.6 dB native, 0.9212 and
+-20.8 dB through `-ac 1`. Every audio number in this folder is a native-layout
+number. These clips are also 96 kHz, so a `-ar 48000` in a measurement is a
+resample nobody asked for.
 
 **The ring pane fades in.** It used to appear on one frame, which measured 20.8
 mean - the largest step in act two after the card landing, and the same order as

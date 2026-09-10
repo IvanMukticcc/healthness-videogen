@@ -508,6 +508,37 @@ in that position by relaying the instruction.
 When the user answers the wrong one of us, send that they were asked. Do not
 send the instruction a second time.
 
+## Measure audio in its native channel layout
+
+`ffmpeg -map 0:a -f f32le -ac 1 -` is the obvious way to get samples into numpy
+and it is wrong for these clips by 2.0 dB.
+
+Every mix in this repository is built from mono sources - `impact.py` returns
+mono, the pops and the chord are mono wavs - and fanned out to stereo at
+encode. So the two channels are identical, and asking the resampler to
+rematrix a fully correlated pair back to one channel raises it rather than
+averaging it. The same bytes, `OUTPUT/10.09/breakfast_macro.mp4`:
+
+    native channels          peak 0.7323 (-2.71 dBFS)   RMS -23.6
+    -ac 1 -ar 48000          peak 0.9212 (-0.71 dBFS)   RMS -20.8
+
+On the strength of the second row this session concluded that AAC was
+overshooting by 2 dB, that four samples were clipping, and dropped a limiter
+ceiling from 0.82 to 0.74 to buy headroom against it. None of that was real. It
+was found because macro-c1 measured the same clip and could not reproduce the
+figures - not because anything looked wrong.
+
+Two rules and a caution:
+
+**Decode in the file's own layout and rate.** No `-ac`, no `-ar`, unless the
+resample is the thing being measured. These clips are 96 kHz, so a `-ar 48000`
+in a measurement is a second unasked-for conversion sitting under the first.
+
+**When two sessions disagree about a number, neither figure is the finding -
+the difference is.** A 2 dB gap between two competent measurements of one file
+is not a rounding argument to be split; it means one of the pipelines is doing
+something the other is not, and that is worth more than whichever number wins.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the
