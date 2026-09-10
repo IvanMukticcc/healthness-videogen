@@ -67,11 +67,28 @@ TOPIC="$1"; HACKS="$2"; shift 2
 #                       (--anchor-r looks like the flag for this and is not:
 #                       flowanim.py never reads it. The wipe is driven by
 #                       --anchor-tol and the seal inside a circle by --halo.)
+#   --erase-from poster the same argument a third time, and the one that was
+#                       costing us pixels on every scene clip. The strip the wave
+#                       vacates as it breathes gets repainted, and the engine
+#                       took that colour from the CLEAN BASE - correct on a flat
+#                       row, and on a photograph a band of navy laid under the
+#                       liquid's lower edge, crawling with it. Measured on
+#                       `swaps` before the flag existed: 332 px a frame sitting
+#                       6.6 levels from the clean base and 51 from the poster -
+#                       the row colour, painted over the picture.
+#
+#                       The default is `base`, so this is opt-in and the flat
+#                       variants do not move. With it: swaps 68 -> 37 px a frame,
+#                       calm 78 -> 62, our own chips and dials excluded from the
+#                       count. Not zero - the replacement is a smoothed sample of
+#                       the poster just outside the ribbon, so it approximates
+#                       where the photograph has a strong local feature - but the
+#                       band is no longer a different colour from the scene.
 PHOTO=""
 POSTER="${1:-}"
 if [ -n "$POSTER" ] && [ -f "$POSTER" ]; then
     shift
-    PHOTO="--scene poster --dial-disc glass --anchor-tol 0 --halo 0"
+    PHOTO="--scene poster --dial-disc glass --anchor-tol 0 --halo 0 --erase-from poster"
     echo "== scene mode: $POSTER"
 else
     POSTER="${TOPIC}_labelled.png"
@@ -122,6 +139,15 @@ echo "== liquid, glyphs, chips, dials and the day bar"
 # the last cue started, and here the last cue *is* the dial settling - the count
 # is already over when it is reported, so there is nothing left to clear but the
 # 0.06s the lock rings for.
+# The spec, written down rather than remembered. flowanim.py already writes the
+# chip landings, the dial counts and the finale's instant so that the picture and
+# the sound cannot drift - and then check.py was handed --hacks by a person
+# typing it a second time. Its own help said "the same spec render.sh was given",
+# which is a promise, not a fact: pointed at a shipped clip with another topic's
+# five hacks it verifies those five studies and prints CLEAN. Measured on
+# defence, 9 September. So the spec joins the other three on disk.
+echo "$HACKS" > "${TOPIC}_hacks.txt"
+
 ../../.venv/bin/python ../../engine/flowanim.py "$POSTER" \
     --width "$WIDTH" --seconds 8 \
     --overlay scene_overlay,dial_overlay,day_overlay \

@@ -185,6 +185,122 @@
   "source": "Laukkanen et al., JAMA Intern Med 2015 (Kuopio, 2315 men, 20 y): 2-3 sauna sessions a week associated with 27% lower cardiovascular mortality against once a week, and 4-7 a week with 50%. Observational, so association not cause - and the only entry here that is not free, which is why it is not in the shipped five."
  },
 
+ "move most days": {
+  "icon": "volleyball",
+  "clock": "18:00",
+  "chips": ["45 MIN"],
+  "metric": "BAD DAYS",
+  "value": "-43%",
+  "dir": "down",
+  "source": "Chekroud et al., Lancet Psychiatry 2018 (1.2 million US adults, CDC BRFSS 2011-2015): people who exercised reported 43.2% fewer days of poor mental health in the past month than people matched on age, sex, income, education and physical health who did not. The dose curve is U-shaped, which is the unusual part - 45 min three to five times a week was the optimum, and over 90 min a session, or more than 23 sessions a month, was worse than not exercising at all. Team sports, cycling and aerobic/gym were the strongest categories. Cross-sectional and self-reported, so association not cause."
+ },
+
+ "brain dump": {
+  "icon": "list-todo",
+  "clock": "22:00",
+  "chips": ["5 MIN"],
+  "metric": "FALL ASLEEP",
+  "value": "-9 MIN",
+  "dir": "time",
+  "source": "Scullin et al., J Exp Psychol Gen 2018;147(1):139-146 (57 adults, in-lab polysomnography): five minutes of writing out what still needs doing, immediately before lights out, put people to sleep in 16 min against 25 for those who wrote instead about what they had already finished - about 9 min sooner, measured on EEG rather than reported. The more specific the to-do list the faster they fell asleep, and the more specific the completed-tasks list the slower. One night and a small sample, which is why the chip is the dose and the dial is only the difference."
+ },
+ "cycle to work": {
+  "icon": "bike",
+  "clock": "08:00",
+  "chips": ["50 KM/WK"],
+  "metric": "HEART DEATH",
+  "value": "-52%",
+  "dir": "down",
+  "source": "Celis-Morales et al., BMJ 2017;357:j1456 (UK Biobank, 263 450 commuters, 5 y median follow-up): cycling to work against a non-active commute was associated with 52% lower cardiovascular mortality (HR 0.48), 41% lower all-cause mortality and 40% lower cancer mortality. Walking to work showed the cardiovascular benefit only past about 10 km a week. The chip is the study population's own typical cycling load, roughly 30 miles a week; the benefit was dose-dependent, so half of it is not half the number. Observational, so association not cause - and cyclists differ from drivers in more than their commute."
+ },
+
+ "take the stairs": {
+  "icon": "door-stairwell",
+  "clock": "08:30",
+  "chips": ["5 FLOORS"],
+  "metric": "DEATH RISK",
+  "value": "-24%",
+  "dir": "down",
+  "source": "Stamatakis et al., Atherosclerosis 2024 (meta-analysis, 9 cohort studies, 480 479 people): people who climbed stairs had 24% lower all-cause mortality (HR 0.76) and 39% lower cardiovascular mortality than those who did not. The pooled comparison is stair-climbing against none rather than a dose, so the 5 FLOORS chip is the older cohort work's own threshold - Paffenbarger's Harvard alumni used about 35 flights a week - restated at what a person would actually count. Read the number as the effect's size, not as a prescription for five."
+ },
+
+ "swap the soda": {
+  "icon": "glass-water",
+  "clock": "12:30",
+  "chips": ["1 DRINK"],
+  "metric": "DIABETES",
+  "value": "-26%",
+  "dir": "down",
+  "source": "Malik et al., Diabetes Care 2010;33(11):2477-83 (meta-analysis, 8 prospective cohorts, 310 819 people): one to two sugar-sweetened drinks a day against less than one a month carried 26% greater risk of type 2 diabetes (RR 1.26) and 20% greater risk of metabolic syndrome. The dial states the risk not taken, which is the swap's side of the same number - the study measured the risk taken. Observational, and the drink is the exposure rather than the calories: the association held after adjusting for weight in most of the cohorts."
+ },
+
+ "read a book": {
+  "icon": "book-open",
+  "clock": "17:00",
+  "chips": ["30 MIN"],
+  "metric": "LIVED LONGER",
+  "value": "+2 Y",
+  "dir": "up",
+  "source": "Bavishi, Slade & Levy, Soc Sci Med 2016;164:44-48 (Health and Retirement Study, 3 635 people over 50, 12 y): book readers had 20% lower mortality than non-readers (HR 0.80) and a survival advantage of 23 months - the +2 Y on the dial. Up to 3.5 h a week carried the benefit and more carried more, which is where the 30 MIN chip comes from. Books, not newspapers or magazines: periodical reading gave a much weaker effect, and the authors put it down to the deeper, slower kind of attention a book asks for. Observational, and reading is not randomly distributed."
+ },
+
+ "eat slowly": {
+  "icon": "hourglass",
+  "clock": "19:30",
+  "chips": ["20 MIN"],
+  "metric": "OBESITY",
+  "value": "-42%",
+  "dir": "down",
+  "source": "Hurst & Fukuda, BMJ Open 2018;8:e019589 (59 717 Japanese adults with type 2 diabetes, insurance claims and annual checkups 2008-2013): against fast eaters, slow eaters were 42% less likely to be obese (OR 0.58) and normal-speed eaters 29% less likely, and slowing down was associated with falling BMI and waist circumference over the period. Eating speed was self-reported as fast, normal or slow, so the study has no dose - the 20 MIN chip is the time satiety signalling takes to arrive, which is the mechanism rather than this study's finding. Observational."
+ },
+ "wash your hands": {
+  "icon": "bubbles",
+  "clock": "08:30",
+  "chips": ["20 SEC"],
+  "metric": "INFECTIONS",
+  "value": "-21%",
+  "dir": "down",
+  "source": "Aiello, Coulborn, Perez & Larson, Am J Public Health 2008;98(8):1372-81 (meta-analysis, 30 studies of hand hygiene in the community, not in hospitals): respiratory illness fell 21% and gastrointestinal illness 31%. The dial takes the SMALLER of the two, so it understates. Duration is the shaky part - the included trials range from plain soap-and-water education to alcohol gel and do not isolate a time, so 20 SEC is the public-health standard rather than any one study's dose. The effect is real and it is not large: this is the row that argues the poster's case by being modest."
+ },
+
+ "sleep enough": {
+  "icon": "bed",
+  "clock": "23:00",
+  "chips": ["7 H"],
+  "metric": "COLD RISK",
+  "value": "-76%",
+  "dir": "down",
+  "source": "Prather, Janicki-Deverts, Hall & Cohen, Sleep 2015;38(9):1353-9: 164 healthy adults wore wrist actigraphy for a week, were then quarantined, given rhinovirus in nasal drops and watched for five days. Sleeping under 6 h a night made them 4.2 times more likely to actually develop a cold than sleeping over 7 h; under 5 h, 4.5 times. Independent of age, BMI, season, stress, income, education and smoking. -76% is 1 - 1/4.2, the same finding stated from the well-slept side, because the dial reads the benefit and the study measured the cost. The exposure was deliberate and controlled, which makes this the best-designed study in this table."
+ },
+ "more protein": {
+  "icon": "egg",
+  "clock": "08:00",
+  "chips": ["30 G"],
+  "metric": "APPETITE",
+  "value": "-441 KCAL",
+  "dir": "down",
+  "source": "Weigle et al., Am J Clin Nutr 2005;82(1):41-8 (19 adults, metabolic-ward controlled feeding then 12 weeks ad libitum): raising protein from 15% to 30% of energy while holding carbohydrate constant cut spontaneous calorie intake by 441 kcal a day - the subjects were not asked to eat less and did anyway - and they lost 4.9 kg, 3.7 kg of it fat. Small and short, and the mechanism is satiety rather than anything metabolic. The 30 G chip is a per-meal restatement of the study's whole-diet 30%: what a person can actually count."
+ },
+
+ "water first": {
+  "icon": "glass-water",
+  "clock": "12:15",
+  "chips": ["500 ML"],
+  "metric": "WEIGHT LOST",
+  "value": "+2 KG",
+  "dir": "up",
+  "source": "Dennis et al., Obesity 2010;18(2):300-7 (48 adults aged 55-75, randomised, 12 weeks on the same hypocaloric diet): the group told to drink 500 ml of water before every meal lost 7.0 kg against 5.3 kg - about 2 kg more, or 44% more weight off the same diet. Older adults only, and the effect is thought to be gastric distension, which empties faster in younger people. The dial reads the difference the water made, not the total lost."
+ },
+
+ "cook at home": {
+  "icon": "cooking-pot",
+  "clock": "20:00",
+  "chips": ["5x/WK"],
+  "metric": "BODY FAT",
+  "value": "-24%",
+  "dir": "down",
+  "source": "Mills et al., Int J Behav Nutr Phys Act 2017;14:109 (11 396 UK adults, Fenland Study): eating home-cooked meals more than five times a week against less than three was associated with 24% lower likelihood of excess body fat and 28% lower likelihood of being overweight, plus more fruit and vegetables and better overall diet quality. Cross-sectional, so association not cause, and people who cook differ from people who do not in more than their cooking."
+ },
  "sleep window": {
   "icon": "bed",
   "clock": "23:00",

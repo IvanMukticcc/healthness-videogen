@@ -144,7 +144,9 @@ rather than an opinion.
     python3 check_scene.py firsthour
 """
 import argparse
+import glob
 import json
+import os
 import sys
 
 import numpy as np
@@ -222,7 +224,12 @@ def main():
     p.add_argument("--labelled", help="the poster after add_labels.py and "
                                       "before the plate")
     a = p.parse_args()
-    poster = a.poster or f"{a.topic}.jpeg"
+    # grab.py writes <topic>_poster.jpeg and has since 548f5f6; this default
+    # still said <topic>.jpeg, so `check_scene.py <topic>` - the invocation
+    # flow.md and PROMPTING.md both print - failed with a traceback on a
+    # poster that was sitting right there. Same class as the grab.py --help
+    # line that outlived the same rename.
+    poster = a.poster or f"{a.topic}_poster.jpeg"
     layout = a.layout or f"base_{a.topic}_layout.json"
     basef = a.base or f"../INPUT/base_{a.topic}.png"
 
@@ -244,25 +251,67 @@ def main():
     ours = float(np.abs(img[ty0:ty1] - base[ty0:ty1]).mean())
     print(f"{poster}  {W}x{H}")
     if ours >= OURS_DIFF:
-        print(f"\n  THIS IS NOT A POSTER OF base_{a.topic}.png. The title band is "
-              f"{ours:.1f} levels from the base (ours measures 0.0-3.2).\n"
-              f"\n  It is almost certainly ANOTHER VARIANT'S, and there is nothing "
-              f"wrong with it.\n  Do not regenerate it. Put it back in ~/Downloads "
-              f"under its own name so whoever\n  it belongs to can still grab it, "
-              f"then grab again once ours has arrived.\n"
-              f"\n  Why nothing else caught it: grab.py takes the newest 1536x2752 "
-              f"file in\n  Downloads and cannot know whose it is - that size "
-              f"identifies a poster, not a\n  variant, and every variant generates "
-              f"at exactly it. And every variant shares\n  this base geometry, so "
-              f"check_base.py's wave test passes across variants by\n  construction.\n"
-              f"\n  What catches it is this check, and engine/check_base.py runs the "
-              f"same one\n  before every other test - so the mistake costs a command "
-              f"rather than a render.\n  Its limit, in the same breath: it finds a "
-              f"foreign BASE, not a foreign TOPIC.\n  Two posters that share a title "
-              f"both pass, which is unlikely here and routine\n  for a series.")
-        sys.exit(1)
+        # Which base is it actually closest to? Answering that is what resolves
+        # this, and it was being done by hand with a shell loop. Two different
+        # faults hide behind one number: a poster from ANOTHER base, which is
+        # somebody's and must go back; and a poster from THIS base whose title
+        # band the generator painted into, which is ours and is a fault in the
+        # picture. The old message asserted the first every time. On 10 September
+        # it told me a `fivemin` poster was "almost certainly another variant's,
+        # nothing wrong with it, do not regenerate" when it was mine, the closest
+        # base by a factor of two and a half, and did need regenerating.
+        best, bestd = None, 1e9
+        for cand in sorted(glob.glob(os.path.join(os.path.dirname(basef) or ".",
+                                                  "base_*.png"))):
+            try:
+                cb = np.asarray(Image.open(cand).convert("RGB")).astype(np.float32)
+            except Exception:
+                continue
+            if cb.shape != img.shape:
+                continue
+            t0, t1 = int(TITLE[0] * H / 2752), int(TITLE[1] * H / 2752)
+            dd = float(np.abs(img[t0:t1] - cb[t0:t1]).mean())
+            if dd < bestd:
+                best, bestd = cand, dd
+
+        if best and os.path.abspath(best) == os.path.abspath(basef):
+            print(f"\n  THIS IS OUR BASE, AND ITS TITLE BAND HAS BEEN PAINTED INTO. "
+                  f"{ours:.1f} levels\n  off, where ours measure 0.0-3.2 - and the "
+                  f"next closest of the {len(glob.glob(os.path.join(os.path.dirname(basef) or '.', 'base_*.png')))} bases "
+                  f"beside it\n  is much further, so this is not somebody else's "
+                  f"poster.\n"
+                  f"\n  The generator has put picture where the flat header is. The "
+                  f"title text may\n  still be perfect - check by eye - but the band "
+                  f"behind it is a base element,\n  and whether it can be restored "
+                  f"depends on WHAT is now there: header pixels\n  copied back from "
+                  f"the base are free, and they cut a hard horizontal edge\n  through "
+                  f"anything that legitimately belongs over them. See rule 9.\n"
+                  f"\n  The rest of the checks run below, because a regeneration "
+                  f"should fix\n  everything at once and you cannot see the rest "
+                  f"from here.")
+            bad.append(f"the title band is {ours:.1f} levels off - the generator "
+                       f"painted into the header")
+        else:
+            print(f"\n  THIS IS NOT A POSTER OF base_{a.topic}.png. The title band is "
+                  f"{ours:.1f} levels from the base (ours measures 0.0-3.2).\n"
+                  f"\n  Check your own other topics first - the commonest cause by "
+                  f"far is a\n  generator serving its previous result, so the file is "
+                  f"an earlier topic of\n  yours and byte-identical to the copy you "
+                  f"already have. Failing that it is\n  another variant's, picked up "
+                  f"from the same Downloads folder."
+                  + (f"\n\n  Closest base here is {os.path.basename(best)} at "
+                     f"{bestd:.1f}." if best else "") +
+                  f"\n\n  Why nothing else catches it: grab.py takes the newest "
+                  f"1536x2752 file in\n  Downloads and cannot know whose it is - that "
+                  f"size identifies a poster, not\n  a variant. And every variant "
+                  f"shares this base geometry, so check_base.py's\n  wave test passes "
+                  f"across variants by construction.\n"
+                  f"\n  Its limit, in the same breath: it finds a foreign BASE, not a "
+                  f"foreign\n  TOPIC. Two posters that share a title both pass.")
+            sys.exit(1)
     print(f"  from our base (title band {ours:.1f} levels off, limit {OURS_DIFF:.0f})\n")
-    print("  band  left mark      lightness         join(fyi)     right third")
+    print("  band  left mark      lightness         join(fyi)     right third   "
+          "left bar(fyi)")
     for i, row in enumerate(L["rows"]):
         y0, y1 = int(row["stripe"][0] * k), int(row["stripe"][1] * k)
         band = img[y0:y1]
@@ -271,6 +320,38 @@ def main():
         m = np.hypot(xx - L["anchor_l"] * k, yy - cy) < r * 0.6
         std = float(img[m].std(axis=0).mean())
         marks_ok = std >= MARK_STD
+
+        # The BARS, printed and not judged - the same decision the join column
+        # documents, and for a better reason than usual: I built this as a PASS
+        # /FAIL on 10 September, on `hungry`, whose ten caption bars came back
+        # as flat plates lying on the photograph. It failed `hungry`. It also
+        # failed calm, swaps, defence and fivemin, all four of which shipped and
+        # none of which anybody has complained about.
+        #
+        # Two instruments, both wrong. Variance inside the bar measures the thing
+        # the prompt DEMANDS - "keep the bottom fifth quiet, one even tone all
+        # the way across" - so a correct poster scores low by construction.
+        # Difference from the base does separate a surviving bar in principle,
+        # and in practice does not: swaps shipped with four right-hand bars at 1
+        # level from the base, which is a bar that survived completely.
+        #
+        # The truth underneath is in PROMPTING.md: the marks paragraph reliably
+        # removes the LEFT-hand marks and routinely leaves the right-hand ones,
+        # and four shipped posters carry right-hand bars nobody minds. So this is
+        # a continuum, not a defect, and the eye is the instrument. The number is
+        # here to rank posters against each other, which it does honestly.
+        bar_d = []
+        for cx in (L["anchor_l"], L["anchor_r"]):
+            b0, b1 = int(row["cap_top"] * k), int((row["cap_top"] + row["cap_h"]) * k)
+            x0, x1 = int((cx - 160) * k), int((cx + 160) * k)
+            bar_d.append(float(np.abs(img[b0:b1, x0:x1] - base[b0:b1, x0:x1]).mean()))
+        # The LEFT bar, not the smaller of the two. The right one survives on
+        # every poster this folder has made and nothing has ever depended on it;
+        # the left one is where the hack's caption lands and where the glass
+        # plate goes. Taking min() over both printed the right bar every time and
+        # made `hungry`, whose five LEFT bars all survived, look identical to
+        # posters where only the right ones had.
+        bar_lo = bar_d[0]
 
         lu = luma(band)
         want_light = bool(row["light"])
@@ -311,7 +392,8 @@ def main():
               f"{lu:5.1f} {'light' if lu >= LIGHT_LUMA else 'dark ':<5} "
               f"{'ok ' if light_ok else 'NO '}   "
               f"{join:5.0f}      "
-              f"{100*right:4.0f}% {'ok ' if right_ok else 'NO '}")
+              f"{100*right:4.0f}% {'ok ' if right_ok else 'NO '}  "
+              f"{bar_lo:5.1f}")
 
     # the captions, whose ink was chosen before anyone saw the photograph
     print()

@@ -126,10 +126,20 @@ def main():
     bad = 0
 
     # ---- 1. sources
+    # Read from the file render.sh wrote, not from a second typing of it. The
+    # flag stays, because re-checking an older clip against a spec by hand is
+    # worth being able to do - but the default is what actually shipped.
     spec = a.hacks
     if not spec:
-        sys.exit("--hacks is the same spec render.sh was given; it is what says "
-                 "which studies to check")
+        rec = f"{a.topic}_hacks.txt"
+        if os.path.exists(rec):
+            spec = open(rec).read().strip()
+            print(f"hacks from {rec} (what render.sh was given)\n")
+    if not spec:
+        sys.exit(f"no {a.topic}_hacks.txt - render.sh writes it. Pass --hacks "
+                 f"only for a clip rendered before it did, and know that "
+                 f"nothing then confirms it is the spec that clip was built "
+                 f"from")
     rows = hacks.resolve(spec)
     print("sources")
     for h in rows:

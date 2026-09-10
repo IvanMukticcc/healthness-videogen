@@ -251,16 +251,25 @@ stray cluster of 16 px, and a loop join of 0.045.
 
 ## The rhythm, and why it is not the house rhythm
 
-The other two ship `1,2,3.2,4.4,5.6`. This ships `0.7,1.85,3.0,4.15,5.3`, and
-both ends moved for a reason.
+The other two ship `1,2,3.2,4.4,5.6`. This ships `0.65,1.75,2.85,3.95,5.05`,
+and both ends moved for a reason.
 
 **It starts earlier** because a feed decides in about 1.5 s. At a first cue of
 1.0 the first number was not on screen until 1.28, and the seventeen frames
 before it were liquid and five empty rings. The rings now read `0%` from frame 0
-- an instrument at rest rather than a hole - and the first count starts at 0.88.
+- an instrument at rest rather than a hole - and the first count starts at 0.95.
 
-**It is even, 1.15 s apart**, where theirs accelerates. Theirs is a list being
+**It is even, 1.10 s apart**, where theirs accelerates. Theirs is a list being
 counted off; this is a day passing, and a day has a beat.
+
+*This paragraph said `0.7,1.85,3.0,4.15,5.3`, "1.15 s apart" and "0.88" until 9
+September, and the table below it said 5.05 the whole time. The table was right.
+Every cue file in this folder reads `0.730,1.830,2.930,4.030,5.130` for the chips
+and `0.950,2.050,3.150,4.250,5.350` for the dials, which is row fires at 0.65 to
+5.05, 1.10 apart, plus the 0.08 chip lead and the 0.30 dial lead. Nothing was
+wrong with the clips; the prose above the table had drifted from them, which is
+the worse direction - a table is read to check a number and prose is read to
+learn one.*
 
 **It ends where it has to.** A row here is a glyph, a pulse crossing the liquid,
 a chip and then half a second of a dial counting - so `cues` reports the dial's
@@ -334,6 +343,59 @@ different answers.
   looked like a number that could be checked.
 
 ### New here — scene mode
+
+- **The circles come out and the BARS stay, because the prompt's list of what
+  may not replace a mark was all circle words.** `hungry` came back with all ten
+  caption bars intact - flat rounded plates lying on the photograph, the picture
+  stopping at a hard edge - while every left circle was properly painted over.
+  The paragraph that PROMPTING.md credits with removing the marks lists "a plain
+  disc, a white circle, a dark circle, a blurred patch, a soft glow", and a
+  generator matching on shape has nothing there to tell it about a bar.
+  `ImageSwap.txt` now names them in their own shapes: rounded rectangle, pill,
+  plate, slab, panel, band of flat colour. Left bars went 10, 8, 17, 7, 24 to
+  34, 12, 32, 6, 38 on the regeneration.
+
+  **Every other test passed that poster, and the caption test passed it BECAUSE
+  it was broken**: ten captions at 0.0% lost, because the ink was sitting on a
+  flat house-coloured bar. A surviving bar makes the legibility test read
+  perfect. There is no repair - a glass plate on a bar is a second bar - so it
+  is a regeneration.
+
+- **Two instruments for that failed before one worked, and both are in
+  `check_scene.py` so nobody rebuilds them.** Variance inside the bar fails
+  every correct poster, because "keep the bottom fifth quiet, one even tone all
+  the way across" is the prompt asking for exactly that. Difference from the
+  base fails too: `swaps` shipped with four right-hand bars at 1 level from it.
+  What separates is the LEFT bar alone - nothing covers it, and the right one
+  survives on every poster this folder has made. Even that is a ranking and not
+  a threshold: on the good `hungry` the two light rows read 12 and 6, and both
+  were a pale tablecloth and a white worktop legitimately close to the base's
+  own pale bar. **Printed, not judged, and looked at.**
+
+- **The title's LETTERS are not the title's BAND, and the prompt only protected
+  the letters.** `fivemin` came back with `UNDER FIVE MINUTES` drawn perfectly -
+  right words, right font, right pixels - on a dawn sky, because row 1's lake
+  photograph had been extended up through the flat header. 30.5 levels against
+  bases that measure 0.0-3.2, so `check_base.py` refused it and `check_scene.py`
+  would not run another test.
+
+  **It was a restoration, not a regeneration, and the test is what is now
+  there.** Rule 9 allows base pixels back where nothing legitimately belongs
+  over them. What had spilled into the header was sky the row did not need -
+  row 1 still has sky inside its own band - so pasting y 0-412 back from the
+  base gave a clean cut at the stripe boundary, identical to the cut between
+  every other pair of bands, with nothing sliced through. That is the opposite
+  of Micro's part 18, where bowls and organs had spilled into the caption bars
+  and a restored bar would have cut those shapes off. **Look at the result
+  before deciding; the rule turns on what is over the region, and a crop
+  answers that in one command.**
+
+  The restored file is `<topic>_head.png`, gitignored, one command from
+  `(poster, base)` - both of which are kept. `<topic>_poster.jpeg` stays exactly
+  as the generator returned it.
+
+  `ImageSwap.txt` now says the band above the top row is final too. Nine posters
+  never hit this because their first rows had no sky to bleed.
 
 - **The wave shows through the glass dial, and the fix is under it, not on it.**
   The dial's glass is 0.62-0.72 opaque and the wave's right tip sits at the

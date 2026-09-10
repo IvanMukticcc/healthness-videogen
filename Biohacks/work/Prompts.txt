@@ -250,6 +250,328 @@ largest effect on the poster, which is worth leaving where the eye finds it.
 
 
 ================================================================================
+calm       ON A BAD DAY / FIVE FIXES, NOTHING TO BUY        scene
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#0F1A1E,#ECF0F1' \
+  --waves '#2BA8E0,#2F8A3C,#F5A623,#B8452F,#9B7BF0' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'ON A BAD DAY' --subtitle 'FIVE FIXES, NOTHING TO BUY' \
+  -o ../INPUT/base_calm.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py calm_poster.jpeg \
+  -l base_calm_layout.json -o calm_labelled.png \
+  --labels 'COLD FINISH|DOPAMINE,GO OUTSIDE|GOOD HEALTH,MOVE DAILY|BAD DAYS,SEE PEOPLE|SURVIVAL,BRAIN DUMP|FALL ASLEEP'
+
+../../.venv/bin/python ../../engine/caption_glass.py calm_poster.jpeg calm_labelled.png \
+  -l base_calm_layout.json -o calm_glass_labelled.png
+
+./render.sh calm 'auto:COLD FINISH@07:05,STEP OUTSIDE@12:45,MOVE MOST DAYS@18:00,SEE PEOPLE@19:30,BRAIN DUMP@22:00' calm_glass_labelled.png
+
+The seventh topic, and the first that needed the table grown since `longer` -
+every one of the eighteen hacks had been used at least once, so a fifth built
+from the table alone would have been a remix. `move most days` (Chekroud,
+Lancet Psychiatry 2018) and `brain dump` (Scullin, J Exp Psychol Gen 2018) are
+new, each with its own study.
+
+**It is the only topic here that is about how you feel.** The other six are
+metabolism, energy, sleep and mortality; this one's five outcomes - DOPAMINE,
+GOOD HEALTH, BAD DAYS, SURVIVAL, FALL ASLEEP - are five words none of them
+uses. That is what made it worth doing rather than a seventh arrangement of the
+same facts.
+
+Scenes:
+
+  1 dark   a man's head and shoulders head-on in a dark wet-tiled shower, face
+           tipped down, cold water off the crown of his head, lit icy blue from
+           behind    (day had cupped hands under a tap, firsthour a shoulder
+           from behind - this is the third framing of the same hack)
+  2 light  a big sunlit tree at the far left of a midday park, sun through the
+           leaves burning the foliage deep green, pale mown grass right
+  3 dark   a floodlit five-a-side pitch after dark, a player mid-stride at the
+           far left against a floodlight directly behind them, amber flare
+           streaking right      (the firsthour row 5 trick: the flare covers
+           the cut)
+  4 light  a long outdoor table in a sunlit garden, people cropped at the
+           shoulders around its near end, a terracotta dish and a deep red jug
+           catching the low sun
+  5 dark   a notebook on a dark bedside table, a hand writing a list, a lamp
+           just behind it throwing cool violet rather than warm
+
+**The left caption was fixed with words, not with a generation.** `STEP OUTSIDE`
+put its S and T on the tree trunk: 25.9% of the strip within 60 of the ink,
+19.8% after the plate, against a limit of 20 - passing on two tenths of a point,
+and the S visibly going when cropped and looked at. The caption is centred on
+x=250, so a shorter string starts further right: `GO OUTSIDE` measures 20.1%
+before the plate and **12.0%** after, and the letters clear the trunk entirely.
+
+That is worth knowing as a move. The plate is the answer when the background
+under a caption is busy everywhere; when it is one dark mass at one end, two
+characters off the caption is free and a generation is not. It only works
+because `add_labels.py` centres - a left-aligned caption would not have moved.
+
+
+================================================================================
+swaps      FIVE SWAPS / NOTHING ADDED TO YOUR DAY           scene
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#101519,#EEF1F0' \
+  --waves '#FFAE2B,#1F6FB8,#29B6D8,#B03A2E,#4FA84E' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'FIVE SWAPS' --subtitle 'NOTHING ADDED TO YOUR DAY' \
+  -o ../INPUT/base_swaps.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py swaps_poster.jpeg \
+  -l base_swaps_layout.json -o swaps_labelled.png \
+  --labels 'BIKE TO WORK|HEART DEATH,NO LIFT|DEATH RISK,NO SODA|DIABETES,READ A BOOK|LIVED LONGER,EAT SLOWLY|OBESITY'
+
+../../.venv/bin/python ../../engine/caption_glass.py swaps_poster.jpeg swaps_labelled.png \
+  -l base_swaps_layout.json -o swaps_glass_labelled.png
+
+./render.sh swaps 'auto:CYCLE TO WORK,TAKE THE STAIRS,SWAP THE SODA,READ A BOOK,EAT SLOWLY' swaps_glass_labelled.png
+
+Clocks come from the table unchanged - the five sit where they sit in a working
+day - so this is the second topic after `day` that needed no `@` override.
+
+**The one topic here that adds nothing.** The other seven all say put this into
+your day; this says you already do these five things and the intervention is
+doing them the other way. All five hacks are new to the table and all five are
+behaviours no other topic has used, which is what stopped an eighth topic being
+an eighth arrangement of the same eighteen facts.
+
+Four dials fall and one rises, which is the `sugar` effect on purpose: nothing
+here goes up except how long you get.
+
+Scenes, and it passed every check on the first generation - the second topic to
+manage that after `sugar`, and for the same reason: every row puts a light
+source or a coloured mass at the far left and lets it carry rightwards:
+
+  1 dark   a cyclist at the far left of an empty road at dawn, the low sun
+           directly behind them flaring gold around the body and the frame
+  2 light  a bright white concrete stairwell, a person climbing at the far
+           left, one hand on a deep blue painted handrail that runs away to
+           the right along the flight   (the handrail IS the wave's line -
+           the strongest join of the eight topics, and the cheapest to ask for)
+  3 dark   a tall glass of water backlit on a dark kitchen counter, glowing
+           cyan, a plain unbranded can pushed away out of focus behind it
+  4 light  a person in an armchair by a tall window in a bright white room,
+           holding up an open hardback whose deep red cloth cover catches the
+           afternoon sun
+  5 dark   a hand resting a fork down on the rim of a half-eaten plate under a
+           single low lamp, the greens still glowing
+
+The right guide circles came back as plain grey discs on all five rows. That is
+Micro's known failure and it costs nothing here - the dial covers them at 0.97
+alpha - but it is worth recording that the left circles were painted over
+properly on the same poster, at std 45-82 against the 15 floor. The paragraph
+naming the marks works on the left, where the subject is; on the right, where
+the prompt asks for nothing, the generator fills.
+
+**Captions were shortened for type size, not for meaning.** `CYCLE TO WORK` and
+`SWAP THE SODA` at thirteen characters held all ten captions to 42px. At
+`BIKE TO WORK`, `NO LIFT` and `NO SODA` the longest string is twelve and they
+draw at 48px - six pixels of type on every caption on the poster, for two words
+that say the same thing. The two `NO` rows next to each other also happen to be
+what a swap sounds like.
+
+
+================================================================================
+defence    NOT IN A BOTTLE / FIVE FREE DEFENCES             scene
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#0E171C,#EDF0EE' \
+  --waves '#26A9CE,#2E8B3E,#F0A63C,#B23A2E,#5A6EE0' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'NOT IN A BOTTLE' --subtitle 'FIVE FREE DEFENCES' \
+  -o ../INPUT/base_defence.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py defence_poster.jpeg \
+  -l base_defence_layout.json -o defence_labelled.png \
+  --labels 'WASH HANDS|INFECTIONS,MOVE DAILY|BAD DAYS,STEP OUTSIDE|GOOD HEALTH,SEE PEOPLE|SURVIVAL,SLEEP MORE|COLD RISK'
+
+../../.venv/bin/python ../../engine/caption_glass.py defence_poster.jpeg defence_labelled.png \
+  -l base_defence_layout.json -o defence_glass_labelled.png
+
+./render.sh defence 'auto:WASH YOUR HANDS@08:30,MOVE MOST DAYS@12:30,STEP OUTSIDE@15:30,SEE PEOPLE@20:00,SLEEP ENOUGH@23:00' defence_glass_labelled.png
+
+The first clip rendered with `--erase-from poster`, which render.sh now passes
+in scene mode.
+
+Two new entries, and `sleep enough` is the best-designed study in the table:
+Prather, Sleep 2015 quarantined 164 people, gave them rhinovirus in nasal drops
+and watched for five days. The exposure was deliberate and controlled, which
+nothing else here can say.
+
+**Three topics were considered and rejected, and the reasons are the useful
+part.** A "biggest numbers" ranking would put +250% dopamine beside -47%
+mortality in one ordered column, and this table's whole ethic is that each
+number carries its own study - a ranking implies a comparison none of the papers
+support. Gargling (Satomura 2005, -36% URTI) is a real RCT and a lovely free
+hack, but it is one 2005 trial that has not replicated; on a health brand, next
+to Prather and Holt-Lunstad, that is the row a viewer chases and finds nothing
+behind. And Araujo's ten-second one-leg stand (BJSM 2022, +84% mortality if you
+fail it) measures a TEST predicting death, not practising balance preventing it.
+Using it would have been bending a study to fit a hack.
+
+Three of the five had been photographed before, so the framings are deliberately
+far apart:
+
+  1 dark   hands lathered white, scrubbed under a tap in a DARK bathroom, one
+           cold light turning the water cyan   (day had cupped hands under a
+           tap in a BRIGHT one - different band, different act)
+  2 light  a tennis serve on an outdoor court in flat midday sun, deep green
+           court and windscreen running right   (calm's movement row was a
+           floodlit five-a-side pitch at night: same hack, opposite light,
+           different sport)
+  3 dark   a person on the back step of a dark house, mug in both hands, door
+           open behind, low sun flaring gold round their shoulders
+           (`step outside`, taken literally - crash had a forest bench, calm a
+           sunlit park tree)
+  4 light  a bright kitchen full of people, three of them at the end of a pale
+           counter passing a red enamel dish   (calm had a garden table)
+  5 dark   a person asleep under a duvet, cold indigo window light rimming the
+           shoulder   (calm's row 5 was a bedside notebook under a violet lamp:
+           same room, different subject, different colour)
+
+**The plate's best result yet: row 4 went 36.1% lost to 0.6%.** The generator
+put the bowl of tomatoes down into the caption strip, against the prompt, and
+`SEE PEOPLE` landed on it. Near-black ink on a red bowl is the failure the
+plate exists for and it took it out completely. Nothing was sent back.
+
+**Two round trips were lost first, and neither cost a render.** The generator
+kept serving the previous result, so `grab.py` fetched the `calm` poster twice -
+byte-identical to the archived copy both times. `check_base.py`'s title
+comparison refused it in one command each time. Its message says "it is somebody
+else's", which overstates: it was this folder's own earlier topic. The check is
+right that the BASE is foreign; it cannot know whose.
+
+
+================================================================================
+fivemin    UNDER FIVE MINUTES / NOT ONE TAKES LONGER        scene
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#111A1D,#EFF1EE' \
+  --waves '#F2A83A,#1F6FB8,#5BC24A,#B4542A,#7B6AE8' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'UNDER FIVE MINUTES' --subtitle 'NOT ONE TAKES LONGER' \
+  -o ../INPUT/base_fivemin.png --work .
+
+# the generator painted the lake's sky into the flat header; y 0-412 copied back
+../../.venv/bin/python -c "from PIL import Image; \
+  po=Image.open('fivemin_poster.jpeg').convert('RGB'); \
+  po.paste(Image.open('../INPUT/base_fivemin.png').convert('RGB').crop((0,0,1536,412)),(0,0)); \
+  po.save('fivemin_head.png')"
+
+../../.venv/bin/python ../../engine/add_labels.py fivemin_head.png \
+  -l base_fivemin_layout.json -o fivemin_labelled.png \
+  --labels 'COLD PLUNGE|DOPAMINE,WASH HANDS|INFECTIONS,VEG FIRST|SUGAR SPIKE,LONG EXHALES|BREATH RATE,BRAIN DUMP|FALL ASLEEP'
+
+../../.venv/bin/python ../../engine/caption_glass.py fivemin_head.png fivemin_labelled.png \
+  -l base_fivemin_layout.json -o fivemin_glass_labelled.png
+
+./render.sh fivemin 'auto:COLD FINISH@07:05,WASH YOUR HANDS@08:30,VEG FIRST@12:30,NOSE BREATHING@17:30,BRAIN DUMP@22:00' fivemin_glass_labelled.png
+
+**The chip column is the argument.** 2 MIN, 20 SEC, 0 MIN, 5 MIN, 5 MIN - the
+frame is the price, and the five outcomes are as far apart as this table gets:
+dopamine, infection, glucose, breathing, sleep onset. The first topic since
+`day` that needed no new entry; all five already carried their studies.
+
+**One unit ranked is structurally incompatible with this poster.** A blood
+pressure topic was written out first - wall sit -8, less alcohol -6, less salt
+-5, potassium -4 mmHg systolic - and it is the honest version of the "biggest
+numbers" idea rejected on 9 September, because mmHg really is commensurable.
+It dies on the captions: the right column reads `SYSTOLIC` five times, and the
+only way out is synonyms the sources do not support, which `longer` forbids in
+this file. Worth knowing before someone reaches for it again: the metric caption
+is per row, so a poster whose whole point is one metric has nothing to say in
+five sixths of that column.
+
+Scenes, all five new even for the three hacks already shot:
+
+  1 dark   a cold lake at sunrise, a swimmer at the far left up to the
+           shoulders, the low sun beyond them laying a gold track rightwards
+           (cold finish had had three showers - and immersion is what Sramek
+           actually measured, so this is closer to the study than a shower was)
+  2 light  hands under a running tap at a white kitchen sink in flat morning
+           daylight   (defence washed hands in a DARK bathroom)
+  3 dark   a fork lifting a mouthful of green leaves clear of an untouched
+           plate under one warm light - the ACT, where sugar and crash both
+           photographed a bowl
+  4 light  a man in a parked car, hands on the wheel, head back, mid-exhale,
+           late sun flooding the windscreen
+  5 dark   a notebook on a kitchen table under a low indigo lamp, the house
+           dark   (calm's brain dump was a bedside table)
+
+**The header came back as photograph and was restored, not regenerated.** See
+flow.md - the title's letters were perfect and the flat band behind them had
+become the lake's sky. What had spilled in was sky row 1 did not need, so
+pasting the header back cut nothing, and the join reads as the same clean band
+boundary the design has everywhere else. `ImageSwap.txt` now protects the strip
+above the top row; it only ever protected the lettering on it.
+
+
+================================================================================
+hungry     STILL HUNGRY? / NOTHING IS OFF THE MENU          scene
+================================================================================
+
+../../.venv/bin/python ../../engine/recolor_base.py \
+  --rows '#12181E,#EFF0ED' \
+  --waves '#2FA9DE,#C9891F,#4FBF52,#B03A2E,#F0A63C' \
+  --vibrance 1.05 --contrast 1.04 \
+  --title 'STILL HUNGRY?' --subtitle 'NOTHING IS OFF THE MENU' \
+  -o ../INPUT/base_hungry.png --work .
+
+../../.venv/bin/python ../../engine/add_labels.py hungry_poster.jpeg \
+  -l base_hungry_layout.json -o hungry_labelled.png \
+  --labels 'WATER FIRST|WEIGHT LOST,MORE PROTEIN|APPETITE,VEG FIRST|SUGAR SPIKE,COOK AT HOME|BODY FAT,EAT SLOWLY|OBESITY'
+
+../../.venv/bin/python ../../engine/caption_glass.py hungry_poster.jpeg hungry_labelled.png \
+  -l base_hungry_layout.json -o hungry_glass_labelled.png
+
+./render.sh hungry 'auto:WATER FIRST@07:45,MORE PROTEIN@08:00,VEG FIRST@12:30,COOK AT HOME@18:30,EAT SLOWLY@19:30' hungry_glass_labelled.png
+
+Weight and appetite, the biggest subject this table had never touched. Built
+from existing entries it would have been a `sugar` remix, so three are new:
+`more protein` (Weigle 2005 - raising protein to 30% of energy cut spontaneous
+intake by 441 kcal a day with nobody asked to eat less), `water first` (Dennis
+2010 - 500 ml before meals, 7.0 kg against 5.3 on the same diet) and
+`cook at home` (Mills 2017, Fenland). -441 KCAL is the longest count this dial
+has run; the other four land inside two digits.
+
+**Sent back once, on the caption bars.** The first poster came back with all ten
+of them intact - flat rounded plates lying on the photograph, the picture
+stopping at a hard edge. Every other test passed it, and the captions measured
+0.0% lost precisely BECAUSE the ink was on a flat house-coloured bar. The glass
+plate cannot repair that: a plate on a bar is a second bar.
+
+The template's fix was in the wrong shape. Its list of what may not replace a
+mark - "a plain disc, a white circle, a dark circle, a blurred patch, a soft
+glow" - is entirely circle language, which is why the circles came out and the
+bars stayed. `ImageSwap.txt` now has a second paragraph naming the bars in their
+own shapes: rounded rectangle, pill, plate, slab, panel, band of flat colour.
+One regeneration, and the second poster's left bars read 34, 12, 32, 6, 38
+against the first's 10, 8, 17, 7, 24.
+
+Scenes, both light rows re-shot from scratch by the generator and better for it:
+
+  1 dark   a hand lifting a full glass to the mouth in a dark kitchen before
+           dawn, cold window light behind the glass
+  2 light  two fried eggs on a white plate on a bright breakfast table, one
+           yolk broken and running gold
+  3 dark   an open fridge in a dark kitchen, its light on a shelf of greens,
+           spilling right across the floor  (veg first as REACHING for them -
+           sugar and crash both photographed a bowl, fivemin a fork)
+  4 light  a wide pan of tomatoes cooking down on a hob in a bright kitchen,
+           one hand stirring, cropped at the wrist
+  5 dark   a bowl of soup under one low lamp, steam drifting right
+           (swaps' eat slowly was a fork being set down)
+
+
+================================================================================
 TITLES ARE THE ONE THING THAT MAY NOT REPEAT
 ================================================================================
 

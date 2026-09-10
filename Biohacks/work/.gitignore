@@ -23,3 +23,11 @@
 # is carried too, for the same reason: the thing every clip is mixed against
 # should not depend on nobody having touched a constant.
 !biohack_bed_8s.m4a
+*_hacks.txt
+
+# <topic>_head.png - a returned poster whose HEADER has been copied back from
+# its own base, pixel for pixel, because the generator painted picture into the
+# flat title band. It is one command from (poster, base) and both of those are
+# kept, so it is a build product like the labelled pair and not an artefact.
+# The archival <topic>_poster.jpeg stays exactly as the generator returned it.
+*_head.png
