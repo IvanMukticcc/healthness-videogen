@@ -89,7 +89,12 @@ one ever wants to, that is when it moves — the way `grab.py` and
   behind them, so a topic whose base is mostly light or mostly dark moves every
   one of those numbers at once. The ring track's separation from the value arc
   was 51.7 levels, fell to 2.0 when the frost thinned, and is 55.7 now - measure
-  it on the next topic rather than assuming it travelled
+  it on the next topic rather than assuming it travelled. Act one's glass badges
+  are the same exposure one surface over: their fill is a tint on the wave AND on
+  the row colour the wave does not cover, so each macro's luminance now varies
+  12-22 levels across the five rows where flat fills varied 3-6. Hue survives and
+  white type is safe at a worst separation of 105, but a base with a lighter
+  palette than breakfast's alternating navy and near-white widens all of it
 - `check.py` does not exist here. Longevity's is the model: spec off disk, the
   sample count printed beside the verdict, and failing toward alarm
 - act two's `--seconds` is fixed at 7.5 and its timeline scales inside that; a
