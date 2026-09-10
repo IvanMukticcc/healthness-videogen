@@ -226,6 +226,101 @@ shipped.
   ropes, not a rope slam, and there is no thick heavy rope anywhere in the
   picture*
 
+**What POWER GOES FIRST got wrong on 9 September, and what the template says
+now.** Three faults in one generation, and the first of them made the poster
+unusable before any of ours were looked at.
+
+- **it re-framed the canvas.** The image came back at a different aspect ratio,
+  cropped: the title read POWER GOES FIRS with the last letters outside the
+  frame and the logo was gone altogether. Nothing on a poster like that is at
+  base geometry, so `check_base.py` refuses it and there is nothing to repair -
+  the whole picture has moved. The old opening said *use the attached image as
+  the base*, which the model can satisfy while re-rendering it at its own size.
+  What it says now names the size and what proves it: same 1536 x 2752, same
+  crop on all four sides, and *if any part of the title or the logo is missing
+  or cut off at an edge, the image is wrong*
+- **band 2 came back with no wave at all**, and bands 4 and 5 came back with
+  waves redrawn as flat ribbons running the wrong way - starting at the right
+  and hanging to the LEFT of the athlete. The opening paragraph forbids moving
+  and redrawing a wave; it never said how many there are. The new paragraph
+  counts them band by band and states the direction: each one begins about a
+  sixth in and runs right, and no part of a wave lies left of the athlete
+- **the athletes were not on the mark.** Measured by eye off the returned
+  poster, their centres sat at roughly 0.30, 0.50, 0.22, 0.62 and 0.66 of the
+  width against the 0.163 the left circle marks - three of the five at or right
+  of centre, and two of those mirrored, athlete right and liquid left.
+
+  **This is the circle-mode lesson arriving in scene mode.** `flow.md` records
+  it as *telling the generator where to put things does not work; a mark it can
+  see beats a sentence it has to interpret* - and scene mode is the one mode
+  that tells the model to paint the mark out. Having removed the only thing that
+  pinned the figure down, the prompt was left holding the sentence, which is
+  exactly the arrangement that failed three days running before `left_disc.py`
+  existed.
+
+  The template no longer asks for the left circle to be erased. It is covered
+  *because the athlete is standing on it*, and the paragraph says so, with a
+  falsifiable test beside it - *if you can see his whole body in the middle of
+  the image, the band is wrong* - and the direction stated, because a mirrored
+  band satisfies every other sentence in the prompt. The right circle and the
+  bars are still covered by the room alone.
+
+  If this comes back a second time the answer is probably not more prose. It is
+  that scene mode needs its own mark - something in the base at that spot which
+  a photograph can plausibly be painted over, the way `left_disc.py` gave circle
+  mode a disc. That is an engine question, not one for this folder.
+
+**STRONGER AT SEVENTY cost five generations, and four of them were mine.** The
+scene prompt above was Biohacks' with our rows in it. Over one morning it stopped
+being that, one reasonable-looking paragraph at a time: a canvas lock, a
+five-waves count, an opaque-waves rule, a no-second-logo rule, a safe-area rule,
+a mock-up ban, an inset ban, a subject paragraph describing a man in his sixties,
+and finally a rewrite of the two paragraphs that place the athlete - the marks
+paragraph and the far-left paragraph - into a direct order, *put the athlete in
+the left circle*. Every one of them answered a real failure. Together they moved
+the athlete to the middle of the band and kept him there for four generations.
+
+Two mechanisms, and they are worth separating.
+
+- **The order contradicted the paragraph above it.** *Put the athlete in the left
+  circle* sits two paragraphs under *the photograph is painted over all four
+  marks, as if they had never existed*. A model handed both has to decide whether
+  the circle is a place or a thing to erase. Biohacks never says *in the circle*:
+  it says the subject is at the far left, its centre about one sixth of the width
+  in, **where the faint circle is now** - a coordinate, with the mark as evidence
+  for it rather than as the instruction. The circle-mode wording that this was
+  reaching for works because there the circle is a filled disc that survives into
+  the finished poster. In scene mode it does not survive, and an instruction to
+  stand in something that will not exist is not an instruction.
+- **A row that describes a body composes around that body.** Ours had become
+  paragraphs of biomechanics - the weight over the leading foot, the thigh at
+  ninety degrees, the trailing foot just clear - and a generator handed a person
+  in that much detail frames the person. Biohacks' rows spend their words on the
+  room and its light and place the subject with three words, *at the far left*.
+  Restoring that shape put the men on the mark in all five bands, first try,
+  after four failures.
+
+The user called it before the measurement did: *malo mozda pretjeruzes*, beside
+the DESK poster, which passed everything with a shorter prompt. **Prompt length
+is not free, and a paragraph that fixed something is not thereby permanent.** The
+test for keeping one is whether the failure it answers comes back without it, and
+the only way to know is to take it out. All eight came out; only the rewritten
+right-third paragraph went back in, for a second athlete drawn on the right, and
+that one was a rewrite rather than an addition.
+
+What survived the cut and why it is safe to have dropped the rest: Biohacks has
+never needed any of them. If one of those failures returns, restore that single
+paragraph and not the set.
+
+Three things came the other way, from their prompt into ours, and all three earned
+their place immediately: **the bottom fifth quiet edge to edge** rather than our
+lower-left quarter, which is the strip both captions actually sit in; **a lighting
+brief in every row header** - `(dark - one light, deep shadow everywhere else)`,
+`(light - THIS MUST BE ONE OF THE TWO BRIGHTEST BANDS)`; and **a per-row sentence
+naming the quiet strip and what is not on it**, which is the same trick as naming
+the rows for the wave colours - a general rule it can nod at, against a named
+place it either obeys or visibly does not.
+
 **And two things that are ours rather than the prompt's.** A photographic row has
 no row colour to take, so the disc under the body goes on glass - near-black with
 a bright rim - and the figure is drawn for a dark ground on every row, because

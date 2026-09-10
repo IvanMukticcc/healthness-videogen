@@ -165,8 +165,24 @@ is restored rather than regenerated (`../CLAUDE.md` rule 9):
 
 ```
 ../.venv/bin/python clean_poster.py <poster> --base ../INPUT/base_<topic>.png \
-    -l base_<topic>_layout.json -o <topic>_clean.png
+    -l base_<topic>_layout.json -o <topic>_clean.png            # circle mode
+../.venv/bin/python clean_poster.py <poster> --base ../INPUT/base_<topic>.png \
+    -l base_<topic>_layout.json --bars 0 --radius 138 \
+    -o <topic>_clean.png                                        # scene mode
 ```
+
+**Both flags in the scene-mode line are load-bearing.** `--bars 0` leaves the
+generator's caption bars alone, because on a photograph the captions go on glass
+and a restored bar would be a second bar under the pane. And the default
+`--radius` of 340 is a circle-mode number - it is sized for the stroked ring the
+generator used to draw and for the caption bar's far corners, neither of which
+exists here. On POWER GOES FIRST it took **69657 px** out of row 4, carving a
+pale disc the size of a dinner plate out of the sprint lane's turf and putting
+the guide circle and both bars back inside it, with a hard round edge across the
+track. That is the wrong side of rule 9's line: the turf legitimately belongs
+there, so it is not a region to restore. At 138 the restore is exactly the guide
+circle, which the body's own disc covers at render time, and the other four rows
+go from 2540-3700 px to 1974-2317 - the same repair, without the hole.
 
 The caption bars matter as much as the ring: `add_labels.py` takes its ink from
 whether the row is light or dark, which is right for the bar the base drew and
@@ -203,8 +219,15 @@ background, against 231 on the row above.
 ```
 ../.venv/bin/python ../../engine/caption_glass.py <topic>_clean.png \
     <topic>_labelled.png \
-    -l base_<topic>_layout.json -o <topic>_labelled.png
+    -l base_<topic>_layout.json -o <topic>_glass.png
 ```
+
+**It writes a third file, and it now refuses to do anything else.** The pair it
+is given has to differ by ink alone, so writing over either one destroys the
+input the next run needs; the engine checks for that and stops (this file asked
+for `-o <topic>_labelled.png` until 9 September 2026, which the tool no longer
+accepts). `<topic>_glass.png` is then the poster `render.sh` is handed - not the
+labelled one.
 
 It runs **after** `add_labels.py`, not before, because the width of a pane is the
 width of its words and only the tool that drew them knows that. Given the poster
@@ -312,6 +335,34 @@ Single digits is clean. On the reference cut it reports 128 px, and that is x264
 ringing on the boundary between a near-black row and a white one, not motion —
 see `README.md`. If type or the athlete moves, something is wrong; say so rather
 than shipping it.
+
+**It finds its own timings, and it says which it read.** Given
+`<topic>_silent.mp4` it reads `<topic>_cues.txt` and `<topic>_finale.txt` from
+beside the video; `--cues` and `--finale` still override, for re-checking an
+older clip by hand. If it finds neither it says so in place of the filenames,
+because a clean over a window containing every badge is not a clean.
+
+**The finale used to be inside the last window, and that is fixed.** It is not a
+badge cue - it has its own file so the sound does not strike it as a sixth hit -
+so the windows knew nothing about it and the stretch after the last badge ran to
+the end of the clip with the loudest moving thing in the video inside it. Every
+Exercise audit on 9 September 2026 reported 46000 to 49000 px and `look at it`
+for clips that were correct, with the offending sample at t=6.91, dead in the
+surge. The same cut now:
+
+    before   4 windows, 12 pairs   46680 px   look at it
+    after    5 windows, 14 pairs       0 px   clean
+
+The alarm was the visible half. The hazard was the other one: three samples
+across a window is a thin search, and had the rhythm placed them either side of
+the surge the same window would have printed `clean` while containing it. So the
+count of frame pairs is printed beside the verdict - `clean` over fourteen pairs
+and `clean` over three are not the same sentence.
+
+The fifth window is new and it is the one worth having: 7.28-7.55, after the
+finale settles, sampled at any length down to 0.15s because the last frame is the
+one a feed freezes on. It reads 0 px, which is the first direct confirmation of
+the settle this file has been claiming since the finale landed.
 
 ## What is already known to break
 
@@ -588,6 +639,81 @@ rediscover them.
 - **Noise cut in the time domain does not loop.** The bed is built by shaping a
   spectrum and transforming back, so sample n−1 joins sample 0. Otherwise it is a
   click every eight seconds for as long as anyone watches.
+- **The ragged edge along the wave is not a scene-mode fault; a flat row hides
+  it, and most of the metric that found it was measuring the anchors.** Reported
+  on 9 September 2026 as a deformed coloured fringe around the liquid, seen here
+  and in Biohacks and not in Micro. Two rounds of measurement, and the second
+  corrected the first.
+
+  **What holds.** A flat row hides it. Measured on `desk` against `legs` - a
+  photograph and a flat row from the same engine on the same day, five frames
+  before the first badge lands - the flat row froze *more* of its rim and showed
+  nothing at all. A frozen rim pixel holds a blend of the wave's colour and
+  whatever was behind it: against a flat row that blend lies between the row
+  colour and the wave colour and cannot be seen, against a photograph it is a
+  blend with an arbitrary pixel. **A variant that shows nothing is not a
+  control.**
+
+  **What did not hold: the number.** The root found the tips. Both of a ribbon's
+  ends are pinned within ~1px of their circle centre by the geometry contract -
+  the surface scrolls through them and the ends do not move, and an end that
+  moved would be the bug. They are the outer eighths of the ribbon's span, a
+  quarter of the rim, and they are **100.0% frozen by construction**, in both
+  modes:
+
+      rim, inside definition    whole    tips     travel zone
+      desk   (scene)            32.5%   100.0%      10.3%
+      legs   (circle)           31.2%   100.0%       8.6%
+
+  So any whole-rim figure has a floor around 25% before a pixel misbehaves.
+  **Split the rim at the outer eighths or the number means nothing.**
+
+  The tip floor does *not* explain the circle-vs-scene gap, and this file said it
+  did for about an hour. The root proposed that reconciliation and I copied it in
+  without checking whether it could apply: the 16.8% and 22.9% were measured at
+  x 360-800, which had already excluded both tips, so tip geometry could not have
+  been the explanation for anything about them. The root has since retracted it
+  (c705fbc). Two numbers that disagree are not reconciled by inventing a
+  difference between them - the question is how each was measured, and here the
+  answer was a different band and a different x range.
+
+  Two rims exist and they are not the same population. Mask-minus-erosion is the
+  4px band *inside* the silhouette; dilation-minus-mask is the 4px band *outside*
+  it, which is where the animator's deliberate 9x9 overshoot peters out and is
+  structurally static in its own right - it reads 25.1% and 25.4% in the travel
+  zone against the inside band's 10.3% and 8.6%. Quote the inside one.
+
+  **Jpeg is part of it and not the whole of it.** `flowanim.py` run on
+  `base_legs_clean.png` gives a clip at our exact geometry from an authored PNG
+  with no jpeg at any point in its history - not a re-save, the file
+  `recolor_base.py` wrote - and no generated content at all:
+
+      PNG base, no jpeg ever      travel   6.1%
+      legs, from a jpeg poster    travel   8.6%
+      desk, from a jpeg poster    travel  10.3%
+
+  So jpeg is worth 2.5 to 4.2 points here, a third to two fifths of the residue,
+  and 6.1% survives without it. The root ran the same control at Longevity
+  geometry and got **3.6%** from their own authored PNG - two variants, no jpeg
+  in either, same rim, same split, same window, and the floor differs by nearly a
+  factor of two. Whether that is the topic or the ribbon is open and is written
+  down as open at the root; do not resolve it by assumption from in here.
+
+  One number is stranger and is worth a look if the fringe ever matters visually:
+  on the OUTSIDE band, in the travel zone, ours reads 25.1% and 25.4% against
+  Longevity's 5.9%. That is the largest gap anywhere in this investigation and it
+  is on the band this folder originally quoted. It is not simply edge ringing either: across the
+  five rows of one clip, wave-to-row contrast 114-151 against frozen 6.4-12.7%,
+  and the second-highest-contrast row is the least frozen of the five.
+
+  Two things it is not: `refine_art`, which scene mode disables outright with
+  `--lifter-r 0` and which returns unchanged on its first line; and the hard
+  `inside` boolean, because the render's 10-90% edge transition measures 2.63px
+  against the poster's 1.06px - already wider, so anti-aliasing widens what is
+  not narrow. **The remaining fault is in the engine and is not ours**; the
+  numbers went to the root on 9 September and `flowanim.py` was not touched from
+  here.
+
 - **The right circle is an invitation.** An empty marked circle is exactly what
   the generator fills, so the prompt calls it *finished artwork* rather than
   *empty*, and lists what not to put there. The disc underneath covers anything

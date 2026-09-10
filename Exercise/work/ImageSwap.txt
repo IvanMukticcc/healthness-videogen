@@ -86,43 +86,37 @@ Use the attached image as the base. Keep everything I list as final and replace 
 
 THE FIVE COLOURED LIQUID WAVES ARE FINAL AND MUST NOT CHANGE. Do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss. Do not turn them into splashes, spray, droplets, mist or particles. Do not add a glow, a halo, a shadow or a reflection around them. They must come back pixel for pixel where they are now - everything else in the image is being replaced around them.
 
-EVERY WAVE IS OPAQUE AND STAYS OPAQUE. Nothing behind a wave shows through it: no window, no wall, no machine, no room. Do not make a wave glassy, translucent, transparent or misty, and do not soften it into light. It is a solid coloured liquid lying in front of the scene, and where anything in the room passes in front of it, that object is what covers it.
+THE WAVES ON THE SECOND AND FOURTH ROWS ARE DARK AND SIT ON A LIGHT BACKGROUND. That contrast is deliberate. Do not lighten them, do not tint them towards the background and do not harmonise the image: they come back exactly the colour they are now, and exactly as dark as they are now.
 
-THE TITLE AT THE TOP AND THE LOGO AT THE BOTTOM ARE FINAL. Do not redraw, move or restyle either. ADD NO LOGO ANYWHERE - there is exactly one logo in this image and it is at the very bottom; do not add a second one at the top, in a corner, or on a wall inside a photograph. ADD NO TEXT OF ANY KIND: no labels, no captions, no numbers, no watermarks. All text is added later, outside the generator.
+THE TITLE AT THE TOP AND THE LOGO AT THE BOTTOM ARE FINAL. Do not redraw, move or restyle either. ADD NO TEXT OF ANY KIND: no labels, no captions, no numbers, no watermarks. All text is added later, outside the generator.
 
-REPLACE EACH OF THE FIVE HORIZONTAL BANDS WITH A PHOTOGRAPH. Each band is a full-bleed photographic scene that fills its band from the left edge to the right edge and from its top edge to its bottom edge, running behind the liquid wave. The five bands are five separate photographs with a clean horizontal cut between them - they do not blend into each other. The photograph reaches all four edges of its band: no margin, no border, no strip of flat colour anywhere.
+REPLACE EACH OF THE FIVE HORIZONTAL BANDS WITH A PHOTOGRAPH. Each band is a full-bleed photographic scene that fills its band from the left edge to the right edge and from its top edge to its bottom edge, running behind the liquid wave. The five bands are five separate photographs with a clean horizontal cut between them - they do not blend into each other.
 
-KEEP EACH BAND'S LIGHTNESS EXACTLY AS IT IS NOW. Bands 1, 3 and 5 are dark and their photographs must be dark overall - night, shadow, deep tone. Bands 2 and 4 are light and their photographs must be light overall - bright, airy, pale. This is not a style preference: the text added afterwards takes its colour from that, and a band that changes its lightness loses its caption entirely.
+KEEP EACH BAND'S LIGHTNESS EXACTLY AS IT IS NOW. Bands 1, 3 and 5 are dark and their photographs must be dark overall - night, shadow, deep tone. Bands 2 and 4 are light and their photographs must be light overall - bright, airy, pale. This is not a style preference: text is added afterwards in a fixed colour and a band that changes its lightness loses its caption.
 
-EACH BAND CONTAINS TWO FAINT CIRCLES AND TWO FAINT BARS. These are alignment marks, not artwork. The photograph is painted over all four of them, so that none of them is left anywhere in the finished image. Do not replace a mark with a plain disc, a coloured circle, a white circle, a dark circle, a blurred patch or a soft glow - there must simply be photograph there, continuous with the scene around it, as if the marks had never existed. Nobody stands inside a circle; the athlete stands in the room.
+EACH BAND CONTAINS TWO FAINT GREY CIRCLES AND TWO FAINT GREY BARS. These are alignment marks, not artwork. The photograph is painted over all four of them, so that none of them is left anywhere in the finished image. Do not replace a mark with a plain disc, a white circle, a dark circle, a blurred patch or a soft glow - there must simply be photograph there, continuous with the scene around it, as if the marks had never existed.
 
-THE ATHLETE IS AT THE FAR LEFT OF HIS BAND, HIS CENTRE ABOUT ONE SIXTH OF THE IMAGE WIDTH IN FROM THE LEFT EDGE - where the faint circle is now. He is the biggest thing in the band and fills most of its height. He is part of the photograph and bleeds into the scene: no circle, no disc, no frame, no vignette, no cut-out edge and no border behind him. Do not centre him, and let nothing else in the band compete with him.
+THE ATHLETE OF EACH ROW IS AT THE FAR LEFT, HIS CENTRE ABOUT ONE SIXTH OF THE IMAGE WIDTH IN FROM THE LEFT EDGE - where the faint circle is now. He is the biggest thing in his band and he fills most of the band's height. He is part of the photograph and bleeds into the scene: no circle, no disc, no frame, no vignette and no border behind him. Do not centre him, and do not let anything else in the band compete with him.
 
-THE LIQUID MUST LOOK LIKE IT COMES OUT OF THE MOVEMENT. The coloured wave begins with a blunt cut about one sixth of the way in, and that cut must not be visible in the finished image: place the athlete so the wave's left end passes behind him or into him, and so the two overlap for a long distance rather than merely touching. Where they meet, the light in the scene is exactly the wave's own colour - the lit haze, the LED strip, the glow off the equipment is the same colour as the wave it feeds.
+THE LIQUID MUST LOOK LIKE IT COMES OUT OF THE MOVEMENT. The coloured wave begins with a blunt cut about one sixth of the way in, and that cut must not be visible in the finished image: place the athlete so the wave's left end passes behind him or into him, and so the two overlap for a good distance rather than merely touching. Where they meet, the light in the scene matches the wave's colour exactly - the lit haze, the LED strip, the glow off the equipment is the colour of the wave it feeds. The band must read as one continuous thing: a scene the liquid pours out of, never a photograph with a graphic lying on top of it.
 
-THE EXERCISE NAMED IN EACH ROW IS THE EXERCISE THAT MUST BE IN IT. Every row below names one lift on one piece of equipment. Draw that lift, on that equipment, and nothing else: not a similar movement, not another exercise in the same gym, not a different tool that looks good in the frame.
+THERE IS EXACTLY ONE ATHLETE IN EACH BAND AND HE IS AT THE FAR LEFT. Do not repeat him, do not show him a second time further right, and do not put a second person anywhere in the band. DO NOT DRAW ANY OBJECT IN THE RIGHT THIRD OF A BAND - no person, no equipment, no bar, no frame, no ring, no diagram, no machine, no glow, and no circular patch of light, vignette or spotlight of any kind. The right third is the photograph's own plain background and nothing else: bare wall, bare floor, empty room, open sky. Finished artwork is placed over it later.
 
-DO NOT DRAW ANY OBJECT IN THE RIGHT THIRD OF A BAND - no person, no second athlete, no ring, no diagram, no machine, no glow. Only the room's own background belongs there; finished artwork is placed over it later.
+KEEP THE BOTTOM FIFTH OF EACH BAND QUIET, AND QUIET MEANS ONE EVEN TONE ALL THE WAY ACROSS. On a dark band that strip is dark from the left edge to the right edge; on a light band it is bright from edge to edge. One unbroken surface - an even floor, plain ground, a plain mat, a plain wall - with no equipment, no bench, no plate, no lit object, no lamp, no bright patch, no shadow and no edge crossing it. Captions are placed there afterwards in one fixed colour, and a bright patch the width of a hand is enough to delete the word that lands on it while the rest of the strip goes on looking calm.
 
-KEEP THE BOTTOM LEFT OF EACH BAND QUIET - the lower left quarter is a plain even surface with no equipment, no bench, no cable, no rope, no bright edge and no busy texture. A caption is placed there afterwards and needs somewhere calm to sit. A plain floor or an even wall is what belongs there.
+LEAVE THE BAND BELOW THE LAST ROW EMPTY, between the bottom row and the logo. Nothing goes there.
 
-THE SAFE AREA APPLIES TO THE ATHLETE, NOT TO THE BACKGROUND. The photograph reaches every edge; what stays one fourteenth of the width clear of the left and right edges is the athlete himself.
+The photographs are realistic, cinematic and shot on a real camera: shallow depth of field, natural or practical light, one clear subject, no studio backdrop, no illustration, no 3D render, no stock-photo staging.
 
-Every athlete is caught at the hardest instant of the rep with the working muscle visibly under load, seen from a low three-quarter angle, never flat from the side and never resting between reps.
+Row 1 (dark - <the room, one light, deep shadow everywhere else>): <the athlete at the far left, seen from a low three-quarter angle, doing LIFT 1, caught at a checkable instant - and what it is not>. <What the light does as it carries rightwards, in the wave's colour.> <Everything else is deep shadow - what.> <Along the bottom of the band, one even tone edge to edge - what, and what is not on it; the right half of the band is empty what.>
 
-Row 1 (dark): <THE ROOM, ITS LIGHT IN THE WAVE'S COLOUR - THE ATHLETE AT THE FAR
-LEFT DOING <LIFT 1>, CAUGHT AT ITS HARDEST INSTANT - WHAT THE LIGHT DOES AS IT
-CARRIES RIGHT - WHAT IS IN THE RIGHT THIRD AND ACROSS THE LOWER LEFT>
+Row 2 (light - THIS MUST BE ONE OF THE TWO BRIGHTEST BANDS ON THE IMAGE): <same five parts, and the room is bright>
 
-Row 2 (light): <same four parts, and the room is bright>
+Row 3 (dark - <the room, one light>): <same five parts>
 
-Row 3 (dark): <same four parts>
+Row 4 (light - THIS MUST BE THE OTHER BRIGHT BAND, bright and airy throughout): <same five parts>
 
-Row 4 (light): <same four parts, and the room is bright>
-
-Row 5 (dark): <same four parts>
-
-The photographs are realistic and cinematic, shot on a real camera: shallow depth of field, natural or practical light, one clear subject, no studio backdrop, no illustration, no 3D render, no stock-photo staging.
+Row 5 (dark - <the room, one light>): <same five parts>
 
 === END OF PROMPT ===
 

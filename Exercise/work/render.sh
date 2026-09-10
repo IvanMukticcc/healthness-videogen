@@ -95,9 +95,11 @@ if [ "$SCENE" = "1" ]; then
     # whole band; and the body's disc has no row colour to take, so it goes on
     # glass. Biohacks found the first two the same way and named them first.
     SCENE_FLAGS="--halo 0 --anchor-tol 0 --lifter-r 0 --body-disc glass"
+    OVERLAYS="body_overlay,muscle_overlay"
     echo "== scene poster: rows are photographs, so no base is put back into them"
 else
     SCENE_FLAGS="--anchor-tol $ANCHOR_TOL"
+    OVERLAYS="body_overlay,muscle_overlay"
 fi
 
 # Is this a generated poster at all? render.sh writes straight into a day folder,
@@ -134,7 +136,7 @@ mkdir -p "../OUTPUT/$DAY"
 echo "== liquid, badges and bodies"
 ../.venv/bin/python ../../engine/flowanim.py "$POSTER" \
     --width 1080 --seconds 8 \
-    --overlay body_overlay,muscle_overlay \
+    --overlay "$OVERLAYS" \
     --base "$DIR/base_${TOPIC}_clean.png" \
     --anchored "$BASE" \
     --layout "$DIR/base_${TOPIC}_layout.json" \
