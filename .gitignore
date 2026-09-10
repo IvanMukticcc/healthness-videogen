@@ -25,6 +25,13 @@ __pycache__/
 *_act2.json
 *_act2.wav
 *_preview.mp4
+
+# The captioned poster, under each variant's name for it. Derived twice over -
+# add_labels.py writes <topic>_labelled.png from <topic>_poster.jpeg, and
+# caption_glass.py writes <topic>_glass.png from that and the clean copy - and
+# both commands are in the variants' flow.md. 15 MB of Exercise's alone. What is
+# tracked is the jpeg neither command can remake.
+*_glass.png
 *_sheet.png
 
 # the generated posters, and the finished videos
