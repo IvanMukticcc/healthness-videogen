@@ -104,9 +104,33 @@ memory is 1.2 GB against 74 MB at 270.
 
 Blur, THEN pull towards white, THEN put the saturation back - in that order.
 Whitening a blurred frame washes the liquid out to a grey ghost, and the colour
-is the only thing telling you what is behind the glass. `FROST` 0.62 and `SAT`
-1.75 keep the badges reading blue, green and red through the pane while act one's
-title, white on dark, dissolves completely.
+is the only thing telling you what is behind the glass. `SAT` 1.75 keeps the
+badges reading blue, green and red through the pane. It was set against `FROST`
+0.62 and holds at 0.34, where more of act one comes through rather than less -
+the paragraph below is what that extra light cost.
+
+**A value on glass is a value against a moving ground, and the track was not.**
+`FROST` 0.34 let act one through and took the calorie ring's empty track with it.
+`TRACK` was `(120, 120, 128, 42)` - 42 of 255, so 84% of what read as a grey
+track was the pale pane behind it rather than the track. Thin the pane and the
+ground under the ring runs 111 to 238 as the rows pass behind it, and the track
+goes with it: measured on breakfast's held frame, the darkest track fell to 112.7
+against a value arc of 111.3. A separation of 1.3 levels where it had been 51.7,
+with only hue left to say which part of the ring was full.
+
+Raising the alpha is the obvious fix and it does not work. `(120, 120, 128)` at
+255 lands at 122.7, still 11.4 from the arc, because the track colour is itself
+nearly as dark as the green. It is `(228, 228, 236, 120)` now: measured darkest
+167.0, separation 55.7, and 66.7 levels of spread around the circumference, so it
+still moves with the wave instead of sitting on the glass as a painted band. The
+same constant is the macro bars' track and they had the same fault - the red fill
+ran into a dark grey track at the bottom of the card.
+
+The general form, because it will happen again: **anything drawn at low alpha
+over the glass is not a colour, it is a tint on whatever act one is doing.** It
+is safe only while the ground stays still. Every time `FROST` moves, every low
+alpha in `meal.py` has to be re-measured against the arc or the fill it is meant
+to be distinguishable from.
 
 **A pane needs a lit edge or it is a stain.** At 168 alpha over a frosted poster
 a card has almost the same value as the frost around it, and without a hairline

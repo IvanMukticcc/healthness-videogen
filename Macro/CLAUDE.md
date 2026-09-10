@@ -28,6 +28,14 @@ known to break.
    flat row colour. `engine/README.md` documents that wipe as a hazard for
    photographic variants. Here it is the mechanism.
 
+   Verified on the first two real posters, 10 September: inside the right
+   circles the generator moved 0.01-0.11% of pixels at a mean deviation of
+   2.35-4.71, which is jpeg ringing on the mark's own edge and not artwork, and
+   the wipe painted out 261536 px. Both caption bars came back untouched on both
+   posters too - 0.00% of pixels moved in all ten, against a historic worst
+   elsewhere of 7px of artwork into a 78px bar. Macro is the only variant using
+   both bars, so that one had never been tested against a real bowl.
+
 3. **Every number is the app's own.** `foods.py` reads
    `fitcircle/Resources/en.lproj/foods.json` and caches it as `macros.json`. A
    clip advertises the app, so a viewer who looks a food up afterwards has to see
@@ -75,8 +83,13 @@ one ever wants to, that is when it moves — the way `grab.py` and
 
 ## What is unfinished
 
-- no clip has been made from a real generated poster yet; the first was a
-  preview rendered from the base itself
+- the glass is tuned against one poster. `FROST` 0.34, `FOOT_A` 0.55 and
+  `TRACK`'s alpha were all measured on breakfast, whose rows alternate dark navy
+  and near-white. The ground under act two's cards is whatever act one is doing
+  behind them, so a topic whose base is mostly light or mostly dark moves every
+  one of those numbers at once. The ring track's separation from the value arc
+  was 51.7 levels, fell to 2.0 when the frost thinned, and is 55.7 now - measure
+  it on the next topic rather than assuming it travelled
 - `check.py` does not exist here. Longevity's is the model: spec off disk, the
   sample count printed beside the verdict, and failing toward alarm
 - act two's `--seconds` is fixed at 7.5 and its timeline scales inside that; a

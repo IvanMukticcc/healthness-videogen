@@ -63,7 +63,24 @@ FOOT_A = 0.55           # the wordmark band, over the frost rather than instead 
 # setting. Measured on the band rather than judged: see flow.md.
 INK = (0, 0, 0, 255)
 SUB = (72, 72, 78, 205)          # darker than the app's grey: it sits on glass,
-TRACK = (120, 120, 128, 42)      # not on an opaque card, and 142 disappears
+                                 # not on an opaque card, and 142 disappears
+
+# THE TRACK IS LIGHT BECAUSE THE GLASS IS THIN. At FROST 0.62 it was
+# (120, 120, 128, 42) and read as an empty ring - but 84% of what you were
+# looking at was the pale pane behind it, not the track. At 0.34 the ground
+# under the ring runs 111 to 238 and the track went with it: measured on
+# breakfast's held frame, the darkest track fell to 112.7 against a value arc of
+# 111.3. A separation of 1.3 levels where it had been 51.7, with only hue still
+# telling the empty part of the ring from the full part.
+#
+# Alpha alone cannot fix that, which is the obvious move and the wrong one:
+# (120, 120, 128) at 255 lands at 122.7, still 11.4 from the arc, because the
+# track colour is itself nearly as dark as the green. The track has to be LIGHT
+# and it has to hold. (228, 228, 236) at 120 measures darkest 167.6, separation
+# 56.3 - just past the 51.7 it had before - and keeps 66.8 levels of spread
+# around the circumference, so it still moves with the wave rather than sitting
+# on the glass as a painted band.
+TRACK = (228, 228, 236, 120)
 BLUE = (0, 122, 255)
 GREEN = (52, 199, 89)
 RED = (255, 59, 48)
