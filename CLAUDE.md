@@ -102,6 +102,14 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    against. Micro measured the exposure on 8 September: fourteen of its topics
    existed only as untracked files, and a lost `work/` would have ended them.
 
+   **A second generation of the same base is `<topic>2`, never `<topic>` again.**
+   Micro's convention, adopted by Macro on 10 September and worth stating at the
+   root because the reason is rule 5 rather than tidiness: once a clip is in an
+   `OUTPUT/<DD.MM>/` folder, the poster it was measured against may not be
+   overwritten, and a regeneration that reuses the name overwrites it. The second
+   file is carried whether or not a clip is ever made from it - an unused
+   generation still cost a generation, and it is still the only copy of itself.
+
    The one thing that is allowed is putting **base** pixels back. The row
    stripe, the wave, the guide circle and the caption bars exist on disk at
    pixel-exact geometry, and copying a region of the base over a poster that
