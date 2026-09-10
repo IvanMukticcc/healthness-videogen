@@ -119,6 +119,45 @@ def source_line(f):
     return f"USDA FoodData Central, FDC {f['fdcId']}"
 
 
+# Atwater's factors: a gram of carbohydrate or protein carries 4 kcal, a gram of
+# fat 9. Kept here as well as in macro_overlay because both need it and neither
+# should be the other's dependency for three numbers that have not moved since
+# 1900. If a third caller appears, it moves to one of them and the other imports.
+ATWATER = {"carbs": 4.0, "protein": 4.0, "fat": 9.0}
+
+
+def dominant(f):
+    """Which macro this food's calories mostly are - the caption for the ring.
+
+    The ring already shows the split; this names it, so a viewer who reads the
+    words and not the colours gets the same fact. Under half and it is MIXED,
+    because "mostly" about a 44% share is a word doing more work than the number
+    behind it.
+    """
+    e = {k: f[k] * v for k, v in ATWATER.items()}
+    total = sum(e.values())
+    if total <= 0:
+        return "MIXED", 0.0
+    key = max(e, key=e.get)
+    share = e[key] / total
+    return (f"MOSTLY {key.upper()}" if share >= 0.5 else "MIXED"), share
+
+
+def labels_for(names):
+    """The add_labels string for act one: the food, and what its calories are.
+
+    Built from the database rather than typed, for the reason every cue file in
+    this repository exists: the alternative is the same fact written twice and
+    free to disagree with itself.
+    """
+    out = []
+    for n in names:
+        f = refuse_unsourced(find(n))
+        d, _ = dominant(f)
+        out.append(f"{f['name'].upper()}|{d}")
+    return ",".join(out)
+
+
 def portion(name, grams):
     """One food at a real weight - what act two is made of."""
     f = refuse_unsourced(find(name))
@@ -165,6 +204,7 @@ def main():
     ap.add_argument("name", nargs="?", help="a food to look up")
     ap.add_argument("--meal", help="'200 Greek yogurt,80 Blueberries,20 Honey'")
     ap.add_argument("--refresh", action="store_true", help="rewrite macros.json from the app")
+    ap.add_argument("--labels", help="five food names -> the add_labels string")
     a = ap.parse_args()
 
     if a.refresh:
@@ -175,6 +215,10 @@ def main():
         usda = sum(1 for f in d["foods"] if f.get("dataSource") == "usda" and f.get("fdcId"))
         print(f"{len(d['foods'])} foods -> {os.path.basename(CACHE)}  "
               f"({usda} USDA-sourced, {len(d['foods']) - usda} not usable by a clip)")
+        return 0
+
+    if a.labels:
+        print(labels_for([n.strip() for n in a.labels.split(",") if n.strip()]))
         return 0
 
     if a.meal:
