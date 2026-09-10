@@ -71,6 +71,49 @@ command can remake (`../../CLAUDE.md` rule 9).
 
 ## What is already known to break
 
+**Act one is shown to its last movement, not to its length.** It is still
+rendered at eight seconds - the loop, the wave speed and the backdrop all depend
+on that - but the clip cuts `BEAT` after the last thing that moves. The trim
+point comes from the engine's own printed surge window (`surge +30% over 5 rows,
+5.67-6.21s`), not re-derived here.
+
+Measured on the 10.09 clip before the change: outside the ribbon the step is
+0.0006-0.008 from 6.29s to 7.96s, and inside it the finale surge peaks at 6.67
+and is back to the flow baseline by 6.92. So the clip held a finished poster for
+**1.08 seconds** before the turn began. With the tightened rhythm as well, act one
+now runs 6.33s instead of 8.0 and the whole clip is 14.42s instead of 16.08.
+
+**The rhythm starts at 0.5s.** `MACRO_TIMES` is `0.5,1.6,2.7,3.8,4.9` - 1.1
+apart, which is Micro's spacing and the one with the most clips behind it. The
+first second used to be five bare rings and a poster, which is the only second a
+vertical feed reliably gets.
+
+**The backdrop bounces instead of running out.** Trimming what is shown does not
+shorten what is rendered, so frames past the cut are still available - but act
+two is longer than what remains, so the walk ping-pongs between `--behind-lo`
+(the finale frame) and the last frame. Every frame from the finale on carries all
+fifteen badges, so bouncing there cannot reproduce the content blink. A bounce
+reverses the liquid's direction, which on an un-blurred surface would be the most
+visible artefact in animation; here it is the same 0.011 mean per step that makes
+the backdrop nearly free. `render.sh` prints the window and the reversal count,
+and warns under 24 frames.
+
+**The limiter engages here, and it had never had to anywhere else.** Micro's
+`render.sh` says its mix "peaks 0.15 dB under the 0.82 ceiling" and "the limiter
+is still not engaged" - true, and it means the ceiling has never been tested.
+With this rhythm the mix hits it: 36 samples over 0.82 before limiting. The
+limiter holds exactly (0.8200, nothing over, verified by writing the same graph
+to `pcm_f32le` with and without it - 1.0787 against 0.8200), and then **AAC
+overshoots on decode**, landing the mp4 at 1.0293 with four samples clipped.
+`CEIL` is 0.74 here for that headroom: peak 0.9199, nothing over, and the RMS is
+unchanged at -20.8 dB against the shipped -20.9.
+
+**The ring pane fades in.** It used to appear on one frame, which measured 20.8
+mean - the largest step in act two after the card landing, and the same order as
+the backdrop blink that was treated as a bug. The list pane is there from the
+start and the chips fade, so it was the only element arriving by cut. 6.3 now,
+spread over two frames.
+
 **Act two is glass, and the glass is free because act one loops.** The second
 act is not a screen that replaces the poster - it is a pane laid over it, and
 the liquid keeps moving underneath. `flowanim.py` guarantees the surface travels

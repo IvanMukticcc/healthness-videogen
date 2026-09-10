@@ -109,6 +109,15 @@ def footer(W):
     return _footer
 
 
+def _walk(i, start, lo, hi):
+    """Frame index `i` steps into a walk from `start`, bouncing within [lo, hi]."""
+    if hi <= lo:
+        return max(0, lo)
+    span = hi - lo
+    pos = (start - lo + i) % (2 * span)
+    return lo + (pos if pos <= span else 2 * span - pos)
+
+
 def behind_frames(path, width=BEHIND_W):
     """Every frame of act one, small. Decoded once, kept for the whole render."""
     import subprocess
@@ -160,7 +169,7 @@ def rounded(d, box, r, fill, outline=None, width=0):
                         outline=outline, width=int(width * S))
 
 
-def pane(d, box, r):
+def pane(d, box, r, a=1.0):
     """A sheet of glass: translucent white with a hairline lit edge.
 
     The hairline is not decoration. A pane at 168 alpha over a frosted poster
@@ -168,8 +177,10 @@ def pane(d, box, r):
     card has no boundary and the list looks like text floating on a smear. One
     pixel of brighter white is the whole difference between a pane and a stain.
     """
-    rounded(d, box, r, (255, 255, 255, CARD_A),
-            outline=(255, 255, 255, RIM_A), width=1.5)
+    if a <= 0.01:
+        return
+    rounded(d, box, r, (255, 255, 255, int(CARD_A * a)),
+            outline=(255, 255, 255, int(RIM_A * a)), width=1.5)
 
 
 def shadow(img, box, r, blur=18, alpha=15, dy=6):
@@ -331,9 +342,15 @@ def render(plan, t, W=1080, H=1920, behind=None):
     ringtop = listbox[3] + gap
     ring_h = max(560, foot_top - note_h - chip_h - gap * 3 - ringtop)
     ringbox = (pad, ringtop, LW - pad, ringtop + ring_h)
-    if t > plan.ring0 - 0.3:
-        shadow(img, ringbox, 30)
-        pane(d, ringbox, 30)
+    # The ring pane FADES IN. It used to appear on one frame, which measured as a
+    # 20.8 level step in the middle of the act - the same order as the backdrop
+    # blink that was treated as a bug, and the largest thing in act two after the
+    # card landing. The list pane is there from the start and the chips fade, so
+    # this was the only element in the frame arriving by cut.
+    ring_in = ease((t - (plan.ring0 - 0.42)) / 0.34)
+    if ring_in > 0:
+        shadow(img, ringbox, 30, alpha=int(15 * ring_in))
+        pane(d, ringbox, 30, ring_in)
         cx, cy = LW / 2, ringtop + ring_h * 0.44
         rad, wid = min(214, ring_h * 0.31), 44
         p = ease((t - plan.ring0) / plan.ring_dur)
@@ -393,6 +410,10 @@ def main():
     ap.add_argument("--cues", help="write the timeline here, for the audio to read")
     ap.add_argument("--first-frame", help="also save frame 0 here, for the flip")
     ap.add_argument("--behind", help="act one's clip, seen through the glass")
+    ap.add_argument("--behind-lo", type=int, default=0,
+                    help="the earliest act-one frame the backdrop may use. Every "
+                         "frame from the finale on carries all fifteen badges, so "
+                         "a window starting there cannot step in content")
     ap.add_argument("--behind-offset", type=int, default=0,
                     help="which act-one frame sits under act two's first. Act one "
                          "loops seamlessly, so this is (act1 frames + flip frames) "
@@ -405,20 +426,36 @@ def main():
     if a.cues:
         json.dump(plan.cues(), open(a.cues, "w"), indent=1)
 
+    n = int(round(a.seconds * a.fps))
+
     bg, bgsize = (None, None)
     if a.behind:
         bg, bgsize = behind_frames(a.behind)
-        print(f"  behind the glass: {len(bg)} frames of act one at {bgsize[0]}x{bgsize[1]}, "
-              f"starting at {a.behind_offset % len(bg)}")
+        lo, hi = a.behind_lo, len(bg) - 1
+        span = max(1, hi - lo)
+        bounces = (n + (a.behind_offset - lo)) // span
+        print(f"  behind the glass: {len(bg)} frames of act one at "
+              f"{bgsize[0]}x{bgsize[1]}, from {a.behind_offset}, bouncing in "
+              f"[{lo}, {hi}] - {span} frames, {bounces} reversals over the act")
+        if span < 24:
+            print(f"    WINDOW IS {span} FRAMES. Under about a second the backdrop "
+                  f"stops reading as the liquid carrying on and starts reading as "
+                  f"a texture wobbling. Trim act one less, or lower --behind-lo.")
 
-    n = int(round(a.seconds * a.fps))
     ff = subprocess.Popen(
         ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
          "-s", f"{a.width}x{a.height}", "-r", str(a.fps), "-i", "-",
          "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "17",
          "-pix_fmt", "yuv420p", a.out], stdin=subprocess.PIPE)
     for i in range(n):
-        # CLAMPED, NOT WRAPPED. Act one loops in LIQUID - flowanim guarantees the
+        # PING-PONGED INSIDE A WINDOW, not wrapped and no longer merely clamped.
+        #
+        # Act one is still rendered at its full length; only the part of it that
+        # is SHOWN gets trimmed, so frames past the trim are still on hand as
+        # backdrop. Even so, act two is longer than what is left, so the walk
+        # bounces between `--behind-lo` and the last frame.
+        #
+        # WHY IT MAY NOT WRAP. Act one loops in LIQUID - flowanim guarantees the
         # surface travels the ribbon exactly once - but it does not loop in
         # CONTENT: the badges accumulate over the eight seconds and never reset,
         # so frame 0 has five bare rings where frame 191 has fifteen badges, five
@@ -435,7 +472,12 @@ def main():
         # Holding the last frame instead costs a two-frame freeze of a backdrop
         # that is already moving about 0.011 mean per step under heavy blur at
         # 270 wide. The freeze is invisible; the blink was the only thing moving.
-        b = bg[min(a.behind_offset + i, len(bg) - 1)] if bg else None
+        # WHY IT MAY BOUNCE. A bounce reverses the liquid's direction, which on
+        # an un-blurred surface is the most visible artefact in animation. Here
+        # it is the same 0.011 mean per step that makes the moving backdrop
+        # nearly free in the first place - one measurement, two uses, and the
+        # second is why the reversal cannot be seen.
+        b = bg[_walk(i, a.behind_offset, a.behind_lo, len(bg) - 1)] if bg else None
         im = render(plan, i / a.fps, a.width, a.height, behind=b)
         if i == 0 and a.first_frame:
             im.save(a.first_frame)
