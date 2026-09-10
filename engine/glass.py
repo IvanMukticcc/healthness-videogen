@@ -104,6 +104,23 @@ RED = (255, 59, 48)
 ORANGE = (255, 149, 0)
 
 S = 2                                   # supersample: draw at 2x, land at 1x
+
+# HOW FAR A CARD KEEPS FROM THE EDGE, and why it is not enough to clear the feed.
+#
+# Act one has had a margin since the first prompt: nothing crosses one
+# fourteenth of the width, 110 px at 1536, because that strip is what a vertical
+# feed crops. Act two was authored at 54 px on a 1080 frame - half that - and it
+# showed the moment the clips went out: on Instagram the right-hand action rail
+# starts around 80% of the width and sits on the last chip and the ring's right
+# shoulder, and the cards read as cut rather than as full-bleed.
+#
+# 96 px is 8.9% of 1080, past act one's one-fourteenth. It is a margin, not a
+# guarantee: clearing that rail symmetrically would take about 215 px a side and
+# make every card 43% narrower, which is a worse clip than one whose outer edge
+# is occasionally overlapped. The rail is asymmetric and a card that dodged it
+# would be visibly off-centre in the frame, which is the wrong trade for the
+# nine viewers out of ten who never tap.
+SAFE_X = 96
 # The poster's own footer, pixel for pixel. Act two is drawn and act one is
 # photographed, so the one thing that must be identical between them is the
 # thing that is identical everywhere else in this repository: the wordmark. It
