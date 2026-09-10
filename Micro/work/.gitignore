@@ -1,0 +1,16 @@
+# What a render makes in here, on top of the shared list at the repository root.
+# The root already carries *_silent.mp4, *_pops.wav, *_cues.txt and *_sheet.png;
+# these two are Micro's own and are outputs in the same sense.
+#
+# The riser is impact.finale's chord at the engine's own level, written to its
+# own file since 8 September so that POP_GAIN never touches it - one command
+# remakes it. The finale instant comes out of flowanim.py the way the badge cues
+# do, and an output kept in history is an output somebody eventually edits.
+*_riser.wav
+*_finale.txt
+
+# preview_bed_*.mp4 and proba_*.mp4 are auditions - a bed or a level being
+# compared under a finished clip - and are covered by the root's *.mp4 already.
+# Named here so nobody adds them back deliberately.
+preview_*.mp4
+proba_*.mp4

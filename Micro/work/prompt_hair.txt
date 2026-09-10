@@ -1,7 +1,8 @@
 HAIR & NAILS — attach base_hair.png (the one WITH the faint circles)
 ====================================================================
 
-Generate at 1536 x 2752. Put the returned poster back as INPUT/hair_poster.png.
+Generate at 1536 x 2752. The poster comes back into work/ as hair_poster.png -
+INPUT/ holds base images and nothing else.
 
 Filled from ImageSwap.txt by make_prompt.py, so it is the template as it stands,
 not a copy of an older one.
@@ -59,25 +60,13 @@ The liquid leaves each bowl at its near rim on the right-hand side. The bowls an
 === END OF PROMPT ===
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
-
-text, letters, caption, label, title, top-down view, overhead shot, flat lay,
-bowl seen from above, ceramic bowl, opaque bowl, coloured bowl, flat
-illustration, medical diagram, textbook drawing, line art, 2D icon, changed
-liquid, redrawn wave, different wave shape, moved wave, recoloured wave, extra
-liquid, droplets, splash, spray, particles, sparkles, glow, halo, drop shadow,
-changed background colour, changed logo, watermark, white circle behind the
-bowl, circular backdrop, round plate behind the food, light disc, badge
-background, sticker background, vignette
-
-
 WHEN THE POSTER COMES BACK
 
-    .venv/bin/python check_base.py INPUT/hair_poster.png --base INPUT/base_hair.png
+    ../.venv/bin/python ../../engine/check_base.py hair_poster.png --base ../INPUT/base_hair.png
 
-    .venv/bin/python add_labels.py INPUT/hair_poster.png \
-        -l INPUT/base_hair_layout.json -o INPUT/hair_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py hair_poster.png \
+        -l base_hair_layout.json -o hair_labelled.png \
         --labels 'EGGS|STRONG STRANDS,BONE BROTH|HARDER NAILS,CASHEWS|NAIL GROWTH,SPINACH|LESS SHEDDING,SALMON|SCALP HEALTH'
 
-    ./render.sh hair INPUT/hair_labelled.png \
+    ./render.sh hair hair_labelled.png \
         'Biotin,Protein,Selenium;Collagen,Protein,Calcium;Zinc,Copper,Magnesium;Iron,Folate,C;Omega-3,D,B12'

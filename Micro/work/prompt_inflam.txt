@@ -1,0 +1,78 @@
+INFLAMMATION — attach base_inflam.png (the one WITH the faint circles)
+======================================================================
+
+Generate at 1536 x 2752. The poster comes back into work/, not into INPUT/:
+INPUT/ holds base images and nothing else (../CLAUDE.md rule 7), and the base is
+the file you just attached. grab.py takes the newest one out of Downloads.
+
+Filled from ImageSwap.txt by make_prompt.py, so it is the template as it stands,
+not a copy of an older one.
+
+Title:    'INFLAMMATION'
+Subtitle: 'FOODS THAT COOL IT'
+Palette:  rows #1B2430 / #F2EEE5, waves #E08A1E, #3A3A6E, #C9B23C, #3E7A2E, #C22A33
+
+Captions (go on afterwards, not in the prompt):
+  'TURMERIC|JOINTS,BLUEBERRIES|BRAIN,OLIVE OIL|ARTERIES,BROCCOLI|GUT,CHERRIES|MUSCLES'
+
+Badges:
+  'Curcumin,Manganese,Iron;Polyphenols,C,Fiber;E,Healthy fats,Antioxidants;K,Folate,Calcium;Potassium,Magnesium,B6'
+
+Topic, not a series part. Olive oil is a liquid, so row 3 carries its own rim clause.
+
+=== THE PROMPT ===
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the bowls or the organs, nothing at all. Text is added later, outside the generator.
+
+EACH ROW HAS TWO FAINT CIRCLES and, under each circle, A FAINT BAR. THE CIRCLES AND THE BARS ARE ALIGNMENT MARKS, NOT ARTWORK. They are not part of the design and they must not appear in the finished image in any form. Place the bowl centred in the left circle and the organ centred in the right circle, each large enough to cover its mark completely.
+
+DO NOT REPLACE A CIRCLE WITH ANYTHING ROUND. Do not paint a disc, a plate, a panel, a badge, a sticker background, a lighter patch, a halo or a vignette behind the bowl or behind the organ. Wherever the bowl or the organ does not reach, the row's flat background colour must show through unchanged, exactly the colour it is in the attached image, right up to the edge of the food and the edge of the organ.
+
+THIS APPLIES TO THE ORGAN AS MUCH AS TO THE BOWL. The organ is not an illustration inside a circle: it is cut out along its own outline, and the row colour touches that outline the whole way round. A pale round field the size of the mark, with the organ drawn inside it, is the single most common way this poster comes back wrong. If the organ will not read without a backing, draw it smaller - never on a plate.
+
+The bars are reserved for text that is added later: keep them completely clear, do not cover them with the bowl, the organ or anything else, and do not draw on them. The bowl and the organ both END ABOVE THE BAR - they do not touch it, do not hang over its top edge, and do not overlap it by even a few pixels. If a bowl or an organ is too big to sit clear of the bar, draw it smaller.
+
+ALL THE FOOD IS INSIDE THE BOWL. Nothing is spilled, scattered, resting or arranged on the row beside it: no loose pieces, no crumbs, no shards, no stray fruit, no ingredients on a surface. A piece of food outside the bowl lands on the bar the caption needs and covers the word.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster - at 1536 wide, nothing may cross x=110 on the left or x=1426 on the right. That strip is what a vertical feed crops, and the edge of a bowl or an organ drawn into it is simply lost.
+
+Every one of the five bowls is a clear, colourless glass bowl, and every one is shot from a low three-quarter angle. Not one of them is seen from above, and not one of them is ceramic, opaque, painted or coloured.
+
+Every one of the five organs is three-dimensional, like the bowls: a render with real volume and a visible near side, lit from the same direction as the bowl, turned slightly towards the viewer. Not one of them is a flat medical diagram, a textbook cross-section drawing or a line illustration, and not one of them is an object or a model - each is living tissue, part of a body.
+
+Row 1: a clear glass bowl of fresh turmeric root, peeled and sliced, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a knee joint with its cartilage, inside the living leg, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 2: a clear glass bowl of fresh blueberries, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: the brain, seen from the side, inside the head, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 3: a clear glass bowl of golden olive oil, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, filling the bowl to just under the rim. Organ: the wall of an artery, seen from inside the vessel, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 4: a clear glass bowl of fresh broccoli florets, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: the wall of the colon, its lining facing the inside of the gut, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+Row 5: a clear glass bowl of fresh dark cherries, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. Organ: a thigh muscle with its fibres, in the leg, modelled in three dimensions with real volume and the same lighting as the bowl.
+
+The liquid leaves each bowl at its near rim on the right-hand side. The bowls and organs are photorealistic and cleanly cut out, with no glow and no cast shadow. Keep every wave fully visible between its bowl and its organ.
+
+=== END OF PROMPT ===
+
+
+WHEN THE POSTER COMES BACK, every command from work/
+
+    ../.venv/bin/python ../../engine/grab.py inflam
+    ../.venv/bin/python -c "from PIL import Image; \
+        Image.open('inflam.jpeg').convert('RGB').save('inflam_poster.png')"
+
+    ../.venv/bin/python ../../engine/check_base.py inflam_poster.png \
+        --base ../INPUT/base_inflam.png
+
+    ../.venv/bin/python ../../engine/add_labels.py inflam_poster.png \
+        -l base_inflam_layout.json -o inflam_labelled.png \
+        --labels 'TURMERIC|JOINTS,BLUEBERRIES|BRAIN,OLIVE OIL|ARTERIES,BROCCOLI|GUT,CHERRIES|MUSCLES'
+
+    ./render.sh inflam inflam_labelled.png \
+        'Curcumin,Manganese,Iron;Polyphenols,C,Fiber;E,Healthy fats,Antioxidants;K,Folate,Calcium;Potassium,Magnesium,B6'

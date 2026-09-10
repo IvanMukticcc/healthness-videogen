@@ -24,6 +24,7 @@ it is current.
 import argparse
 import os
 import re
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "ImageSwap.txt")
@@ -57,14 +58,6 @@ def body(rows):
     return s
 
 
-def negative():
-    t = open(TEMPLATE).read()
-    a = t.index("NEGATIVE PROMPT")
-    a = t.index("\n\n", a) + 2
-    b = t.index("\n\n", a)
-    return t[a:b].strip()
-
-
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("topic")
@@ -80,6 +73,17 @@ def main():
     p.add_argument("--palette", default="")
     p.add_argument("--note", default="")
     p.add_argument("-o", "--out")
+    # The header of this file - title, palette, captions, badges, the note - is
+    # for the person, not for the generator. Pasted whole into it on 9 September
+    # it cost a poster: the header says "Captions: 'BUTTER BEANS|PELVIC FLOOR..."
+    # inside a prompt whose body forbids text in three places, and everything
+    # came back 33 to 74px into caption bars 78px tall. So the handover is the
+    # body alone, and this flag is what pipes it.
+    p.add_argument("--body-only", action="store_true",
+                   help="print the prompt body to stdout - what is pasted into the "
+                        "generator, without this file's header or its tail. The "
+                        "file is still written. Pipe it: make_prompt.py ... "
+                        "--body-only | ../../engine/clip.py prompt - --topic <t>")
     args = p.parse_args()
 
     rows = []
@@ -98,7 +102,9 @@ def main():
     text = f"""{head}
 {'=' * len(head)}
 
-Generate at 1536 x 2752. Put the returned poster back as INPUT/{t}_poster.png.
+Generate at 1536 x 2752. The poster comes back into work/, not into INPUT/:
+INPUT/ holds base images and nothing else (../CLAUDE.md rule 7), and the base is
+the file you just attached. grab.py takes the newest one out of Downloads.
 
 Filled from ImageSwap.txt by make_prompt.py, so it is the template as it stands,
 not a copy of an older one.
@@ -121,17 +127,15 @@ Badges:
 === END OF PROMPT ===
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
 
-{negative()}
+WHEN THE POSTER COMES BACK, every command from work/
 
+    ../.venv/bin/python ../../engine/grab.py {t}
 
-WHEN THE POSTER COMES BACK, from work/
+    ../.venv/bin/python ../../engine/check_base.py {t}_poster.jpeg \\
+        --base ../INPUT/base_{t}.png
 
-    ../.venv/bin/python ../../engine/check_base.py ../INPUT/{t}_poster.png \\
-        --base base_{t}.png
-
-    ../.venv/bin/python ../../engine/add_labels.py ../INPUT/{t}_poster.png \\
+    ../.venv/bin/python ../../engine/add_labels.py {t}_poster.jpeg \\
         -l base_{t}_layout.json -o {t}_labelled.png \\
         --labels '{args.captions}'
 
@@ -141,7 +145,15 @@ WHEN THE POSTER COMES BACK, from work/
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w") as fh:
         fh.write(text)
-    print(f"  {len(rows)} rows filled from {os.path.basename(TEMPLATE)} -> {out}")
+    note = f"  {len(rows)} rows filled from {os.path.basename(TEMPLATE)} -> {out}"
+    if args.body_only:
+        # Not read back out of `out` - rule 8 forbids that, and the point of this
+        # flag is the same point: what reaches the generator comes from the
+        # template, never from a file lying about.
+        sys.stdout.write(body(rows) + "\n")
+        print(note, file=sys.stderr)
+    else:
+        print(note)
 
 
 if __name__ == "__main__":

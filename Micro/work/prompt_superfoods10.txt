@@ -1,7 +1,9 @@
 SUPERFOODS — attach base_superfoods10.png (the one WITH the faint circles)
 ==========================================================================
 
-Generate at 1536 x 2752. Put the returned poster back as INPUT/superfoods10_poster.png.
+Generate at 1536 x 2752. The poster comes back into work/, not into INPUT/:
+INPUT/ holds base images and nothing else (../CLAUDE.md rule 7), and the base is
+the file you just attached. grab.py takes the newest one out of Downloads.
 
 Filled from ImageSwap.txt by make_prompt.py, so it is the template as it stands,
 not a copy of an older one.
@@ -57,26 +59,16 @@ The liquid leaves each bowl at its near rim on the right-hand side. The bowls an
 === END OF PROMPT ===
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
+WHEN THE POSTER COMES BACK, every command from work/
 
-text, letters, caption, label, title, top-down view, overhead shot, flat lay,
-bowl seen from above, ceramic bowl, opaque bowl, coloured bowl, flat
-illustration, medical diagram, textbook drawing, line art, 2D icon, changed
-liquid, redrawn wave, different wave shape, moved wave, recoloured wave, extra
-liquid, droplets, splash, spray, particles, sparkles, glow, halo, drop shadow,
-changed background colour, changed logo, watermark, white circle behind the
-bowl, white circle behind the organ, circular backdrop, round plate behind the
-food, round plate behind the organ, light disc, pale disc around the organ,
-organ inside a circular frame, medical illustration in a circle, roundel,
-medallion, badge background, sticker background, vignette
+    ../.venv/bin/python ../../engine/grab.py superfoods10
+    ../.venv/bin/python -c "from PIL import Image; \
+        Image.open('superfoods10.jpeg').convert('RGB').save('superfoods10_poster.png')"
 
+    ../.venv/bin/python ../../engine/check_base.py superfoods10_poster.png \
+        --base ../INPUT/base_superfoods10.png
 
-WHEN THE POSTER COMES BACK, from work/
-
-    ../.venv/bin/python ../../engine/check_base.py ../INPUT/superfoods10_poster.png \
-        --base base_superfoods10.png
-
-    ../.venv/bin/python ../../engine/add_labels.py ../INPUT/superfoods10_poster.png \
+    ../.venv/bin/python ../../engine/add_labels.py superfoods10_poster.png \
         -l base_superfoods10_layout.json -o superfoods10_labelled.png \
         --labels 'BANANA|DIAPHRAGM,CRANBERRIES|URETERS,ALMONDS|NAILS,KALE|PARATHYROID,COCONUT|SWEAT'
 

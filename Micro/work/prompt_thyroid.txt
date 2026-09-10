@@ -1,8 +1,8 @@
 THYROID RESET — attach base_thyroid.png (the one WITH the faint circles)
 ========================================================================
 
-Generate at 1536 x 2752. Put the returned poster back in this folder as
-INPUT/thyroid_poster.png.
+Generate at 1536 x 2752. The poster comes back into work/ as
+thyroid_poster.png - INPUT/ holds base images and nothing else.
 
 Second pass. The first came back with a bright disc painted over every guide
 circle and the bowl standing on it - the mark was gone and a plate had taken its
@@ -56,25 +56,15 @@ The liquid leaves each bowl at its near rim on the right-hand side. The bowls an
 === END OF PROMPT ===
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
-
-text, letters, caption, label, title, top-down view, overhead shot, flat lay,
-bowl seen from above, changed liquid, redrawn wave, different wave shape, moved
-wave, recoloured wave, extra liquid, droplets, splash, spray, particles,
-sparkles, glow, halo, drop shadow, changed background colour, changed logo,
-watermark, white circle behind the bowl, circular backdrop, round plate behind
-the food, light disc, badge background, sticker background, vignette
-
-
 WHEN THE POSTER COMES BACK
 
-    .venv/bin/python check_base.py INPUT/thyroid_poster.png --base INPUT/base_thyroid.png
+    ../.venv/bin/python ../../engine/check_base.py thyroid_poster.png --base ../INPUT/base_thyroid.png
 
-    .venv/bin/python add_labels.py INPUT/thyroid_poster.png \
-        -l INPUT/base_thyroid_layout.json -o INPUT/thyroid_labelled.png \
+    ../.venv/bin/python ../../engine/add_labels.py thyroid_poster.png \
+        -l base_thyroid_layout.json -o thyroid_labelled.png \
         --labels 'SEAWEED|THYROID FUEL,BRAZIL NUTS|HORMONE SHIELD,PUMPKIN SEEDS|ENERGY SUPPORT,EGGS|STEADY METABOLISM,GREEK YOGURT|DAILY IODINE'
 
-    ./render.sh thyroid INPUT/thyroid_labelled.png \
+    ./render.sh thyroid thyroid_labelled.png \
         'Iodine,Iron,Folate;Selenium,Magnesium,E;Zinc,Magnesium,Iron;Selenium,B12,D;Iodine,Calcium,Protein'
 
 The badges are given by hand rather than with `auto:` because the file's answer

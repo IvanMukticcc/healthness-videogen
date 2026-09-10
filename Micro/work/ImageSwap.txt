@@ -120,25 +120,35 @@ Every line of it was paid for once.
   half is saying that nothing may take its place.
 
 
-NEGATIVE PROMPT, if the tool offers a separate field:
+WHY THERE IS NO NEGATIVE PROMPT
 
-text, letters, caption, label, title, top-down view, overhead shot, flat lay,
-bowl seen from above, ceramic bowl, opaque bowl, coloured bowl, flat
-illustration, medical diagram, textbook drawing, line art, 2D icon, changed
-liquid, redrawn wave, different wave shape, moved wave, recoloured wave, extra
-liquid, droplets, splash, spray, particles, sparkles, glow, halo, drop shadow,
-changed background colour, changed logo, watermark, white circle behind the
-bowl, white circle behind the organ, circular backdrop, round plate behind the
-food, round plate behind the organ, light disc, pale disc around the organ,
-organ inside a circular frame, medical illustration in a circle, roundel,
-medallion, badge background, sticker background, vignette
+There was one until 8 September and it was removed on the user's report: the
+generator sometimes deletes what the base drew - the reserved caption bars among
+them - and the separate negative field is where that comes from. The list said
+`text, letters, caption, label, title` and `changed logo`, while the body of the
+same prompt says the title is already in the image, the logo is final and the
+bars are reserved and must be left completely clear. Handed both, a generator can
+read the negative field as permission to remove exactly those things.
+
+The body carries all of it already, and carries it in context: DO NOT CHANGE THE
+ATTACHED IMAGE, THE TITLE IS ALREADY IN THE IMAGE, ADD NO TEXT OF ANY KIND, the
+paragraph on circles and plates, the one on bowls and the one on organs. Those
+name what is there and say what may not happen to it. A bare noun in a negative
+field names the same thing with none of that, and the tool is free to decide the
+noun itself is unwanted.
+
+Do not add one back. If a generation comes back wrong, the fix is a sentence in
+the body that names the thing and its place - which is what every entry in
+flow.md's "what is already known to break" turned out to be.
 
 
 AFTER GENERATING
 
-Check the wave before animating:
+Check the wave before animating, from work/ - the tools are the engine's and
+are called by path, never copied in (../CLAUDE.md rule 1):
 
-    .venv/bin/python check_base.py new_poster.png --base base_<topic>.png
+    ../.venv/bin/python ../../engine/check_base.py <topic>_poster.png \
+        --base ../INPUT/base_<topic>.png
 
 It reports how far each wave has drifted from the base layer. Under about two
 pixels the authored mask still fits. Above that, regenerate rather than animate:

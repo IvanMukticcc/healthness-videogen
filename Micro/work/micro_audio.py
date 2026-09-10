@@ -64,6 +64,18 @@ def main():
     p.add_argument("--stagger", type=float, default=0.09)
     p.add_argument("--seconds", type=float, default=8.0)
     p.add_argument("--root", type=float, default=ROOT, help="row 1's note, in Hz")
+    p.add_argument("--finale-file", help="the file flowanim.py --finale-cue wrote: one "
+                                         "instant, and the riser is laid on it")
+    p.add_argument("--finale-gain", type=float, default=None,
+                   help="override impact.finale's own level. Nothing is passed unless "
+                        "this is given: the engine's default is the level the finale "
+                        "was auditioned and chosen at, and two variants tuning the "
+                        "same shared sound separately is how it ends up at two levels")
+    p.add_argument("--finale-out", help="where the riser is written. It gets its own "
+                                        "wav rather than being summed into the pops, "
+                                        "because the caller applies a badge gain to "
+                                        "that file and the riser is not a badge. "
+                                        "Defaults to <out>_riser.wav")
     p.add_argument("--gain", type=float, default=0.72)
     p.add_argument("-o", "--out", required=True)
     args = p.parse_args()
@@ -91,8 +103,38 @@ def main():
                 per_row.append((r, j))
 
     x = impact.build(cues, args.seconds, per_row, root=args.root, gain=args.gain)
+
+    # The riser is not one of these cues, and never was: they are regrouped into
+    # rows by the gaps between them, so a finale appended to the list would open a
+    # sixth row - SCALE[5 % 5] is the root again - and the cadence that answers the
+    # count would be sounded as one more badge landing. Since it is not a badge it
+    # does not travel with them either; see below.
+    pk = np.abs(x).max()
+    if pk > 0.97:
+        x *= 0.97 / pk
     write_wav(args.out, x)
-    print(f"  {len(cues)} hits over {args.seconds}s at root {args.root:.0f} Hz -> {args.out}")
+
+    # The riser does not go into this wav. It used to, and the caller then applied
+    # POP_GAIN to the file - 0.85 here, 0.62 in Exercise, 0.80 in Biohacks - so one
+    # number in impact.py arrived at three different levels, none of them the level
+    # the user picked the sound at. A badge gain belongs to badges. It goes out on
+    # its own so the mixer can take it at unity, which is the contract impact.py
+    # states: the level it returns is the level it has to arrive at.
+    fin = None
+    if args.finale_file and os.path.exists(args.finale_file):
+        fin = float(open(args.finale_file).read().strip())
+        # No gain unless asked for. This file used to force one, tuned against the
+        # chord impact.finale made before 176c632; the sound is an FM bell now and
+        # the old number lands 8.1 dB over the level it was chosen at. Level is a
+        # property of a sound the variants share, so it is the engine's to hold.
+        kw = {} if args.finale_gain is None else {"gain": args.finale_gain}
+        r = impact.finale(fin, args.seconds, root=args.root, **kw)
+        fout = args.finale_out or os.path.splitext(args.out)[0] + "_riser.wav"
+        write_wav(fout, r)
+
+    tail = f" + a riser at {fin:.2f}s -> {fout}" if fin is not None else ""
+    print(f"  {len(cues)} hits over {args.seconds}s at root {args.root:.0f} Hz"
+          f" -> {args.out}{tail}")
 
 
 if __name__ == "__main__":

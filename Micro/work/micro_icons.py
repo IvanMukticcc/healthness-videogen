@@ -2,7 +2,7 @@
 """
 micro_icons.py - the micronutrient badges, all cut from one sphere.
 
-The nine vitamin balls in ../ASSETS/Vitamini were generated one at a time, so no
+The nine vitamin balls in icon-sources/ were generated one at a time, so no
 two share a glyph size and vitamin C is not even a sphere - it came back as a
 shield with the checkerboard still baked into its fringe. A row of badges that
 disagree about how big a letter is reads as clip art. So the sphere is authored
@@ -43,8 +43,14 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from scipy import ndimage
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC_BALLS = os.path.join(HERE, "..", "ASSETS", "Vitamini")   # read only, never written
-OUT = os.path.join(HERE, "ASSETS", "Micro")
+# The nine generated vitamin balls, and the badges cut from them. Both are in
+# this folder: the three-folder move on 7 September brought the sources in as
+# icon-sources/ and the badges as icons/, and these two paths were left pointing
+# at where they used to be. Nothing noticed, because a shipped clip never calls
+# this file - micro_overlay.py reads icons/ and the badges were already in it.
+# So --all and --one were writing a catalogue into a directory nobody reads.
+SRC_BALLS = os.path.join(HERE, "icon-sources")               # read only, never written
+OUT = os.path.join(HERE, "icons")                            # what micro_overlay.py reads
 TEMPLATE = os.path.join(OUT, "_ball_orange.png")
 FONT = "/Users/ivanmuktic/Library/Fonts/SF-Pro-Display-Heavy.otf"
 
@@ -346,7 +352,7 @@ def main():
                    help="'Label:family' where family is v, m or o")
     p.add_argument("--rebuild", action="store_true", help="re-derive the sphere first")
     p.add_argument("--size", type=int, default=512)
-    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "work", "micro_sheet.png"))
+    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "micro_sheet.png"))
     args = p.parse_args()
 
     os.makedirs(OUT, exist_ok=True)

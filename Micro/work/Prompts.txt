@@ -5,6 +5,16 @@ Each one is the template from ImageSwap.txt with the five rows filled in. The
 opening paragraph is the part that matters and is identical every time: it tells
 the model the waves are finished. Do not shorten it.
 
+THIS FILE STOPS AT ENTRY 22, BONE STRENGTH, LABELLED 8 SEPTEMBER AT 12:42. Nine
+clips shipped after it and none was written down here: ALL-DAY ENERGY and parts
+13 to 21. Do not read it as the record of what the series has used - it is a
+record of how prompts were written, and it is nine clips out of date.
+
+What has been used is in SERIES.md: every food, every organ, every palette,
+including the nine missing from here. It was reconstructed on 9 September by
+reading the captions back out of twenty-three finished posters, which is what
+choosing a topic costs when this file is trusted for something it no longer says.
+
 
 -------------------------------------------------------------------------------
 1. EYE HEALTH
@@ -358,7 +368,7 @@ happen at all - so the badges carry the content rather than decorating it.
            the darks so far were olive, navy, teal, charcoal and warm charcoal
            waves #2ED9C3, #E8552F, #FFC93C, #7B2FBF, #FF6FA5
 
-  The full prompt, ready to paste, is INPUT/prompt_thyroid.txt.
+  The full prompt, ready to paste, is work/prompt_thyroid.txt.
 
 
 -------------------------------------------------------------------------------
@@ -402,7 +412,7 @@ clearest case in the series of a body part that is nothing but its inputs.
 
   Biotin was not in the badge catalogue and was built for this topic, with B7.
 
-  Rebuild the prompt with make_prompt.py rather than editing INPUT/prompt_hair.txt,
+  Rebuild the prompt with make_prompt.py rather than editing work/prompt_hair.txt,
   so it picks up whatever ImageSwap.txt says today.
 
 
@@ -667,3 +677,229 @@ has to avoid.
   Spent by the series after this part, and never repeated:
     foods   + milk, dark chocolate, lemons, figs, shrimp  (50 in all)
     organs  + growth plate, capillaries, salivary glands, uterus, tongue  (50)
+
+
+-------------------------------------------------------------------------------
+18. SUPERFOODS FOR VITAL ORGANS, part 12        (attach ../INPUT/base_superfoods12.png)
+-------------------------------------------------------------------------------
+
+  Title:    'SUPERFOODS'
+  Subtitle: 'FOR VITAL ORGANS'
+
+  Row 1:  peeled garlic cloves          wave: garlic ivory #EDE3CB
+          Organ: the tonsils at the back of an open mouth
+  Row 2:  ripe strawberries             wave: strawberry red #D8273A
+          Organ: a ligament inside a knee joint
+  Row 3:  ripe mango chunks             wave: mango orange #F0A32B
+          Organ: the retina at the back of the eye
+  Row 4:  fresh sage leaves             wave: sage green #9BB07A
+          Organ: the vocal cords inside the voice box
+  Row 5:  natto                         wave: natto ochre #B8933F
+          Organ: a heart valve opening
+
+  Captions: 'GARLIC|TONSILS,STRAWBERRY|LIGAMENTS,MANGO|RETINA,SAGE|VOCAL CORDS,
+            NATTO|VALVES' - 50px, set by 'VOCAL CORDS'
+
+  Badges:   'Allicin,Manganese,B6;C,Polyphenols,Folate;Beta-carotene,E,Fiber;
+             K,Iron,Calcium;Probiotics,Protein,Magnesium' - fifteen, none repeated
+
+  Palette: rows #22271C / #F3EEE2 - olive-black, the eleventh dark, far darker and
+           greyer than the forest green of parts 2 and 4. Sage went on a light row
+           on purpose: a green wave on a green row is the one pairing the format
+           cannot carry
+           waves #EDE3CB, #D8273A, #F0A32B, #9BB07A, #B8933F
+
+  **The tightened template held.** Artwork on the ten reserved caption bars:
+  0.2% mean, 1.7% worst, against part 11's 25% and 34%. Nothing is spilled outside
+  a bowl. The safe area improved but is not solved - artwork reaches x 78 and
+  x 1432 against 110 and 1426, where part 11 reached 51 and 1497. Giving the
+  bound in pixels bought most of it; the bowls still lean a little into the left
+  strip.
+
+  Three organs asked for by their container came back as tissue: tonsils inside
+  an open mouth, a ligament inside a knee, vocal cords inside the voice box.
+  That rule has now held four times running.
+
+  The poster was pulled out of Downloads with `Exercise/work/grab.py`, which has
+  nothing Exercise-specific in it - newest 1536x2752 image, renamed to
+  <topic>.jpeg. **It belongs in `engine/`**, and moving it there is the root's
+  call, not this folder's: see ../CLAUDE.md rule 3. Until then Micro calls it
+  across the variant boundary, which is the coupling the engine exists to avoid.
+
+  Spent by the series after this part, and never repeated:
+    foods   + garlic, strawberries, mango, sage, natto  (55 in all)
+    organs  + tonsils, ligaments, retina, vocal cords, heart valves  (55 in all)
+
+
+-------------------------------------------------------------------------------
+19. IMMUNE DEFENCE        (attach ../INPUT/base_immune.png)
+-------------------------------------------------------------------------------
+
+First topic outside the SUPERFOODS series since HAIR & NAILS. A topic may reuse a
+food the series has spent - the no-repeat rule is the series', not the format's -
+and four of these five have run in it.
+
+  Title:    'IMMUNE DEFENCE'
+  Subtitle: 'FOODS THAT ARM IT'
+
+  Row 1:  red bell peppers              wave: pepper red #E23B2A
+          Organ: a white blood cell reaching around a microbe
+  Row 2:  shiitake mushrooms            wave: mushroom brown #7A5A3C
+          Organ: a lymph node with its vessels
+  Row 3:  thick greek yoghurt           wave: yoghurt white #F4F0E6
+          Organ: the villi of the small intestine
+  Row 4:  loose green tea leaves        wave: matcha green #6E9B3A
+          Organ: the spleen under the left ribs
+  Row 5:  fresh ginger root             wave: ginger amber #E8A33C
+          Organ: the lining of the throat
+
+  Captions: 'RED PEPPERS|WHITE CELLS,MUSHROOMS|LYMPH NODES,YOGHURT|GUT LINING,
+            GREEN TEA|SPLEEN,GINGER|THROAT' - 50px, set by 'LYMPH NODES'
+
+  Badges:   'C,Beta-carotene,B6;D,Selenium,B3;Probiotics,Protein,Calcium;
+             Polyphenols,Manganese,K;Potassium,Magnesium,Antioxidants'
+
+  Palette: rows #231C2E / #F0EDE6 - violet charcoal. Yoghurt is a liquid, so row
+           3 carries its own rim clause
+           waves #E23B2A, #7A5A3C, #F4F0E6, #6E9B3A, #E8A33C
+
+  Poster: caption bars 0.0% covered, artwork x 92-1408 against a safe area of
+  110-1426 - the cleanest poster the tightened template has produced.
+
+  **The hit got louder here**: `POP_GAIN` 0.62 -> 0.85, on the user's ask, and
+  the measurement is in README.md. The finished cut is -17.6 LUFS at -1.2 dBTP
+  where the last few were -18.0 at -1.3; the bed does not move between the hits
+  and the limiter is still not engaged. This is the first clip at the new gain,
+  so the earlier ones are quieter by 1.8 dB in the hits and stay that way.
+
+
+-------------------------------------------------------------------------------
+20. INFLAMMATION        (attach ../INPUT/base_inflam.png)
+-------------------------------------------------------------------------------
+
+  Title:    'INFLAMMATION'
+  Subtitle: 'FOODS THAT COOL IT'
+
+  Row 1:  fresh turmeric root, sliced   wave: turmeric gold #E08A1E
+          Organ: a knee joint with its cartilage
+  Row 2:  fresh blueberries             wave: blueberry indigo #3A3A6E
+          Organ: the brain, seen from the side
+  Row 3:  golden olive oil              wave: olive gold #C9B23C
+          Organ: the wall of an artery from inside
+  Row 4:  broccoli florets              wave: broccoli green #3E7A2E
+          Organ: the wall of the colon
+  Row 5:  fresh dark cherries           wave: cherry red #C22A33
+          Organ: a thigh muscle with its fibres
+
+  Captions: 'TURMERIC|JOINTS,BLUEBERRIES|BRAIN,OLIVE OIL|ARTERIES,BROCCOLI|GUT,
+            CHERRIES|MUSCLES' - 50px, set by 'BLUEBERRIES'
+
+  Badges:   'Curcumin,Manganese,Iron;Polyphenols,C,Fiber;E,Healthy fats,
+             Antioxidants;K,Folate,Calcium;Potassium,Magnesium,B6'
+
+  Palette: rows #1B2430 / #F2EEE5 - charcoal blue. Olive oil is a liquid, so row 3
+           carries its own rim clause
+           waves #E08A1E, #3A3A6E, #C9B23C, #3E7A2E, #C22A33
+
+  Five different places in the body rather than five views of one organ, which is
+  what makes a topic poster read as a list instead of a repeat: knee, brain,
+  artery, colon, muscle. EYE HEALTH is the counter-example - five eyes.
+
+  Poster: caption bars 0.0%, artwork x 105-1399 against a safe area of 110-1426,
+  the tightest poster yet. Second clip at POP_GAIN 0.85: -17.6 LUFS, -1.2 dBTP,
+  audit 1px.
+
+  `grab.py` moved into `engine/` between this topic and IMMUNE DEFENCE, which is
+  where it belonged - the call was made from the root, not from here.
+
+
+-------------------------------------------------------------------------------
+21. DEEP SLEEP        (attach ../INPUT/base_sleep.png)
+-------------------------------------------------------------------------------
+
+  Title:    'DEEP SLEEP'
+  Subtitle: 'FOODS FOR A LONGER NIGHT'
+
+  Row 1:  dried chamomile flowers       wave: chamomile straw #EFD98A
+          Organ: a nerve running through living tissue
+  Row 2:  fresh tart cherries           wave: tart cherry #8E1626
+          Organ: the pineal gland in the middle of the brain
+  Row 3:  halved kiwi fruit             wave: kiwi green #9BC53C
+          Organ: the hypothalamus at the base of the brain
+  Row 4:  shelled walnut halves         wave: walnut brown #6E4B2E
+          Organ: the lining of the gut, where serotonin is made
+  Row 5:  fresh whole milk              wave: milk white #F2EFE6
+          Organ: a relaxed calf muscle
+
+  Captions: 'CHAMOMILE|CALM,CHERRIES|MELATONIN,KIWI|BODY CLOCK,WALNUTS|SEROTONIN,
+            MILK|MUSCLE CALM' - 48px, set by 'MUSCLE CALM'
+
+  Badges:   'Antioxidants,Magnesium,Polyphenols;C,Potassium,Manganese;K,Folate,
+             Fiber;Omega-3,Copper,B6;Calcium,D,B12' - fifteen, none repeated
+
+  Palette: rows #0F1633 / #F1EDE2 - midnight indigo, the darkest and bluest
+           background any poster here has used, because the topic is the night
+           waves #EFD98A, #8E1626, #9BC53C, #6E4B2E, #F2EFE6
+
+  Chamomile is not in `nutrients.json` and did not need to be: the third argument
+  to render.sh takes the badges directly, and `auto:` is the convenience, not the
+  contract. A food the file has never heard of costs nothing as long as the
+  badges are named by hand.
+
+  Milk is a liquid, so row 5 carries its own rim clause.
+
+  Rows 2 and 3 are both the brain - the pineal gland and the hypothalamus - which
+  is the one thing this poster does that INFLAMMATION deliberately avoided. It is
+  honest here (melatonin and the body clock are both in there) but it is the
+  limit: a third head would have made it a brain poster.
+
+  Poster: caption bars 0.0%, artwork x 105-1405. Audit 7px, the highest of the
+  recent clips and still nothing that reads on screen.
+
+
+-------------------------------------------------------------------------------
+22. BONE STRENGTH        (attach ../INPUT/base_bones2.png)
+-------------------------------------------------------------------------------
+
+  Title:    'BONE STRENGTH'
+  Subtitle: 'FOODS THAT KEEP IT DENSE'
+
+  Row 1:  white sesame seeds            wave: sesame cream #E8D9B0
+          Organ: the thigh bone's head in the hip socket
+  Row 2:  dried prunes                  wave: prune #5B2F3A
+          Organ: a vertebra in the lower spine
+  Row 3:  peeled orange segments        wave: orange #F58A1F
+          Organ: the collagen mesh inside living bone
+  Row 4:  dark green seaweed            wave: seaweed green #2E5D4A
+          Organ: the lower jaw holding the roots of the teeth
+  Row 5:  small whole sardines          wave: sardine silver #A9B7BF
+          Organ: the small bones of the wrist
+
+  Captions: 'SESAME|CALCIUM,PRUNES|BONE LOSS,ORANGES|COLLAGEN,SEAWEED|MINERALS,
+            SARDINES|DENSITY' - 60px, set by 'BONE LOSS'. The largest type any
+            poster here has carried; short captions are what buy it
+
+  Badges:   'Calcium,Copper,Magnesium;Fiber,K,Potassium;C,Folate,B1;Iodine,Iron,
+             Manganese;Omega-3,D,Selenium' - fifteen, none repeated
+
+  Palette: rows #33261D / #F3EDE0 - umber, warmer and lighter than part 9's
+           espresso; the five foods are cream, plum, orange, green and silver
+           waves #E8D9B0, #5B2F3A, #F58A1F, #2E5D4A, #A9B7BF
+
+  Not five rows of calcium: prunes are there for the polyphenols that slow bone
+  loss and oranges for the collagen the mineral is laid on, which is what keeps
+  the right-hand column from reading as one word five times.
+
+  A sardine wave is the first silver liquid in this folder and it works - a fish
+  is not a colour, so the wave takes the sheen instead.
+
+  Poster: caption bars 0.0%, artwork x 76-1450 against a safe area of 110-1426 -
+  the bowls and the wrist lean into the strip again, 34px on the left and 24 on
+  the right.
+
+  `audit.py` reported 16px, above the single digits the loop asks for, so it was
+  looked at rather than shipped on the number: it is a **1px wide, 16px tall line
+  at x 997, y 341-363 in poster space** - inside the title block, above row 1.
+  That is the encoder quantising the title's antialiased edge between two frames,
+  not artwork moving. Worth knowing that the audit counts it: a tall thin line of
+  single pixels adds up faster than it looks.
