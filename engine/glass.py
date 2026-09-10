@@ -62,6 +62,12 @@ CARD = (255, 255, 255)
 # 1080x1920 in memory is 1.2 GB against 74 MB at 270.
 BEHIND_W = 270
 BLUR = 7.5              # at BEHIND_W; ~30 at 1080
+# TUNED AGAINST ONE PALETTE, AND IT SHOWS. 0.34 was measured on Macro's
+# breakfast base, whose rows alternate dark navy and near-white; navy goes to
+# grey under the whitening and takes its white title with it. Micro's pressure
+# base is green and white, a mid-tone that survives, so at 0.34 act one's title
+# reads straight through and collides with act two's, which sits in the same
+# place. Pass `amount=` per variant and check it with `title_survival()`.
 FROST = 0.34            # how far the blurred poster is pulled towards white
 SAT = 1.75              # put back the colour the whitening takes out
 CARD_A = 186            # the panes themselves, out of 255
@@ -143,16 +149,44 @@ def behind_frames(path, width=BEHIND_W):
             for i in range(n)], (width, h)
 
 
-def frost(im, size):
+def title_survival(base_png, size=(1080, 1920), **kw):
+    """How much of a poster's own title still reads through the glass.
+
+    The criterion, and it is comparative rather than absolute: **the title band
+    must not be livelier than an ordinary band of the same poster.** If it is,
+    act one's heading is competing with act two's, which sits in the same place.
+
+    Measured on the two posters that set the range:
+
+        Macro breakfast, white on navy   title 42.6   ordinary band 81.2   passes
+        Micro pressure,  white on green  title 73.6   ordinary band 14.5   fails
+
+    Navy goes to grey under the whitening and takes its white type with it. A
+    mid-tone green does not, so the type stays. Nothing is wrong with either
+    poster; `FROST` was tuned against the first one.
+    """
+    import numpy as np
+    im = Image.open(base_png).convert("RGB")
+    small = im.resize((BEHIND_W, round(BEHIND_W * im.height / im.width)), Image.LANCZOS)
+    f = np.asarray(frost(small, size, **kw)).astype(float)
+    lum = 0.2126 * f[..., 0] + 0.7152 * f[..., 1] + 0.0722 * f[..., 2]
+    h = size[1]
+    title = lum[int(h * 0.073):int(h * 0.130), :]
+    other = lum[int(h * 0.156):int(h * 0.188), :]
+    return float(title.max() - title.min()), float(other.max() - other.min())
+
+
+def frost(im, size, amount=None, sat=None, blur=None):
     """One act-one frame turned into the pane you read through.
 
     Blur, then pull towards white, then put the saturation back. The order
     matters: whitening a blurred frame washes the liquid out to a grey ghost,
     and the colour is the only thing telling you what is behind the glass.
     """
-    b = im.filter(ImageFilter.GaussianBlur(BLUR))
-    b = Image.blend(b, Image.new("RGB", b.size, (255, 255, 255)), FROST)
-    b = ImageEnhance.Color(b).enhance(SAT)
+    b = im.filter(ImageFilter.GaussianBlur(BLUR if blur is None else blur))
+    b = Image.blend(b, Image.new("RGB", b.size, (255, 255, 255)),
+                    FROST if amount is None else amount)
+    b = ImageEnhance.Color(b).enhance(SAT if sat is None else sat)
     return b.resize(size, Image.LANCZOS)
 
 

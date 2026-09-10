@@ -476,6 +476,14 @@ there at the time. It had not - the probe is easy and worth doing before
 accepting the story: dirty another agent's file and the pathspec-free porcelain
 shows it immediately, so a check that printed nothing had nothing to print.
 
+**And do not `git stash` to get a before-and-after.** It is the obvious way to
+measure your own change against the previous state, and in a shared checkout it
+takes every other session's uncommitted work with it for as long as the stash is
+out. This session did it on 10 September with thirty uncommitted paths in the
+tree, two of them belonging to agents that were actively writing; the pop
+restored cleanly and that was luck rather than method. Copy the file, or read the
+old version out of git into a scratch path, and leave the tree alone.
+
 **Both of those are worth carrying and only one of them is a rule.** Run the
 whole-tree check, because the narrow one really would miss a peer's work. And
 know that a clean answer in a shared tree has a timestamp on it: it was true when
