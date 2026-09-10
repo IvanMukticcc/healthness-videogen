@@ -66,8 +66,20 @@ def project(W, H, angle, dolly=2.6, scale=1.0):
     return out
 
 
-def frame(face_a, face_b, angle, dolly=2.6, lift=0.06, backdrop=BACKDROP):
-    """One frame of the turn. Under 90 degrees shows A, over it shows B."""
+def frame(face_a, face_b, angle, dolly=2.6, lift=0.06, backdrop=BACKDROP,
+          back_alpha=0.90, rim=True):
+    """One frame of the turn. Under 90 degrees shows A, over it shows B.
+
+    `backdrop` is a colour or an image. Given act one's live frames it is the
+    scene the card is turning IN rather than a void it is turning over, and the
+    card can then be glass: the back face goes down at `back_alpha` so the
+    poster carries on moving through the pane.
+
+    The front face stays opaque on purpose. It IS act one's last frame, so at
+    zero degrees it lies exactly on the backdrop and the card is invisible -
+    then it shears away from the live scene underneath as the turn starts, which
+    reads as the surface peeling off rather than a new object appearing.
+    """
     W, H = face_a.size
     front = angle < 90.0
     src = face_a if front else face_b.transpose(Image.FLIP_LEFT_RIGHT)
@@ -77,7 +89,8 @@ def frame(face_a, face_b, angle, dolly=2.6, lift=0.06, backdrop=BACKDROP):
     scale = 1.0 - lift * k
 
     quad = project(W, H, angle, dolly, scale)
-    out = Image.new("RGB", (W, H), backdrop)
+    out = (backdrop.copy() if isinstance(backdrop, Image.Image)
+           else Image.new("RGB", (W, H), backdrop))
     corners = [(0, 0), (W, 0), (W, H), (0, H)]
 
     # An edge-on card has no area to draw into; a degenerate homography is a
@@ -91,21 +104,32 @@ def frame(face_a, face_b, angle, dolly=2.6, lift=0.06, backdrop=BACKDROP):
     # the mask is the quad, not the frame: outside it the backdrop shows through
     mask = Image.new("L", (W, H), 0)
     ImageDraw.Draw(mask).polygon(quad, fill=255)
+    a = 1.0 if front else back_alpha
+    if a < 0.999:
+        mask = Image.eval(mask, lambda v: int(v * a))
 
     # light falls off as the face turns away, and comes back as it faces us
     shade = 0.36 + 0.64 * abs(math.cos(math.radians(angle)))
     if shade < 0.999:
         warped = Image.eval(warped, lambda v: int(v * shade))
     out.paste(warped, (0, 0), mask)
+    if rim:
+        # A pane of glass is only visible at its edge. Without this the card
+        # reads as a printed picture being rotated; with it, it is a sheet.
+        edge = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(edge).polygon(quad, outline=int(150 * math.sin(
+            math.radians(angle)) ** 0.5), width=max(2, W // 360))
+        out.paste(Image.new("RGB", (W, H), (255, 255, 255)), (0, 0), edge)
     return out
 
 
-def turn(face_a, face_b, n, dolly=2.6, lift=0.06):
+def turn(face_a, face_b, n, dolly=2.6, lift=0.06, backdrops=None, back_alpha=0.90):
     """The whole turn as `n` frames, ease-in-out so it starts and ends at rest."""
     for i in range(n):
         u = (i + 1) / (n + 1)
         e = 0.5 - 0.5 * math.cos(math.pi * u)          # ease in and out
-        yield frame(face_a, face_b, 180.0 * e, dolly, lift)
+        bd = backdrops[i % len(backdrops)] if backdrops else BACKDROP
+        yield frame(face_a, face_b, 180.0 * e, dolly, lift, bd, back_alpha)
 
 
 def main():
@@ -117,12 +141,21 @@ def main():
     ap.add_argument("--dolly", type=float, default=2.6)
     ap.add_argument("--lift", type=float, default=0.06)
     ap.add_argument("--start", type=int, default=0, help="first frame number")
+    ap.add_argument("--backdrop-dir", help="act one's frames, in order, to turn in front of")
+    ap.add_argument("--back-alpha", type=float, default=0.90)
     args = ap.parse_args()
 
     A = Image.open(args.a).convert("RGB")
     B = Image.open(args.b).convert("RGB").resize(A.size, Image.LANCZOS)
+    bds = None
+    if args.backdrop_dir:
+        names = sorted(os.listdir(args.backdrop_dir))
+        bds = [Image.open(os.path.join(args.backdrop_dir, n)).convert("RGB").resize(A.size)
+               for n in names if n.lower().endswith(".png")]
+        print(f"  turning in front of {len(bds)} live frames of act one")
     os.makedirs(args.out_dir, exist_ok=True)
-    for i, im in enumerate(turn(A, B, args.frames, args.dolly, args.lift)):
+    for i, im in enumerate(turn(A, B, args.frames, args.dolly, args.lift,
+                                bds, args.back_alpha)):
         im.save(os.path.join(args.out_dir, f"f{args.start + i:05d}.png"))
     print(f"  {args.frames} frames of turn -> {args.out_dir}")
 

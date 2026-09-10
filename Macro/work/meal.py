@@ -28,7 +28,7 @@ fifth.
 """
 import os
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONTS = "/Library/Fonts"
@@ -39,9 +39,25 @@ REF_NOTE = "reference intake, EU 1169/2011"
 
 BG = (242, 242, 247)
 CARD = (255, 255, 255)
-INK = (0, 0, 0)
-SUB = (142, 142, 147)
-TRACK = (229, 229, 234)
+
+# GLASS. Act two is not a screen that replaces the poster - it is a pane laid
+# over it, and the liquid keeps moving underneath. Act one is a seamless loop,
+# so continuing it behind the glass costs one decode and no extra render: frame
+# (act1_frames + flip_frames + i) mod act1_frames is exactly where the wave
+# would have been if it had never stopped.
+#
+# The backdrop is decoded at BEHIND_W and blown back up. It is about to be
+# blurred past any detail that width could have carried, and 192 frames of
+# 1080x1920 in memory is 1.2 GB against 74 MB at 270.
+BEHIND_W = 270
+BLUR = 7.5              # at BEHIND_W; ~30 at 1080
+FROST = 0.62            # how far the blurred poster is pulled towards white
+SAT = 1.75              # put back the colour the whitening takes out
+CARD_A = 168            # the panes themselves, out of 255
+RIM_A = 120             # and the hairline that makes a pane an edge
+INK = (0, 0, 0, 255)
+SUB = (72, 72, 78, 205)          # darker than the app's grey: it sits on glass,
+TRACK = (120, 120, 128, 42)      # not on an opaque card, and 142 disappears
 BLUE = (0, 122, 255)
 GREEN = (52, 199, 89)
 RED = (255, 59, 48)
@@ -70,6 +86,35 @@ def footer(W):
     return _footer
 
 
+def behind_frames(path, width=BEHIND_W):
+    """Every frame of act one, small. Decoded once, kept for the whole render."""
+    import subprocess
+    pr = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                         "-show_entries", "stream=width,height", "-of", "csv=p=0", path],
+                        capture_output=True, text=True).stdout.strip().split(",")
+    sw, sh = int(pr[0]), int(pr[1])
+    h = round(width * sh / sw / 2) * 2
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-vf", f"scale={width}:{h}",
+                          "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                         capture_output=True).stdout
+    n = len(raw) // (width * h * 3)
+    return [Image.frombytes("RGB", (width, h), raw[i * width * h * 3:(i + 1) * width * h * 3])
+            for i in range(n)], (width, h)
+
+
+def frost(im, size):
+    """One act-one frame turned into the pane you read through.
+
+    Blur, then pull towards white, then put the saturation back. The order
+    matters: whitening a blurred frame washes the liquid out to a grey ghost,
+    and the colour is the only thing telling you what is behind the glass.
+    """
+    b = im.filter(ImageFilter.GaussianBlur(BLUR))
+    b = Image.blend(b, Image.new("RGB", b.size, (255, 255, 255)), FROST)
+    b = ImageEnhance.Color(b).enhance(SAT)
+    return b.resize(size, Image.LANCZOS)
+
+
 def font(weight, size):
     return ImageFont.truetype(f"{FONTS}/SF-Pro-Display-{weight}.otf", int(size * S))
 
@@ -87,18 +132,31 @@ def overshoot(x, amount=0.12):
     return e + amount * (1 - e) * (x ** 0.5) * (1 - x) * 4
 
 
-def rounded(d, box, r, fill):
-    d.rounded_rectangle([c * S for c in box], radius=r * S, fill=fill)
+def rounded(d, box, r, fill, outline=None, width=0):
+    d.rounded_rectangle([c * S for c in box], radius=r * S, fill=fill,
+                        outline=outline, width=int(width * S))
 
 
-def shadow(img, box, r, blur=18, alpha=18, dy=6):
-    """The app's cards sit on a very soft shadow; without it they float."""
+def pane(d, box, r):
+    """A sheet of glass: translucent white with a hairline lit edge.
+
+    The hairline is not decoration. A pane at 168 alpha over a frosted poster
+    has almost the same value as the frost around it, so without an edge the
+    card has no boundary and the list looks like text floating on a smear. One
+    pixel of brighter white is the whole difference between a pane and a stain.
+    """
+    rounded(d, box, r, (255, 255, 255, CARD_A),
+            outline=(255, 255, 255, RIM_A), width=1.5)
+
+
+def shadow(img, box, r, blur=18, alpha=15, dy=6):
+    """A soft drop under each pane, painted into the RGBA layer it sits on."""
     lay = Image.new("L", img.size, 0)
     ImageDraw.Draw(lay).rounded_rectangle(
         [(box[0]) * S, (box[1] + dy) * S, (box[2]) * S, (box[3] + dy) * S],
         radius=r * S, fill=alpha)
     lay = lay.filter(ImageFilter.GaussianBlur(blur * S / 3))
-    img.paste(Image.new("RGB", img.size, (0, 0, 0)), (0, 0), lay)
+    img.paste(Image.new("RGBA", img.size, (0, 0, 0, 255)), (0, 0), lay)
 
 
 def text(d, xy, s, f, fill, anchor="la"):
@@ -162,9 +220,12 @@ class Plan:
 LOGICAL = (1080, 1920)
 
 
-def render(plan, t, W=1080, H=1920):
+def render(plan, t, W=1080, H=1920, behind=None):
+    """One frame. `behind` is an act-one frame; without one the pane is opaque grey."""
     LW, LH = LOGICAL
-    img = Image.new("RGB", (LW * S, LH * S), BG)
+    size = (LW * S, LH * S)
+    base = frost(behind, size) if behind is not None else Image.new("RGB", size, BG)
+    img = Image.new("RGBA", size, (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
     f_title = font("Bold", 40)
@@ -179,8 +240,16 @@ def render(plan, t, W=1080, H=1920):
     f_note = font("Regular", 24)
     f_verd = font("Bold", 44)
 
+    def deliver():
+        out = Image.alpha_composite(base.convert("RGBA"), img).convert("RGB")
+        out = out.resize(LOGICAL, Image.LANCZOS)
+        out.paste(fb, (0, foot_top))
+        return out if (W, H) == LOGICAL else out.resize((W, H), Image.LANCZOS)
+
+    fb = footer(LW)
+    foot_top = LH - fb.height
     if plan.settle > 0 and t <= 0:
-        return img.resize((W, H), Image.LANCZOS)
+        return deliver()
 
     text(d, (LW / 2, 96), plan.title, f_title, INK, anchor="ma")
 
@@ -189,23 +258,24 @@ def render(plan, t, W=1080, H=1920):
     # between is sized from what is left, so a five-food meal does not run into
     # the wordmark and a three-food one does not leave a hole where the fourth
     # row would have been.
-    fb = footer(LW)
-    foot_top = LH - fb.height
     pad, top = 54, 160
     rowh = 96
     n = len(plan.rows)
     listbox = (pad, top, LW - pad, top + 34 + rowh * n)
     shadow(img, listbox, 30)
-    rounded(d, listbox, 30, CARD)
+    pane(d, listbox, 30)
     for i, r in enumerate(plan.rows):
         tt = (t - (plan.food0 + plan.foodgap * i)) / 0.40
         if tt <= 0:
             continue
         k = overshoot(tt)
         y = top + 20 + rowh * i + rowh / 2 + (1 - k) * 26
+        # Fading towards BG is what you do on an opaque card. On glass there is
+        # no known colour to fade towards - the poster is moving behind it - so
+        # the fade is in the alpha channel, which is what it always meant.
         alpha = min(1.0, tt * 1.6)
-        ink = tuple(int(BG[j] + (INK[j] - BG[j]) * alpha) for j in range(3))
-        sub = tuple(int(BG[j] + (SUB[j] - BG[j]) * alpha) for j in range(3))
+        ink = INK[:3] + (int(INK[3] * alpha),)
+        sub = SUB[:3] + (int(SUB[3] * alpha),)
         text(d, (pad + 34, y), f"{r['grams']:.0f} g", f_gram, sub, anchor="lm")
         text(d, (pad + 150, y), r["name"], f_food, ink, anchor="lm")
         text(d, (LW - pad - 34, y), f"{r['kcal']:.0f} kcal", f_kcal, sub, anchor="rm")
@@ -217,7 +287,7 @@ def render(plan, t, W=1080, H=1920):
     ringbox = (pad, ringtop, LW - pad, ringtop + ring_h)
     if t > plan.ring0 - 0.3:
         shadow(img, ringbox, 30)
-        rounded(d, ringbox, 30, CARD)
+        pane(d, ringbox, 30)
         cx, cy = LW / 2, ringtop + ring_h * 0.44
         rad, wid = min(214, ring_h * 0.31), 44
         p = ease((t - plan.ring0) / plan.ring_dur)
@@ -231,7 +301,7 @@ def render(plan, t, W=1080, H=1920):
         if t > plan.verdict:
             pct = 100 * plan.tot["kcal"] / REFERENCE["kcal"]
             v = ease((t - plan.verdict) / 0.4)
-            vc = tuple(int(CARD[j] + (col[j] - CARD[j]) * v) for j in range(3))
+            vc = col + (int(255 * v),)
             text(d, (cx, ringbox[3] - 62), f"{pct:.0f}% of a day", f_verd, vc, anchor="mm")
 
     # ---- the three chips --------------------------------------------------
@@ -243,8 +313,8 @@ def render(plan, t, W=1080, H=1920):
             continue
         x0 = pad + i * (cw + 12)
         box = (x0, chiptop, x0 + cw, chiptop + chip_h)
-        shadow(img, box, 26, blur=14, alpha=14)
-        rounded(d, box, 26, CARD)
+        shadow(img, box, 26, blur=14, alpha=12)
+        pane(d, box, 26)
         val, ref = plan.tot[key], REFERENCE[key]
         k = ease(min(tt, 1.0))
         text(d, (x0 + 26, chiptop + 30), key.capitalize(), f_chip, SUB)
@@ -255,9 +325,7 @@ def render(plan, t, W=1080, H=1920):
             val * k / ref, MACRO[key])
 
     text(d, (LW / 2, chiptop + chip_h + 26), REF_NOTE, f_note, SUB, anchor="ma")
-    out = img.resize(LOGICAL, Image.LANCZOS)
-    out.paste(fb, (0, foot_top))
-    return out if (W, H) == LOGICAL else out.resize((W, H), Image.LANCZOS)
+    return deliver()
 
 
 def main():
@@ -278,6 +346,11 @@ def main():
     ap.add_argument("--height", type=int, default=1920)
     ap.add_argument("--cues", help="write the timeline here, for the audio to read")
     ap.add_argument("--first-frame", help="also save frame 0 here, for the flip")
+    ap.add_argument("--behind", help="act one's clip, seen through the glass")
+    ap.add_argument("--behind-offset", type=int, default=0,
+                    help="which act-one frame sits under act two's first. Act one "
+                         "loops seamlessly, so this is (act1 frames + flip frames) "
+                         "and the liquid carries on as if it had never stopped")
     ap.add_argument("-o", "--out", required=True)
     a = ap.parse_args()
 
@@ -286,6 +359,12 @@ def main():
     if a.cues:
         json.dump(plan.cues(), open(a.cues, "w"), indent=1)
 
+    bg, bgsize = (None, None)
+    if a.behind:
+        bg, bgsize = behind_frames(a.behind)
+        print(f"  behind the glass: {len(bg)} frames of act one at {bgsize[0]}x{bgsize[1]}, "
+              f"starting at {a.behind_offset % len(bg)}")
+
     n = int(round(a.seconds * a.fps))
     ff = subprocess.Popen(
         ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -293,7 +372,8 @@ def main():
          "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "17",
          "-pix_fmt", "yuv420p", a.out], stdin=subprocess.PIPE)
     for i in range(n):
-        im = render(plan, i / a.fps, a.width, a.height)
+        b = bg[(a.behind_offset + i) % len(bg)] if bg else None
+        im = render(plan, i / a.fps, a.width, a.height, behind=b)
         if i == 0 and a.first_frame:
             im.save(a.first_frame)
         ff.stdin.write(im.tobytes())

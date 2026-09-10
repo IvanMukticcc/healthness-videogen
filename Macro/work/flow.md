@@ -71,6 +71,34 @@ command can remake (`../../CLAUDE.md` rule 9).
 
 ## What is already known to break
 
+**Act two is glass, and the glass is free because act one loops.** The second
+act is not a screen that replaces the poster - it is a pane laid over it, and
+the liquid keeps moving underneath. `flowanim.py` guarantees the surface travels
+a whole number of ribbon lengths, so act one's frame N is act one's frame 0:
+continuing it behind act two costs one decode and no second render. Act two's
+first frame sits over act one's frame `(act1_frames + flip_frames) mod
+act1_frames`, and the wave carries on as though it had never stopped.
+
+The backdrop is decoded at 270 wide and blown back up. It is about to be blurred
+past any detail that width could have carried, and 192 frames of 1080x1920 in
+memory is 1.2 GB against 74 MB at 270.
+
+Blur, THEN pull towards white, THEN put the saturation back - in that order.
+Whitening a blurred frame washes the liquid out to a grey ghost, and the colour
+is the only thing telling you what is behind the glass. `FROST` 0.62 and `SAT`
+1.75 keep the badges reading blue, green and red through the pane while act one's
+title, white on dark, dissolves completely.
+
+**A pane needs a lit edge or it is a stain.** At 168 alpha over a frosted poster
+a card has almost the same value as the frost around it, and without a hairline
+of brighter white it has no boundary - the list looks like text floating on a
+smear. One pixel is the whole difference.
+
+**Fading on glass is an alpha fade, not a fade towards the background colour.**
+Text arriving on an opaque card can interpolate towards `BG`. There is no `BG`
+here: the poster is moving behind it. Interpolating towards a colour that is not
+there tints the text as it arrives.
+
 **The wave has to end in something, from the first frame.** Foods and Micro put
 an organ in the right circle and the generator draws it, so the liquid's tapered
 tip is behind a solid object from frame zero and is never once seen ending. This

@@ -77,9 +77,19 @@ echo "== act one: liquid, macros, calories"
 
 ACT1_USED=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$TMP/act1.mp4")
 
-echo "== act two: the meal"
+# Act one is a SEAMLESS LOOP, which is what makes the glass affordable: the
+# frames behind act two are act one's own, continuing from where the turn left
+# it, so nothing has to be rendered twice. ACT1_N frames of act one, FLIP_N of
+# turn, so act two's first frame sits over act one's frame (ACT1_N + FLIP_N) mod
+# ACT1_N - and the liquid carries on as though it had never stopped.
+ACT1_N=$(ffprobe -v error -select_streams v:0 -count_frames \
+    -show_entries stream=nb_read_frames -of csv=p=0 "$TMP/act1.mp4")
+OFFSET=$(( (ACT1_N + FLIP_N) % ACT1_N ))
+
+echo "== act two: the meal, on glass"
 ../.venv/bin/python meal.py --meal "$MEAL" --title "$TITLE" \
     --seconds "$ACT2_S" --fps "$FPS" --width "$W" --height "$H" \
+    --behind "$TMP/act1.mp4" --behind-offset "$OFFSET" \
     --cues "${TOPIC}_act2.json" --first-frame "$TMP/b.png" -o "$TMP/act2.mp4"
 
 echo "== the turn"
@@ -88,8 +98,12 @@ echo "== the turn"
 # re-rendering it means the card that starts turning is the card that was on
 # screen a frame earlier, x264 artefacts and all.
 ffmpeg -v error -sseof -0.05 -i "$TMP/act1.mp4" -frames:v 1 -update 1 "$TMP/a.png" -y
+# and the frames the card turns IN FRONT of - act one continuing past its last,
+# which for a seamless loop is its own beginning.
+mkdir -p "$TMP/bd"
+ffmpeg -v error -i "$TMP/act1.mp4" -vf "select=lt(n\,${FLIP_N})" -vsync 0 "$TMP/bd/f%03d.png" -y
 ../.venv/bin/python flip.py "$TMP/a.png" "$TMP/b.png" \
-    --out-dir "$TMP/turn" --frames "$FLIP_N"
+    --out-dir "$TMP/turn" --frames "$FLIP_N" --backdrop-dir "$TMP/bd"
 ffmpeg -v error -framerate "$FPS" -i "$TMP/turn/f%05d.png" \
     -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p "$TMP/turn.mp4" -y
 FLIP_S=$(awk -v n="$FLIP_N" -v f="$FPS" 'BEGIN{printf "%.4f", n/f}')
