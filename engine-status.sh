@@ -96,6 +96,77 @@ done
 # obvious way to check a check is to trigger it where it runs, and here that
 # takes down every session importing scipy for as long as the file exists -
 # which is the very failure being tested for.
+# Does the prose still name files that exist? A rename touches one identifier;
+# the paragraphs that explain it are somewhere else entirely, and nothing links
+# them. On 10 September a rename of profile.py -> dailygoal.py left three
+# documents naming the old file, and the same day two other documents described
+# values and behaviour their own code no longer had. Four in a day, none of them
+# carelessness in any single instance.
+#
+# Only filenames are checked, because only filenames are decidable: a `*.py`
+# named in a .md, a .sh or a docstring either resolves next to the document, in
+# that variant's work/, or in engine/ - or it does not exist and the sentence is
+# describing a file that is gone.
+#
+# HISTORY IS NOT A FAULT. A document explaining a rename has to name the old
+# file. Those go in ALLOW below, with the reason, so the exemption is greppable
+# instead of being a heuristic that quietly skips lines containing "was".
+stale=$(python3 - "$ROOT" "${VARIANTS[@]}" <<'PYEOF'
+import sys, os, re, glob
+root, variants = sys.argv[1], sys.argv[2:]
+
+# path:filename -> why it is allowed to name something that does not exist
+ALLOW = {
+    ("Macro/work/dailygoal.py", "profile.py"): "its docstring is the account of the rename",
+    ("MAINTAINER.md", "copy.py"): "the incident that produced the shadowing check",
+    ("MAINTAINER.md", "profile.py"): "same, one rename later",
+    ("CLAUDE.md", "copy.py"): "the same incident, in the house rules",
+    ("engine/CLAUDE.md", "copy.py"): "same again, for whoever is in engine/",
+    ("engine/clip.py", "copy.py"): "clip.py IS the renamed copy.py and says so",
+    ("Macro/work/dailygoal.py", "copy.py"): "cites the earlier incident of the same kind",
+    ("engine-status.sh", "copy.py"): "this script's own explanation of the shadowing check",
+    ("engine-status.sh", "json.py"): "same sentence",
+    ("engine-status.sh", "types.py"): "same sentence",
+    ("engine-status.sh", "profile.py"): "this check's own explanation of why it exists",
+    ("Micro/CLAUDE.md", "micro_patch.py"): "the fork the overlay hook replaced, kept as a warning",
+}
+
+known = set()
+for d in [os.path.join(root, "engine")] + [os.path.join(root, v, "work") for v in variants]:
+    for f in glob.glob(os.path.join(d, "*.py")):
+        known.add(os.path.basename(f))
+for f in glob.glob(os.path.join(root, "*.py")) + glob.glob(os.path.join(root, "*.sh")):
+    known.add(os.path.basename(f))
+known |= {"setup.py"}
+
+docs = []
+for d in [root, os.path.join(root, "engine")] + \
+        [os.path.join(root, v) for v in variants] + \
+        [os.path.join(root, v, "work") for v in variants]:
+    for pat in ("*.md", "*.sh", "*.py", "*.txt"):
+        docs += glob.glob(os.path.join(d, pat))
+
+tok = re.compile(r"\b([a-z_][a-z0-9_]{2,})\.py\b")
+seen = set()
+for doc in sorted(set(docs)):
+    rel = os.path.relpath(doc, root)
+    try:
+        text = open(doc, encoding="utf-8", errors="ignore").read()
+    except OSError:
+        continue
+    for n, line in enumerate(text.splitlines(), 1):
+        for m in tok.finditer(line):
+            name = m.group(0)
+            if name in known or (rel, name) in ALLOW:
+                continue
+            key = (rel, name)
+            if key in seen:
+                continue
+            seen.add(key)
+            print(f"      {rel}:{n}  names {name}, which is not on disk")
+PYEOF
+)
+
 shadow=$(python3 - "$ROOT" "${VARIANTS[@]}" <<'PYEOF'
 import sys, os, glob
 root, variants = sys.argv[1], sys.argv[2:]
@@ -114,7 +185,7 @@ if [ -n "$shadow" ]; then
 fi
 
 echo
-if [ "$status" -eq 0 ] && [ -z "$shadow" ]; then
+if [ "$status" -eq 0 ] && [ -z "$shadow" ] && [ -z "$stale" ]; then
     echo "  every variant is on the current engine"
 fi
 if [ "$status" -ne 0 ]; then
@@ -126,5 +197,14 @@ if [ -n "$shadow" ]; then
     echo "  Rename it. Every tool that imports scipy fails at import time, saying"
     echo "  nothing about the file that caused it, so this never presents as a"
     echo "  naming problem - it presents as the engine being broken."
+fi
+if [ -n "$stale" ]; then
+    printf "\n  prose naming a file that is not there:\n"
+    printf "%s\n" "$stale"
+    echo
+    echo "  Either the sentence is out of date, or the reference is deliberate"
+    echo "  history and belongs in ALLOW in this script with its reason. Both are"
+    echo "  one-line fixes; leaving it is how a document starts describing a"
+    echo "  version of the repository that no longer exists."
 fi
 exit 0
