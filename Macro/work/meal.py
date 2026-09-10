@@ -33,9 +33,12 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONTS = "/Library/Fonts"
 
-# EU Regulation 1169/2011, Annex XIII. Reference intakes for an average adult.
-REFERENCE = {"kcal": 2000.0, "carbs": 260.0, "protein": 50.0, "fat": 70.0}
-REF_NOTE = "reference intake, EU 1169/2011"
+# The goal is a PERSON, not a label. See profile.py: the app computes it from
+# body and intent, and a clip measuring the same food against the EU reference
+# intake would be advertising a product it disagrees with. The default profile
+# is stated on screen and overridable from render.sh.
+DEFAULT_PROFILE = dict(weight_kg=66, height_cm=172, age=30, sex="male",
+                       activity="light", goal="mild_gain")
 
 BG = (242, 242, 247)
 CARD = (255, 255, 255)
@@ -242,15 +245,18 @@ def bar(d, box, frac, colour):
 class Plan:
     """The timeline. Every time in seconds from the first frame of act two."""
 
-    def __init__(self, rows, tot, title="TODAY'S BOWL", seconds=7.5):
+    def __init__(self, rows, tot, title="TODAY'S BOWL", seconds=7.5, who=None):
         self.rows, self.tot, self.title, self.seconds = rows, tot, title, seconds
+        self.who = who or __import__("profile").goals(**DEFAULT_PROFILE)
         n = len(rows)
         self.settle = 0.35                      # the card arriving out of the flip
         self.food0, self.foodgap = 0.55, 0.42
         self.food_end = self.food0 + self.foodgap * (n - 1) + 0.45
-        self.ring0 = self.food_end + 0.15
+        # Half a second between the three things, which is what was asked for and
+        # is also about as short as a beat can be and still read as one.
+        self.ring0 = self.food_end + 0.5
         self.ring_dur = 1.35
-        self.chip0 = self.ring0 + 0.55
+        self.chip0 = self.ring0 + 0.5
         self.chipgap = 0.16
         self.chip_dur = 0.75
         self.verdict = self.ring0 + self.ring_dur + 0.25
@@ -347,22 +353,27 @@ def render(plan, t, W=1080, H=1920, behind=None):
     # blink that was treated as a bug, and the largest thing in act two after the
     # card landing. The list pane is there from the start and the chips fade, so
     # this was the only element in the frame arriving by cut.
-    ring_in = ease((t - (plan.ring0 - 0.42)) / 0.34)
+    # The lead is 0.10, not 0.42. A pane that starts fading 0.42s before its cue
+    # is ON SCREEN 0.42s before its cue, so the half-second the user asked for
+    # between the food and the ring was being spent on the pane's own fade and
+    # measured 0.13s. The cue is when the arc moves; the card only needs to be
+    # there a moment before it, not most of a beat before it.
+    ring_in = ease((t - (plan.ring0 - 0.10)) / 0.30)
     if ring_in > 0:
         shadow(img, ringbox, 30, alpha=int(15 * ring_in))
         pane(d, ringbox, 30, ring_in)
         cx, cy = LW / 2, ringtop + ring_h * 0.44
         rad, wid = min(214, ring_h * 0.31), 44
         p = ease((t - plan.ring0) / plan.ring_dur)
-        frac = plan.tot["kcal"] / REFERENCE["kcal"] * p
-        col = ORANGE if plan.tot["kcal"] > REFERENCE["kcal"] else GREEN
+        frac = plan.tot["kcal"] / plan.who["kcal"] * p
+        col = ORANGE if plan.tot["kcal"] > plan.who["kcal"] else GREEN
         ring(d, cx, cy, rad, wid, frac, col)
         shown = plan.tot["kcal"] * p
         text(d, (cx, cy - 34), f"{shown:,.0f}".replace(",", "."), f_big, INK, anchor="mm")
-        text(d, (cx, cy + 66), f"/ {REFERENCE['kcal']:,.0f} kcal".replace(",", "."),
+        text(d, (cx, cy + 66), f"/ {plan.who['kcal']:,.0f} kcal".replace(",", "."),
              f_of, SUB, anchor="mm")
         if t > plan.verdict:
-            pct = 100 * plan.tot["kcal"] / REFERENCE["kcal"]
+            pct = 100 * plan.tot["kcal"] / plan.who["kcal"]
             v = ease((t - plan.verdict) / 0.4)
             vc = col + (int(255 * v),)
             text(d, (cx, ringbox[3] - 62), f"{pct:.0f}% of a day", f_verd, vc, anchor="mm")
@@ -378,7 +389,7 @@ def render(plan, t, W=1080, H=1920, behind=None):
         box = (x0, chiptop, x0 + cw, chiptop + chip_h)
         shadow(img, box, 26, blur=14, alpha=12)
         pane(d, box, 26)
-        val, ref = plan.tot[key], REFERENCE[key]
+        val, ref = plan.tot[key], plan.who[key]
         k = ease(min(tt, 1.0))
         text(d, (x0 + 26, chiptop + 30), key.capitalize(), f_chip, SUB)
         text(d, (x0 + 26, chiptop + 78), f"{val * k:.0f}", f_cval, INK)
@@ -387,7 +398,24 @@ def render(plan, t, W=1080, H=1920, behind=None):
         bar(d, (x0 + 26, chiptop + chip_h - 46, x0 + cw - 26, chiptop + chip_h - 34),
             val * k / ref, MACRO[key])
 
-    text(d, (LW / 2, chiptop + chip_h + 26), REF_NOTE, f_note, SUB, anchor="ma")
+    # WHO THE GOAL BELONGS TO. This is load-bearing and not a caption.
+    #
+    # It replaced "reference intake, EU 1169/2011", which was defensible for a
+    # reason that has now gone: 2000 kcal is a printed labelling constant and
+    # belongs to nobody, so "40% of a day" was a fact about a packet. A goal
+    # computed from 172 cm and 66 kg is a statement about a PERSON, and the only
+    # thing standing between "34% of a day" and an implied recommendation to
+    # whoever is watching is this line naming who it was computed for.
+    #
+    # So it does not get shortened for space, dropped to fit a longer meal, or
+    # covered by anything. If act two's layout is ever tightened, tighten
+    # something else. macro-c1's point, and it is the right one.
+    text(d, (LW / 2, chiptop + chip_h + 22),
+         f"{plan.who['who']} · {plan.who['activity']} · {plan.who['goal']}",
+         f_note, SUB, anchor="ma")
+    text(d, (LW / 2, chiptop + chip_h + 52),
+         f"goal {plan.who['kcal']:.0f} kcal from BMR {plan.who['bmr']:.0f} "
+         f"· Mifflin-St Jeor", f_note, SUB, anchor="ma")
     return deliver()
 
 
@@ -403,6 +431,15 @@ def main():
     ap.add_argument("--meal", required=True,
                     help="'200 Greek yogurt,80 Blueberries,20 Honey,60 Oats'")
     ap.add_argument("--title", default="TODAY'S BOWL")
+    ap.add_argument("--sex", default=DEFAULT_PROFILE["sex"])
+    ap.add_argument("--age", type=int, default=DEFAULT_PROFILE["age"])
+    # --body-* rather than --height/--weight: this file already has --width and
+    # --height for the frame, and argparse rejected the collision loudly, which
+    # is the only reason it took one run instead of a confusing render.
+    ap.add_argument("--body-height", type=float, default=DEFAULT_PROFILE["height_cm"])
+    ap.add_argument("--body-weight", type=float, default=DEFAULT_PROFILE["weight_kg"])
+    ap.add_argument("--activity", default=DEFAULT_PROFILE["activity"])
+    ap.add_argument("--goal", default=DEFAULT_PROFILE["goal"])
     ap.add_argument("--seconds", type=float, default=7.5)
     ap.add_argument("--fps", type=int, default=24)
     ap.add_argument("--width", type=int, default=1080)
@@ -421,8 +458,13 @@ def main():
     ap.add_argument("-o", "--out", required=True)
     a = ap.parse_args()
 
+    import profile as prof
+    who = prof.goals(a.body_weight, a.body_height, a.age, a.sex, a.activity, a.goal)
     rows, tot = foods.meal(foods.parse_meal(a.meal))
-    plan = Plan(rows, tot, a.title, a.seconds)
+    plan = Plan(rows, tot, a.title, a.seconds, who)
+    print(f"  goal: {who['who']} · {who['activity']} · {who['goal']} -> "
+          f"{who['kcal']:.0f} kcal, C {who['carbs']:.0f} P {who['protein']:.0f} "
+          f"F {who['fat']:.0f}")
     if a.cues:
         json.dump(plan.cues(), open(a.cues, "w"), indent=1)
 
@@ -487,7 +529,7 @@ def main():
         raise SystemExit("ffmpeg failed")
     e = tot["carbs"] * 4 + tot["protein"] * 4 + tot["fat"] * 9
     print(f"  act two: {n} frames, {len(rows)} foods, {tot['kcal']:.0f} kcal "
-          f"({100 * tot['kcal'] / REFERENCE['kcal']:.0f}% of the reference intake); "
+          f"({100 * tot['kcal'] / who['kcal']:.0f}% of the day); "
           f"macros account for {e:.0f} kcal ({100 * e / tot['kcal'] - 100:+.1f}%)")
 
 

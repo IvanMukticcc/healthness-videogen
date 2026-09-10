@@ -51,12 +51,21 @@ POP_GAIN="${POP_GAIN:-0.85}"
 # tested, which it never had been.
 CEIL="${CEIL:-0.82}"
 WIDTH="${WIDTH:-1080}"
+# Whose day the meal is measured against. profile.py computes it the way the app
+# does; these are its inputs and they are printed on screen, which is what keeps
+# a personal goal from reading as advice to whoever is watching.
+SEX="${SEX:-male}"; AGE="${AGE:-30}"; HEIGHT="${HEIGHT:-172}"; WEIGHT="${WEIGHT:-66}"
+ACTIVITY="${ACTIVITY:-light}"; FITGOAL="${FITGOAL:-mild_gain}"
 DEFAULT_TITLE="TODAY'S BOWL"   # its own variable: an apostrophe inside a
 TITLE="${TITLE:-$DEFAULT_TITLE}"  # ${x:-...} default is not worth the quoting
 ACT1_S="${ACT1_S:-8}"
 ACT2_S="${ACT2_S:-7.5}"
 FLIP_N="${FLIP_N:-14}"           # frames of turn; 14 at 24fps is 0.583s
-BEAT="${BEAT:-0.12}"             # how long act one holds after its last movement
+# 0.5, not 0.12. The measurement said the dead hold was 1.08s and I removed 1.00
+# of it, which left two frames - and two frames is not a pause, it is a cut. A
+# user looking at a held poster asking for "much faster" means the hold should
+# stop being the point, not that the transition should stop existing.
+BEAT="${BEAT:-0.5}"              # how long act one holds after its last movement
 # The rhythm. The overlay still defaults to 1,2,3.2,4.4,5.6 for anyone calling it
 # directly; this is the shipped one and it starts at half a second. A viewer
 # gives a vertical clip about that long before deciding, and the first second
@@ -142,6 +151,8 @@ FINALE_N=0
 echo "== act two: the meal, on glass"
 ../.venv/bin/python meal.py --meal "$MEAL" --title "$TITLE" \
     --seconds "$ACT2_S" --fps "$FPS" --width "$W" --height "$H" \
+    --sex "$SEX" --age "$AGE" --body-height "$HEIGHT" --body-weight "$WEIGHT" \
+    --activity "$ACTIVITY" --goal "$FITGOAL" \
     --behind "$TMP/act1.mp4" --behind-offset "$OFFSET" --behind-lo "$FINALE_N" \
     --cues "${TOPIC}_act2.json" --first-frame "$TMP/b.png" -o "$TMP/act2.mp4"
 

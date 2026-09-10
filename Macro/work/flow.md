@@ -71,6 +71,32 @@ command can remake (`../../CLAUDE.md` rule 9).
 
 ## What is already known to break
 
+**The goal is a person, and the footer naming them is load-bearing.**
+`profile.py` computes the day's goal the way the app does - Mifflin-St Jeor for
+adults, Schofield under 18, times the activity factor, times the fitness-goal
+factor - and the macro goals from `User.dailyCarbsGoal` and its siblings. It
+replaced the EU reference intake, which was defensible for a reason that has now
+gone: 2000 kcal is a printed labelling constant belonging to nobody, so "40% of a
+day" was a fact about a packet. A goal from 172 cm and 66 kg is a statement about
+a person, and the line naming who it was computed for is the only thing between
+that and an implied recommendation. **It does not get shortened for space.**
+
+`./profile.py --verify` checks the constants against `BodyEnergy.swift` and
+`OnboardingState.swift` rather than trusting the transcription.
+
+**Two places the arithmetic will not close, and they are not the same place.**
+
+  1. *The food data.* Atwater 4/4/9 against the app's own calorie field, per
+     clip - breakfast +2.8%, lunch -0.1%. The database disagreeing with itself
+     by rounding and by each food's source. `foods.py --meal` prints it.
+  2. *The goal.* `dailyProteinGoal` is **grams per kilogram of bodyweight** and
+     never touches the calorie goal, so the three macro goals do not sum to the
+     calorie goal by construction - about 93% at a typical profile. Nothing to do
+     with Atwater or with food data.
+
+Same symptom, different causes. A clip that quietly reconciled either one would
+be advertising an app that disagrees with it.
+
 **Act one is shown to its last movement, not to its length.** It is still
 rendered at eight seconds - the loop, the wave speed and the backdrop all depend
 on that - but the clip cuts `BEAT` after the last thing that moves. The trim
