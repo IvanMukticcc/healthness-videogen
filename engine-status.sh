@@ -111,7 +111,10 @@ done
 # HISTORY IS NOT A FAULT. A document explaining a rename has to name the old
 # file. Those go in ALLOW below, with the reason, so the exemption is greppable
 # instead of being a heuristic that quietly skips lines containing "was".
-stale=$(python3 - "$ROOT" "${VARIANTS[@]}" <<'PYEOF'
+# 2>&1 and the || : a traceback here used to go to the terminal while the
+# script still printed "every variant is on the current engine", which is a
+# check reporting success because it failed. It now becomes a finding.
+stale=$(python3 - "$ROOT" "${VARIANTS[@]}" 2>&1 <<'PYEOF'
 import sys, os, re, glob
 root, variants = sys.argv[1], sys.argv[2:]
 
@@ -147,6 +150,7 @@ for d in [root, os.path.join(root, "engine")] + \
         docs += glob.glob(os.path.join(d, pat))
 
 tok = re.compile(r"\b([a-z_][a-z0-9_]{2,})\.py\b")
+allow_entry = re.compile(r'^\s*\("[^"]+",\s*"[^"]+\.py"\):')
 seen = set()
 for doc in sorted(set(docs)):
     rel = os.path.relpath(doc, root)
@@ -155,6 +159,12 @@ for doc in sorted(set(docs)):
     except OSError:
         continue
     for n, line in enumerate(text.splitlines(), 1):
+        # An ALLOW entry has to spell the name it is exempting, so this script
+        # reported its own table the moment the table had an entry in it. The
+        # check catching itself is a good sign about the check and a nuisance
+        # about the table; the table's own lines are not prose about the repo.
+        if allow_entry.match(line):
+            continue
         for m in tok.finditer(line):
             name = m.group(0)
             if name in known or (rel, name) in ALLOW:
@@ -166,6 +176,11 @@ for doc in sorted(set(docs)):
             print(f"      {rel}:{n}  names {name}, which is not on disk")
 PYEOF
 )
+stale_rc=$?
+if [ "$stale_rc" -ne 0 ]; then
+    stale="      the stale-name check itself did not run (exit $stale_rc):
+$(printf '%s\n' "$stale" | sed 's/^/      /')"
+fi
 
 shadow=$(python3 - "$ROOT" "${VARIANTS[@]}" <<'PYEOF'
 import sys, os, glob
