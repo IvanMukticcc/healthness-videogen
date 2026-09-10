@@ -240,7 +240,8 @@ def text(d, xy, s, f, fill, anchor="la"):
     d.text((xy[0] * S, xy[1] * S), s, font=f, fill=fill, anchor=anchor)
 
 
-def ring(d, cx, cy, radius, width, frac, colour, track=TRACK):
+def ring(d, cx, cy, radius, width, frac, colour, track=TRACK,
+         on=(255, 255, 255, CARD_A)):
     """The calorie ring: a track, an arc from twelve o'clock, and round caps.
 
     THE CAP SITS ON THE STROKE'S CENTRELINE, NOT ON `radius`. PIL draws an arc's
@@ -258,7 +259,8 @@ def ring(d, cx, cy, radius, width, frac, colour, track=TRACK):
     """
     import math
     box = [(cx - radius) * S, (cy - radius) * S, (cx + radius) * S, (cy + radius) * S]
-    d.ellipse(box, outline=track, width=int(width * S))
+    d.ellipse(box, outline=track if on is None else over(track, on),
+              width=int(width * S))
     if frac <= 0:
         return
     sweep = 360.0 * min(frac, 1.0)
@@ -273,10 +275,38 @@ def ring(d, cx, cy, radius, width, frac, colour, track=TRACK):
                   fill=colour)
 
 
-def bar(d, box, frac, colour):
+def over(top, bottom):
+    """Source-over of two RGBA tuples, because ImageDraw does not do it.
+
+    **ImageDraw REPLACES pixels; it does not composite them.** A track drawn at
+    alpha 120 onto a pane already at 186 leaves 120 - so the track becomes a
+    MORE transparent window in the card and shows more of act one through it
+    than the card around it does. It reads as "the glass is a bit uneven"
+    rather than as a bug, which is why it survived in Macro from the day the
+    panes went translucent until micro-bb hit it head-on drawing a header
+    ground and measured the ghost getting worse: 14.4 to 18.9 levels.
+
+    Verified rather than assumed: pane 186, track 120 drawn over it, resulting
+    alpha 120. Composited, 218.
+
+    So anything meant to sit ON a pane is composited against that pane here and
+    drawn once, at the right colour and the right alpha.
+    """
+    ta = top[3] / 255.0
+    ba = bottom[3] / 255.0
+    a = ta + ba * (1 - ta)
+    if a <= 0:
+        return (0, 0, 0, 0)
+    rgb = tuple(int(round((top[i] * ta + bottom[i] * ba * (1 - ta)) / a)) for i in range(3))
+    return rgb + (int(round(a * 255)),)
+
+
+def bar(d, box, frac, colour, on=(255, 255, 255, CARD_A)):
     x0, y0, x1, y1 = box
     h = y1 - y0
-    rounded(d, box, h / 2, TRACK)
+    # `on` is the surface this sits on, so the track can be composited against
+    # it and drawn once. Pass on=None where it is over something opaque.
+    rounded(d, box, h / 2, TRACK if on is None else over(TRACK, on))
     w = (x1 - x0) * max(0.0, min(1.0, frac))
     if w > h * 0.4:
         rounded(d, (x0, y0, x0 + w, y1), h / 2, colour)
