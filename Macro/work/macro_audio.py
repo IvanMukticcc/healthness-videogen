@@ -128,7 +128,24 @@ def main():
 
     ring_len = max(0.4, c["verdict"] - c["ring"])
     place(buf, sweep(ring_len), off + c["ring"])
-    place(buf, impact.bell(a.root * 1.5, dur=1.6) * 0.42, off + c["verdict"])
+
+    # THE ENDING IS ACT ONE'S CHORD, not a bell of its own.
+    #
+    # It was `impact.bell` - one FM voice - and the user's word for it was
+    # "dong". Six candidates went out and this is the one they picked: the same
+    # chord act one ends on, which means the clip closes on the sound it already
+    # closed its first act with. They chose it knowing it repeats.
+    #
+    # `impact.finale` is called rather than a chord being assembled here, and
+    # that is the whole point of impact.py: one number in the engine once
+    # reached the mix at three different levels because three callers each
+    # scaled it, which is what Micro's render.sh records. It goes in at its
+    # natural gain, the same as act one's, and render.sh mixes this wav at unity.
+    # Generated in its own 2.6s buffer and PLACED, rather than asked for at an
+    # offset inside a buffer of act two's length: `finale` returns an array of
+    # `seconds`, and act two's buffer is longer than that by design, so adding
+    # them directly is a shape mismatch waiting on whichever is longer today.
+    place(buf, impact.finale(0.0, 2.6, root=a.root), off + c["verdict"])
 
     write_wav(a.act2_out, buf[:int(total * SR)])
     print(f"  act one: {len(cues)} pops"
