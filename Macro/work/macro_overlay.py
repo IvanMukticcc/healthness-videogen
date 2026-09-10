@@ -52,11 +52,42 @@ def _font(weight, size):
     return ImageFont.truetype(f"{FONTS}/SF-Pro-Display-{weight}.otf", int(size))
 
 
+# The badge as glass. Three numbers, and the first one is the whole argument.
+CORE_A = 0.88           # opacity at the centre, under the text
+RIM_A = 0.58            # and at the edge, where the wave shows through
+SPEC = 0.42             # the specular highlight's strength
+
+
 def _disc(d, colour, value, label, shadow=0.34):
-    """One macro badge as an RGBA sprite: a coloured disc, a number, a word."""
+    """One macro badge as an RGBA sprite: liquid glass in the macro's colour.
+
+    WHY THE OPACITY IS RADIAL AND NOT ONE NUMBER
+
+    The badge sits ON the wave, and the wave is a different colour on every row -
+    near-white for yogurt, dark purple for blueberry, gold for honey. A flat
+    translucent fill therefore is not a colour at all, it is a tint on whatever
+    liquid is behind it, which is exactly the fault that collapsed the ring's
+    track from 51.7 levels of separation to 2.0 one surface over. Here the thing
+    that would be lost is the white text.
+
+    Green over a near-white wave is the worst case and it is worth doing the
+    arithmetic rather than the render: `#34C759` at a flat 0.70 lands the
+    composite around luminance 188, and white type on 188 is not type any more.
+
+    So the glass is thick in the middle and thin at the edge - `CORE_A` under the
+    text where legibility lives, `RIM_A` at the rim where the wave should show
+    through. That is also, conveniently, what a lens does: a disc of glass is
+    deepest at its centre.
+
+    The glassiness then comes from the rim and the specular rather than from
+    transparency, which is the part that actually reads as glass anyway. A flat
+    translucent disc reads as a sticker printed on tracing paper; a bright edge
+    with a highlight sitting off-centre reads as a solid object with a surface.
+    """
     n = int(d * SS)
     pad = int(n * 0.16)
-    im = Image.new("RGBA", (n + pad * 2, n + pad * 2), (0, 0, 0, 0))
+    size = n + pad * 2
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
 
     sh = Image.new("L", im.size, 0)
     ImageDraw.Draw(sh).ellipse([pad, pad + n * 0.05, pad + n, pad + n * 1.05],
@@ -64,16 +95,38 @@ def _disc(d, colour, value, label, shadow=0.34):
     sh = sh.filter(ImageFilter.GaussianBlur(n * 0.055))
     im.paste(Image.new("RGBA", im.size, (0, 0, 0, 255)), (0, 0), sh)
 
-    dr = ImageDraw.Draw(im)
-    dr.ellipse([pad, pad, pad + n, pad + n], fill=colour + (255,))
-    # a soft top-light, so the disc reads as a ball rather than a sticker
-    gl = Image.new("L", im.size, 0)
-    ImageDraw.Draw(gl).ellipse([pad + n * 0.16, pad + n * 0.08,
-                                pad + n * 0.84, pad + n * 0.52], fill=54)
-    im.paste(Image.new("RGBA", im.size, (255, 255, 255, 255)),
-             (0, 0), gl.filter(ImageFilter.GaussianBlur(n * 0.06)))
+    # the body: one colour, an opacity that falls from the centre to the rim
+    yy, xx = np.mgrid[0:size, 0:size]
+    cx = cy = pad + n / 2.0
+    r = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2) / (n / 2.0)
+    inside = r <= 1.0
+    prof = CORE_A + (RIM_A - CORE_A) * np.clip(r, 0, 1) ** 1.6
+    edge = np.clip((1.0 - r) * n * 0.25, 0, 1)          # one antialiased pixel
+    body = np.zeros((size, size, 4), np.float32)
+    body[:, :, 0], body[:, :, 1], body[:, :, 2] = colour
+    body[:, :, 3] = np.where(inside, prof, 0.0) * 255.0 * edge
+    im.alpha_composite(Image.fromarray(body.astype(np.uint8), "RGBA"))
 
-    cx, cy = pad + n / 2, pad + n / 2
+    dr = ImageDraw.Draw(im)
+
+    # the rim: a bright ring, strongest where the light is, fading round the back
+    ang = np.arctan2(yy - cy, xx - cx)
+    lit = np.clip(np.cos(ang + 2.36), 0, 1) ** 1.5      # brightest to the top-left
+    ring = np.clip(1.0 - np.abs(r - 0.965) / 0.045, 0, 1) * inside
+    rim = np.zeros((size, size, 4), np.float32)
+    rim[:, :, 0:3] = 255.0
+    rim[:, :, 3] = ring * (0.30 + 0.62 * lit) * 255.0
+    im.alpha_composite(Image.fromarray(rim.astype(np.uint8), "RGBA"))
+
+    # the specular: an off-centre bloom, blurred, so the surface has a direction
+    gl = Image.new("L", im.size, 0)
+    ImageDraw.Draw(gl).ellipse([pad + n * 0.17, pad + n * 0.09,
+                                pad + n * 0.72, pad + n * 0.44],
+                               fill=int(255 * SPEC))
+    gl = gl.filter(ImageFilter.GaussianBlur(n * 0.075))
+    gl = Image.fromarray((np.asarray(gl) * inside).astype(np.uint8))
+    im.paste(Image.new("RGBA", im.size, (255, 255, 255, 255)), (0, 0), gl)
+
     txt = f"{value:.1f}".rstrip("0").rstrip(".") if value < 100 else f"{value:.0f}"
     dr.text((cx, cy - n * 0.07), txt, font=_font("Bold", n * 0.34),
             fill=(255, 255, 255, 255), anchor="mm")
@@ -88,6 +141,34 @@ def _disc(d, colour, value, label, shadow=0.34):
 # Atwater's factors, the arithmetic every nutrition label on earth is built on:
 # a gram of carbohydrate or protein carries 4 kcal, a gram of fat 9.
 ATWATER = {"carbs": 4.0, "protein": 4.0, "fat": 9.0}
+
+
+def _glass_edge(im, n, spec=0.30):
+    """The rim and the specular, shared by the badge and the plate.
+
+    Written once because they have to match: two objects on the same row lit
+    from two directions is the thing an eye catches before it catches either of
+    them individually.
+    """
+    size = im.size[0]
+    yy, xx = np.mgrid[0:size, 0:size]
+    c = n / 2.0
+    r = np.sqrt((xx - c) ** 2 + (yy - c) ** 2) / c
+    inside = r <= 1.0
+    ang = np.arctan2(yy - c, xx - c)
+    lit = np.clip(np.cos(ang + 2.36), 0, 1) ** 1.5
+    ring = np.clip(1.0 - np.abs(r - 0.965) / 0.045, 0, 1) * inside
+    rim = np.zeros((size, size, 4), np.float32)
+    rim[:, :, 0:3] = 255.0
+    rim[:, :, 3] = ring * (0.26 + 0.58 * lit) * 255.0
+    im.alpha_composite(Image.fromarray(rim.astype(np.uint8), "RGBA"))
+
+    gl = Image.new("L", im.size, 0)
+    ImageDraw.Draw(gl).ellipse([n * 0.17, n * 0.09, n * 0.72, n * 0.42],
+                               fill=int(255 * spec))
+    gl = gl.filter(ImageFilter.GaussianBlur(n * 0.075))
+    gl = Image.fromarray((np.asarray(gl) * inside).astype(np.uint8))
+    im.paste(Image.new("RGBA", im.size, (255, 255, 255, 255)), (0, 0), gl)
 
 
 def _plate(d):
@@ -111,7 +192,16 @@ def _plate(d):
     # Fully opaque, not 235. At 92% the liquid's tip showed through as a dark
     # wedge just inside the left edge - the tip was hidden and its shadow was
     # not, which is the same fault one step quieter.
+    #
+    # AND IT STAYS OPAQUE while the badges beside it went to glass, which looks
+    # like an inconsistency and is not. The badges are decoration over the wave;
+    # this disc is the thing the wave ENDS IN. Give it the badges' transparency
+    # and the tapered tip is visible through it again - which is the fault the
+    # plate was added to fix. It gets the same rim and the same specular instead,
+    # so it belongs to the same set of objects without doing the one thing that
+    # would undo it.
     dr.ellipse([0, 0, n, n], fill=(18, 38, 43, 255))
+    _glass_edge(im, n)
     pad = n * 0.085
     dr.ellipse([pad, pad, n - pad, n - pad], outline=(255, 255, 255, 38),
                width=int(n * 0.085))
