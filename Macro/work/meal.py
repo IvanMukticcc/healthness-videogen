@@ -51,10 +51,16 @@ CARD = (255, 255, 255)
 # 1080x1920 in memory is 1.2 GB against 74 MB at 270.
 BEHIND_W = 270
 BLUR = 7.5              # at BEHIND_W; ~30 at 1080
-FROST = 0.62            # how far the blurred poster is pulled towards white
+FROST = 0.34            # how far the blurred poster is pulled towards white
 SAT = 1.75              # put back the colour the whitening takes out
-CARD_A = 168            # the panes themselves, out of 255
+CARD_A = 186            # the panes themselves, out of 255
 RIM_A = 120             # and the hairline that makes a pane an edge
+FOOT_A = 0.55           # the wordmark band, over the frost rather than instead of it
+# 0.34 and 0.55 are where this stops being free. Below about 0.30 the panes lose
+# the ground they need and the secondary text starts competing with whatever the
+# wave is doing behind it; below about 0.45 on the band the wordmark itself goes
+# grey, and the mark is the one thing in the frame that has to survive every
+# setting. Measured on the band rather than judged: see flow.md.
 INK = (0, 0, 0, 255)
 SUB = (72, 72, 78, 205)          # darker than the app's grey: it sits on glass,
 TRACK = (120, 120, 128, 42)      # not on an opaque card, and 142 disappears
@@ -164,19 +170,36 @@ def text(d, xy, s, f, fill, anchor="la"):
 
 
 def ring(d, cx, cy, radius, width, frac, colour, track=TRACK):
-    """The calorie ring: a track, an arc from twelve o'clock, and a round cap."""
+    """The calorie ring: a track, an arc from twelve o'clock, and round caps.
+
+    THE CAP SITS ON THE STROKE'S CENTRELINE, NOT ON `radius`. PIL draws an arc's
+    width INWARD from the bounding box, so a stroke of `width` on a box of
+    `radius` has its centreline at `radius - width/2`. Placing the cap at
+    `radius` puts it half a stroke too far out, and a cap of `width * 0.62`
+    against a stroke of `width` is a fifth too wide on top of that. Both errors
+    push the same way, which is why it read as a blob sliding off the end of the
+    arc rather than as a rounded end.
+
+    A round cap is a disc of exactly half the stroke width, centred on the
+    centreline, at BOTH ends. The one at the start matters as much: without it
+    twelve o'clock is a square edge, and a ring with one rounded end and one
+    square one looks like a mistake even to someone who cannot say what is wrong.
+    """
+    import math
     box = [(cx - radius) * S, (cy - radius) * S, (cx + radius) * S, (cy + radius) * S]
     d.ellipse(box, outline=track, width=int(width * S))
     if frac <= 0:
         return
     sweep = 360.0 * min(frac, 1.0)
     d.arc(box, -90, -90 + sweep, fill=colour, width=int(width * S))
-    # the leading dot, exactly as the app draws its cap
-    import math
-    a = math.radians(-90 + sweep)
-    hx, hy = cx + radius * math.cos(a), cy + radius * math.sin(a)
-    rr = width * 0.62
-    d.ellipse([(hx - rr) * S, (hy - rr) * S, (hx + rr) * S, (hy + rr) * S], fill=colour)
+
+    rmid = radius - width / 2.0          # the centreline PIL actually strokes
+    rr = width / 2.0                     # a cap is half the stroke, exactly
+    for ang in (-90.0, -90.0 + sweep):
+        a = math.radians(ang)
+        hx, hy = cx + rmid * math.cos(a), cy + rmid * math.sin(a)
+        d.ellipse([(hx - rr) * S, (hy - rr) * S, (hx + rr) * S, (hy + rr) * S],
+                  fill=colour)
 
 
 def bar(d, box, frac, colour):
@@ -243,7 +266,13 @@ def render(plan, t, W=1080, H=1920, behind=None):
     def deliver():
         out = Image.alpha_composite(base.convert("RGBA"), img).convert("RGB")
         out = out.resize(LOGICAL, Image.LANCZOS)
-        out.paste(fb, (0, foot_top))
+        # The glass runs the whole height, the wordmark band included. Pasted
+        # opaque it ended the pane on a hard horizontal edge just above the logo,
+        # which read as a strip stuck on rather than as the bottom of the same
+        # sheet. Blended at FOOT_A the poster still moves through it and the mark
+        # stays white on dark, which is the one thing that has to survive.
+        strip = out.crop((0, foot_top, LOGICAL[0], LOGICAL[1]))
+        out.paste(Image.blend(strip, fb, FOOT_A), (0, foot_top))
         return out if (W, H) == LOGICAL else out.resize((W, H), Image.LANCZOS)
 
     fb = footer(LW)
@@ -372,7 +401,24 @@ def main():
          "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "17",
          "-pix_fmt", "yuv420p", a.out], stdin=subprocess.PIPE)
     for i in range(n):
-        b = bg[(a.behind_offset + i) % len(bg)] if bg else None
+        # CLAMPED, NOT WRAPPED. Act one loops in LIQUID - flowanim guarantees the
+        # surface travels the ribbon exactly once - but it does not loop in
+        # CONTENT: the badges accumulate over the eight seconds and never reset,
+        # so frame 0 has five bare rings where frame 191 has fifteen badges, five
+        # filled arcs and the finale. Measured, frame 0 against frame 191: mean
+        # 14.27, 14.19% of the frame different.
+        #
+        # 14 + 180 overshoots 192 by two, so a modulo put act one's frame 0 under
+        # act two's second-to-last frame and every coloured bloom behind the
+        # frost blinked out at 15.96s of a 16 second clip - 5.30% of the frame
+        # over 20 levels, against neighbouring steps of 0.004 to 0.012. Two
+        # hundred times the normal step, on the held ending, where nothing else
+        # is moving at all.
+        #
+        # Holding the last frame instead costs a two-frame freeze of a backdrop
+        # that is already moving about 0.011 mean per step under heavy blur at
+        # 270 wide. The freeze is invisible; the blink was the only thing moving.
+        b = bg[min(a.behind_offset + i, len(bg) - 1)] if bg else None
         im = render(plan, i / a.fps, a.width, a.height, behind=b)
         if i == 0 and a.first_frame:
             im.save(a.first_frame)

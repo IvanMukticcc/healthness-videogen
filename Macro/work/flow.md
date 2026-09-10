@@ -76,8 +76,27 @@ act is not a screen that replaces the poster - it is a pane laid over it, and
 the liquid keeps moving underneath. `flowanim.py` guarantees the surface travels
 a whole number of ribbon lengths, so act one's frame N is act one's frame 0:
 continuing it behind act two costs one decode and no second render. Act two's
-first frame sits over act one's frame `(act1_frames + flip_frames) mod
-act1_frames`, and the wave carries on as though it had never stopped.
+first frame sits over act one's frame `act1_frames + flip_frames`, and the wave
+carries on as though it had never stopped.
+
+**It is clamped at the last frame, never wrapped, and the distinction is the
+whole of it: act one loops in LIQUID, not in content.** The surface travels the
+ribbon exactly once, so the wave joins seamlessly - but the badges accumulate
+across the eight seconds and never reset, so frame 0 has five bare rings where
+frame 191 has fifteen badges, five filled arcs and the finale. Frame 0 against
+frame 191 is mean 14.27 with 14.19% of the frame different. A modulo therefore
+put frame 0 under act two's second-to-last frame and every coloured bloom behind
+the frost blinked out at 15.96s of a 16 second clip: 5.30% of the frame over 20
+levels, against neighbouring steps of 0.004 to 0.012. Two hundred times the
+normal step, on the held ending, where nothing else moves at all. Holding the
+last frame costs a two-frame freeze of a backdrop already moving 0.011 mean per
+step under heavy blur - invisible, where the blink was the only thing visible.
+
+**The frost and the wordmark band have a floor, and it is the mark.** `FROST`
+0.34 and `FOOT_A` 0.55. Below about 0.30 the panes lose the ground they need and
+the secondary text starts competing with the wave behind it; below about 0.45 on
+the band the wordmark goes grey. Measured at the shipped values rather than
+judged: the mark reads 195 against a ground of 62, a separation of 133.
 
 The backdrop is decoded at 270 wide and blown back up. It is about to be blurred
 past any detail that width could have carried, and 192 frames of 1080x1920 in
