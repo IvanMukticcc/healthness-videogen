@@ -403,6 +403,49 @@ When a number changes, grep the prose for the old value before committing - and
 when reading a document to learn how something works, read the table first and
 treat the paragraph above it as a claim about the table.
 
+## Naming the knob is a prediction, and the root is the worst placed to make it
+
+Handing `meal.py` back to Macro on 10 September I flagged a regression I could
+see coming - the frost had gone from 0.62 to 0.34, so the ring's grey track was
+now sitting on a busier ground - and then added a prescription: *the fix is the
+track's alpha, not the frost.*
+
+It went exactly as predicted and the prescription was wrong. Their measurement:
+
+    FROST 0.62, track alpha 42    arc 111.3   track darkest 163.0   separation 51.7
+    FROST 0.34, track alpha 42    arc 111.3   track darkest 113.3   separation  2.0
+    FROST 0.34, track alpha 120   arc 111.3   track darkest 167.0   separation 55.7
+
+Two levels. In luminance the darkest part of the *empty* track had become the
+value arc, and only hue still separated them. But the third row is not the alpha
+doing the work - they also solved `(120, 120, 128)` at alpha **255**, fully
+opaque with no glass left at all, and it lands at 122.7, still 11.4 levels from
+the arc. **No alpha could have fixed it.** The constant itself was nearly as dark
+as the green. What fixed it was a lighter colour, `(228, 228, 236)`.
+
+The reason I named the wrong knob is worth more than the fix. **At 42 of 255,
+84% of what both of us read as "a grey track" was the pale pane behind it.** It
+was never a track. It looked correct at frost 0.62 because the ground was 187
+mean; at 0.34 the ground under that ring runs 111 to 238 as the rows pass, and
+the track was simply reporting it. I had a name for the thing in my head, the
+name implied which parameter owned its appearance, and the name was false.
+
+Two things to take from it:
+
+**Anything drawn at low alpha over a moving ground is not a colour. It is a tint
+on whatever is behind it**, and its measured value is a property of the ground,
+not of the constant. It is safe only while the ground holds still. Macro's
+`flow.md` carries this generalised, because the next frost change will do it
+again.
+
+**A prescription from the root is a hypothesis and should be labelled one.** The
+useful half of what I sent was "watch the track" - that was worth sending and it
+was right. The harmful half was naming the parameter, because it points the
+person who *can* measure at one knob before they have looked. Their method was
+the correct one and it is the one to copy: recover the ground from the frame,
+then solve the composite for every candidate *before* rendering any of them.
+Predicted 167.6 and 56.3, measured 167.0 and 55.7, one render.
+
 ## Where the record is
 
 `git log` is the history, and the commit messages carry the reasoning and the
