@@ -511,33 +511,44 @@ send the instruction a second time.
 ## Measure audio in its native channel layout
 
 `ffmpeg -map 0:a -f f32le -ac 1 -` is the obvious way to get samples into numpy
-and it is wrong for these clips by 2.0 dB.
+and it is wrong for these clips by 2 dB. On `breakfast_macro.mp4`:
 
-Every mix in this repository is built from mono sources - `impact.py` returns
-mono, the pops and the chord are mono wavs - and fanned out to stereo at
-encode. So the two channels are identical, and asking the resampler to
-rematrix a fully correlated pair back to one channel raises it rather than
-averaging it. The same bytes, `OUTPUT/10.09/breakfast_macro.mp4`:
+    native, per channel       L 0.8145   R 0.6527
+    (L+R)/2, computed here    0.7298
+    ffmpeg -ac 1              1.0321      <- above BOTH channels
 
-    native channels          peak 0.7323 (-2.71 dBFS)   RMS -23.6
-    -ac 1 -ar 48000          peak 0.9212 (-0.71 dBFS)   RMS -20.8
+On the strength of that last row this session concluded AAC was overshooting by
+2 dB, that four samples were clipping, and dropped a limiter ceiling from 0.82 to
+0.74 to buy headroom against it. None of it was real.
 
-On the strength of the second row this session concluded that AAC was
-overshooting by 2 dB, that four samples were clipping, and dropped a limiter
-ceiling from 0.82 to 0.74 to buy headroom against it. None of that was real. It
-was found because macro-c1 measured the same clip and could not reproduce the
-figures - not because anything looked wrong.
+**The mechanism, which took two goes to get right.** The first explanation
+written here was that every mix in this repository is mono fanned out to stereo,
+so the channels are identical and rematrixing a correlated pair raises it.
+macro-c1 measured the shipped file and the premise is false: the channels are
+1.92 dB apart, `max |L-R|` is 0.5576, correlation 0.863. The water beds in
+`engine/sfx/` are genuine stereo and everything else in the mix is mono, so the
+result is neither.
 
-Two rules and a caution:
+What is actually happening is simpler and does not depend on the content at all:
+**ffmpeg's stereo-to-mono downmix preserves POWER, not amplitude.** It is
+`(L+R)/√2`, which is +3.01 dB above the arithmetic mean - measured here as
+exactly +3.01. On anything better correlated than noise that lands above either
+channel's peak, and a peak measurement made through it is not a peak
+measurement of the file.
+
+That correction matters more than the original entry. A rule with a true
+conclusion and a false premise is worse than no rule: the next person reads "the
+channels are identical", believes a mono sum is lossless here, and it is not.
 
 **Decode in the file's own layout and rate.** No `-ac`, no `-ar`, unless the
-resample is the thing being measured. These clips are 96 kHz, so a `-ar 48000`
-in a measurement is a second unasked-for conversion sitting under the first.
+conversion is the thing being measured. These clips are 96 kHz, so a
+`-ar 48000` is a second unasked-for conversion under the first.
 
-**When two sessions disagree about a number, neither figure is the finding -
-the difference is.** A 2 dB gap between two competent measurements of one file
-is not a rounding argument to be split; it means one of the pipelines is doing
-something the other is not, and that is worth more than whichever number wins.
+**When two sessions disagree about a number, neither figure is the finding - the
+difference is.** A 2 dB gap between two competent measurements of one file is
+not a rounding argument to be split; it means one of the pipelines is doing
+something the other is not. Both times today that gap was resolved by finding
+the extra step, not by preferring the more senior number.
 
 ## Where the record is
 
