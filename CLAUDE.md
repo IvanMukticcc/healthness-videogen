@@ -156,3 +156,13 @@ is every mistake that cost an hour, with the measurement that found it. They all
 came back twice before being written down: the flat bowls, ten captions at ten
 sizes, the liquid cut where it meets the organ, the wave that climbed to the
 right. Do not rediscover them.
+
+10. **A body part named by its address draws everything at that address.** Micro
+    asked for the *chewing muscle* and got the jaw hinge with its bone; it asked
+    for the *shoulder muscle* and got the joint. Both times the cure was
+    **deleting the address, not adding a prohibition** - describing the tissue
+    and what it does, with no location in the sentence. A generator handed a
+    place draws what lives there, and a list of things not to draw is a list of
+    things to think about. Exercise has the same exposure and hit it
+    independently, which is what makes it a house rule rather than one folder's
+    note.

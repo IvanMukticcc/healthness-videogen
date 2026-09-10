@@ -192,6 +192,19 @@ def ghost(base_png, y0, y1, size=(1080, 1920), ref=None, **kw):
     Macro's heading is safe because of what its poster has NOT got in the top
     140 px, not because the frost handles it. A base with anything up there puts
     the heading on a live band, and nothing warns you.
+
+    **72-130 IS THE FLOOR, NOT A PREFERENCE.** micro-bb measured nine bases at
+    four heights and every step down is worse, because act one's own title sits
+    at 143-274 and a 30 px blur carries it upward:
+
+        72-130    31 to 72 levels    against ordinary bands of 28 to 77
+        90-148    52 to 86
+        110-168   70 to 89
+        130-188   76 to 92
+
+    So there is no room to go lower. If a title is ever asked to move down
+    again, the answer is the card moving up under it, not the title moving into
+    the ghost.
     """
     import numpy as np
     im = Image.open(base_png).convert("RGB")
@@ -277,6 +290,21 @@ def shadow(img, box, r, blur=18, alpha=15, dy=6):
 
 
 def text(d, xy, s, f, fill, anchor="la"):
+    """Draw a string. **The anchor moves the type further than the coordinate.**
+
+    PIL's second anchor letter is the vertical one: `a` is the ASCENDER, `m` the
+    middle, `s` the baseline. So `("ma", 96)` puts the top of the type at 96 and
+    `("mm", 92)` puts its MIDDLE at 92 - four pixels apart in the source and
+    twenty-eight on screen. Measured on a 40 px face:
+
+        anchor="ma" at y=96    ink spans y 106-134
+        anchor="mm" at y=92    ink spans y  78-106
+
+    micro-bb found it with act two's title sitting level with Instagram's back
+    chevron and camera button while the source said it was four pixels from
+    Macro's. It only shows on a phone, and only against somebody else's UI.
+    """
+
     d.text((xy[0] * S, xy[1] * S), s, font=f, fill=fill, anchor=anchor)
 
 
