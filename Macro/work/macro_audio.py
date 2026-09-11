@@ -150,7 +150,10 @@ def main():
     write_wav(a.act2_out, buf[:int(total * SR)])
     print(f"  act one: {len(cues)} pops"
           + (f", chord at {t0:.2f}s" if a.finale_out and a.finale_file else "")
-          + f"  |  act two: {len(c['foods'])} ticks, ring {ring_len:.2f}s, bell at "
+          # "chord" in both halves on purpose: it is the same buffer at the
+          # same gain, and the two times are the spacing that keeps the repeat
+          # reading as a bracket rather than an echo.
+          + f"  |  act two: {len(c['foods'])} ticks, ring {ring_len:.2f}s, chord at "
             f"{c['verdict']:.2f}s")
 
 

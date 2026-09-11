@@ -34,7 +34,7 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONTS = "/Library/Fonts"
 
-# The goal is a PERSON, not a label. See profile.py: the app computes it from
+# The goal is a PERSON, not a label. See dailygoal.py: the app computes it from
 # body and intent, and a clip measuring the same food against the EU reference
 # intake would be advertising a product it disagrees with. The default profile
 # is stated on screen and overridable from render.sh.
@@ -53,7 +53,7 @@ DEFAULT_PROFILE = dict(weight_kg=66, height_cm=172, age=30, sex="male",
 sys.path.insert(0, os.path.join(HERE, "..", "..", "engine"))
 from glass import (                                                # noqa: E402
     BG, CARD, INK, SUB, TRACK, BLUE, GREEN, RED, ORANGE, S,
-    BEHIND_W, BLUR, FROST, SAT, CARD_A, RIM_A, FOOT_A,
+    BEHIND_W, BLUR, FROST, SAT, CARD_A, RIM_A, FOOT_A, SAFE_X,
     behind_frames, frost, footer, font, ease, overshoot,
     rounded, pane, shadow, text, ring, bar, walk as _walk,
 )
@@ -129,8 +129,13 @@ def render(plan, t, W=1080, H=1920, behind=None):
 
     fb = footer(LW)
     foot_top = LH - fb.height
-    if plan.settle > 0 and t <= 0:
-        return deliver()
+    # NOTHING ON THIS CARD ARRIVES TWICE. Act two's frame 0 is the face the flip
+    # turns towards the viewer, so whatever it is, the turn has already delivered
+    # it. Returning early here made that face a bare frosted pane and then had
+    # the title, the panes and the chips fade in on top of it - the card arriving
+    # a second time, after the turn already said it had. What settles now is the
+    # content; the furniture is there from the first frame because the flip put
+    # it there.
 
     text(d, (LW / 2, 96), plan.title, f_title, INK, anchor="ma")
 
@@ -139,7 +144,14 @@ def render(plan, t, W=1080, H=1920, behind=None):
     # between is sized from what is left, so a five-food meal does not run into
     # the wordmark and a three-food one does not leave a hole where the fourth
     # row would have been.
-    pad, top = 54, 160
+    # SAFE_X, not 54. Act one has kept one fourteenth of the width clear since
+    # the first prompt because that strip is what a vertical feed crops; act two
+    # was authored at half that and the clips went out with Instagram's action
+    # rail sitting on the Fat chip and the ring's right shoulder. The engine's
+    # comment carries why 96 rather than the ~215 it would take to clear the rail
+    # outright: that is a 43% narrower card, and the rail is asymmetric, so a
+    # card that dodged it would read off-centre for everyone who never taps.
+    pad, top = SAFE_X, 160
     rowh = 96
     n = len(plan.rows)
     listbox = (pad, top, LW - pad, top + 34 + rowh * n)
@@ -166,47 +178,51 @@ def render(plan, t, W=1080, H=1920, behind=None):
     ringtop = listbox[3] + gap
     ring_h = max(560, foot_top - note_h - chip_h - gap * 3 - ringtop)
     ringbox = (pad, ringtop, LW - pad, ringtop + ring_h)
-    # The ring pane FADES IN. It used to appear on one frame, which measured as a
-    # 20.8 level step in the middle of the act - the same order as the backdrop
-    # blink that was treated as a bug, and the largest thing in act two after the
-    # card landing. The list pane is there from the start and the chips fade, so
-    # this was the only element in the frame arriving by cut.
-    # The lead is 0.10, not 0.42. A pane that starts fading 0.42s before its cue
-    # is ON SCREEN 0.42s before its cue, so the half-second the user asked for
-    # between the food and the ring was being spent on the pane's own fade and
-    # measured 0.13s. The cue is when the arc moves; the card only needs to be
-    # there a moment before it, not most of a beat before it.
-    ring_in = ease((t - (plan.ring0 - 0.10)) / 0.30)
-    if ring_in > 0:
-        shadow(img, ringbox, 30, alpha=int(15 * ring_in))
-        pane(d, ringbox, 30, ring_in)
-        cx, cy = LW / 2, ringtop + ring_h * 0.44
-        rad, wid = min(214, ring_h * 0.31), 44
-        p = ease((t - plan.ring0) / plan.ring_dur)
-        frac = plan.tot["kcal"] / plan.who["kcal"] * p
-        col = ORANGE if plan.tot["kcal"] > plan.who["kcal"] else GREEN
-        ring(d, cx, cy, rad, wid, frac, col)
-        shown = plan.tot["kcal"] * p
-        text(d, (cx, cy - 34), f"{shown:,.0f}".replace(",", "."), f_big, INK, anchor="mm")
-        text(d, (cx, cy + 66), f"/ {plan.who['kcal']:,.0f} kcal".replace(",", "."),
-             f_of, SUB, anchor="mm")
-        if t > plan.verdict:
-            pct = 100 * plan.tot["kcal"] / plan.who["kcal"]
-            v = ease((t - plan.verdict) / 0.4)
-            vc = col + (int(255 * v),)
-            text(d, (cx, ringbox[3] - 62), f"{pct:.0f}% of a day", f_verd, vc, anchor="mm")
+    # THE RING PANE IS FURNITURE, and its track is a ring at zero.
+    #
+    # This pane used to arrive by cut - a 20.8 level step mid-act - and the fix
+    # for that was a fade with a 0.10 lead. Making the card's other panes present
+    # from frame 0 exposed what the fade was really hiding: for the first second
+    # and a half of act two there was a HOLE between the list and the chips,
+    # where this card is going to be. A gap in the middle of the frame is worse
+    # than either the cut or the fade, and it exists for the same reason both of
+    # them did - the pane was treated as something that arrives.
+    #
+    # It does not arrive. The flip already turned this card towards the viewer.
+    # An empty ring is not a placeholder for a ring; it is a ring at zero, which
+    # is what the app draws before you have eaten anything, and it holds the
+    # bottom half of the card while the list counts in. Only the arc waits for
+    # the cue, which is the same rule act one's plate has followed since the wave
+    # had nothing to end in.
+    shadow(img, ringbox, 30, alpha=15)
+    pane(d, ringbox, 30)
+    cx, cy = LW / 2, ringtop + ring_h * 0.44
+    rad, wid = min(214, ring_h * 0.31), 44
+    p = ease((t - plan.ring0) / plan.ring_dur)
+    frac = plan.tot["kcal"] / plan.who["kcal"] * p
+    col = ORANGE if plan.tot["kcal"] > plan.who["kcal"] else GREEN
+    ring(d, cx, cy, rad, wid, frac, col)
+    shown = plan.tot["kcal"] * p
+    text(d, (cx, cy - 34), f"{shown:,.0f}".replace(",", "."), f_big, INK, anchor="mm")
+    text(d, (cx, cy + 66), f"/ {plan.who['kcal']:,.0f} kcal".replace(",", "."),
+         f_of, SUB, anchor="mm")
+    if t > plan.verdict:
+        pct = 100 * plan.tot["kcal"] / plan.who["kcal"]
+        v = ease((t - plan.verdict) / 0.4)
+        vc = col + (int(255 * v),)
+        text(d, (cx, ringbox[3] - 62), f"{pct:.0f}% of a day", f_verd, vc, anchor="mm")
 
     # ---- the three chips --------------------------------------------------
     chiptop = ringbox[3] + gap
     cw = (LW - pad * 2 - 24) / 3
     for i, key in enumerate(("carbs", "protein", "fat")):
         tt = (t - (plan.chip0 + plan.chipgap * i)) / plan.chip_dur
-        if tt <= 0:
-            continue
         x0 = pad + i * (cw + 12)
         box = (x0, chiptop, x0 + cw, chiptop + chip_h)
         shadow(img, box, 26, blur=14, alpha=12)
         pane(d, box, 26)
+        if tt <= 0:                     # the pane is furniture; the figures wait
+            continue
         val, ref = plan.tot[key], plan.who[key]
         k = ease(min(tt, 1.0))
         text(d, (x0 + 26, chiptop + 30), key.capitalize(), f_chip, SUB)

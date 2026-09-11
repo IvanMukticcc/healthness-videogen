@@ -55,11 +55,31 @@ with nothing to notice it by.
 **The totals are summed from the portions, never carried beside them.** Somebody
 will add five numbers on a phone and has to get the sixth.
 
-**The reference intake is the labelling yardstick, not a goal.** EU 1169/2011
-Annex XIII — 2000 kcal, C 260 g, P 50 g, F 70 g — is printed on every packet of
-food in Europe, is not advice, and is named on screen. The app shows a user's own
-goal; a clip has no user, and a goal on screen would be a goal for nobody or an
-implied recommendation.
+**The day belongs to a stated person, and the statement is load-bearing.** Act two
+measures the meal against a goal computed the way the app computes it —
+`dailygoal.py`, whose `--verify` checks every constant against `BodyEnergy.swift`
+and `OnboardingState.swift` rather than trusting a transcription — and no longer
+against EU 1169/2011. The reason is `foods.py`'s reason: a viewer who opens
+Healthness sees a goal computed from their body, and a clip measuring the same
+food against a different denominator advertises a product it disagrees with.
+
+What made the reference intake safe was that 2000 kcal is a printed labelling
+constant belonging to nobody. A goal computed from 172 cm and 66 kg is a
+statement about a person, and the only thing standing between it and advice to
+whoever is watching is the line naming who it was computed for. **That line is
+not a caption.** It does not get shortened for space, dropped for a longer meal,
+or covered, and the comment at its draw site says so — because the next person
+tightening act two's layout will see a long grey footer and reach for it. If act
+two needs room, it comes from somewhere else.
+
+**The three macro goals do not sum to the calorie goal, and that is the app, not
+us.** `dailyProteinGoal` is grams per kilogram of bodyweight and never touches
+the calorie goal, so at the shipped profile the three account for 93% of it. That
+is a different gap from the food data's own disagreement with Atwater 4/4/9,
+which `foods.py` prints on every meal and which was +2.8% on breakfast and −0.1%
+on lunch. Two causes, one symptom: name them separately or someone will fix the
+wrong one. The clip shows what the app shows, and reconciling them here would be
+the disagreement `foods.py` exists to prevent.
 
 **Nothing on a per-100 g figure gets a denominator.** The right-hand ring is a
 composition — the three macros' share of that food's energy on Atwater's 4/4/9 —
@@ -77,9 +97,20 @@ If this variant needs something the engine does not do, **say so and stop**. The
 seams are `--overlay` with `build`/`draw`/`cues`, and `refine_art`. See
 `../CLAUDE.md` rule 3.
 
-**`flip.py` is deliberately not in the engine.** One variant flips. If a second
-one ever wants to, that is when it moves — the way `grab.py` and
-`caption_glass.py` got there, after a second user appeared and not before.
+**A thing moves to the engine when a second user appears, and not before.**
+`flip.py` was in this folder for exactly as long as Macro was the only variant
+that flipped. When Micro's act two was asked for on 10 September there were two,
+and `flip.py` moved that afternoon along with `engine/glass.py`, extracted from
+`meal.py` — the same way `grab.py` and `caption_glass.py` got there. The rule is
+the part worth keeping, not the location: a second user is the trigger, and
+anticipating one is how the engine fills up with things nobody else calls.
+
+The move was proved rather than asserted, which is the bar for a change that
+reaches six folders. Both halves came back byte-identical on the author's own
+before-and-after, and this folder re-rendered `breakfast` and `salad` against
+the files already shipped in `OUTPUT/10.09/` — byte-identical there too, same
+md5. That second check is the one that catches a mistake consistent across both
+halves of the first.
 
 ## What is unfinished
 

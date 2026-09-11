@@ -154,8 +154,34 @@ def labels_for(names):
     for n in names:
         f = refuse_unsourced(find(n))
         d, _ = dominant(f)
-        out.append(f"{f['name'].upper()}|{d}")
+        out.append(f"{caption_name(f['name'])}|{d}")
     return ",".join(out)
+
+
+def caption_name(name):
+    """The database name, safe to put in add_labels' comma-separated string.
+
+    `add_labels.py` takes one argument - five `FOOD|SIDE` pairs joined by
+    commas - and parses it with a bare `split(",")`. There is no escape and no
+    other input, so a caption may not contain a comma. That is the engine's
+    contract and it is this folder's job not to violate it.
+
+    442 of the app's 2272 foods have a comma in the name and every one of them
+    is USDA-sourced, so every one can legitimately reach a Macro row: "Bell
+    pepper, red", "Apple, with skin", "Anchovy, canned in olive oil". A fifth of
+    the database. The first to arrive was bell pepper on the sandwich topic, and
+    it failed loudly - "6 label pairs for 5 rows" - which is the good case. The
+    quiet one is a name whose comma splits it into a pair that still parses.
+
+    The comma is dropped rather than the words reordered. USDA writes the
+    qualifier last, so "Bell pepper, red" would read better as "RED BELL PEPPER"
+    - but the same rule turns "Apple, with skin" into "WITH SKIN APPLE", and a
+    transform that is right on one pattern and wrong on the next is worse than
+    one that is plain everywhere. Dropping the comma leaves BELL PEPPER RED and
+    APPLE WITH SKIN, both of which read, and neither of which invents or
+    reorders anything the database said.
+    """
+    return name.replace(",", "").upper()
 
 
 def portion(name, grams):

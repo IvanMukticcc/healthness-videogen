@@ -51,7 +51,7 @@ POP_GAIN="${POP_GAIN:-0.85}"
 # tested, which it never had been.
 CEIL="${CEIL:-0.82}"
 WIDTH="${WIDTH:-1080}"
-# Whose day the meal is measured against. profile.py computes it the way the app
+# Whose day the meal is measured against. dailygoal.py computes it the way the app
 # does; these are its inputs and they are printed on screen, which is what keeps
 # a personal goal from reading as advice to whoever is watching.
 SEX="${SEX:-male}"; AGE="${AGE:-30}"; HEIGHT="${HEIGHT:-172}"; WEIGHT="${WEIGHT:-66}"
