@@ -25,16 +25,62 @@ Derived, so it is not in git — the command is, and this is it:
 
 ```
 ../.venv/bin/python ../../engine/recolor_base.py \
-  --rows '#12262B,#EDF0EE' \
+  --rows '<dark>,<light>' \
   --waves '<c1>,<c2>,<c3>,<c4>,<c5>' \
   --vibrance 1.05 --contrast 1.04 \
   --title '<THE TITLE>' \
   -o ../INPUT/base_<topic>.png --work .
 ```
 
+The wave colours are the foods', top to bottom.
+
+**`--rows` IS A DECISION PER TOPIC, NOT A DEFAULT.** This line used to read
+`--rows '#12262B,#EDF0EE'` with the colours written in, and sixteen topics in a
+row used that pair because it was sitting there looking like part of the command.
+The user asked twice why every Macro clip had the same background; Micro varies
+per topic and it is most of why its clips read as different videos rather than
+one video with the food swapped. A topic chooses its rows the way it chooses its
+waves — from what it is — and `<dark>,<light>` is written as a hole here so it
+cannot be used without choosing.
+
+The constraint is one thing only: **the dark row stays dark**, because the title
+is white on it. Everything else is taste. That same constraint is why a Macro
+palette cannot fail `glass.ghost(base, 72, 130)` — the band act two draws its
+heading in sits above act one's title on flat row colour, so a dark row keeps the
+heading off live colour automatically. Measured across the riskiest candidates:
+band 5.1-6.7 against ordinary 29.6-76.6, all passing.
+
+A palette per topic, adjust on taste:
+
+| | dark | light | |
+| --- | --- | --- | --- |
+| breakfast | `#2E1F0E` | `#F6F0E2` | oat and honey |
+| curry | `#35200A` | `#F7EFDC` | turmeric |
+| dinner | `#14203A` | `#EFEFE8` | night blue |
+| fishsupper | `#102A33` | `#E9F1F2` | sea slate |
+| lunch | `#1E2A14` | `#F1F2E6` | olive |
+| lunchbox | `#33261A` | `#F4EEE2` | kraft |
+| mezze | `#3A1E14` | `#F7EEE4` | terracotta |
+| omelette | `#2A2210` | `#F8F2E0` | butter |
+| pasta | `#2E120F` | `#F5EFE6` | tomato |
+| roast | `#241A14` | `#F3EDE2` | charred — the first one shipped |
+| ryeplate | `#2A241A` | `#F3EFE4` | rye |
+| salad | `#16281C` | `#EEF3E9` | leaf |
+| sandwich | `#2D2317` | `#F6F0E4` | sourdough |
+| smoothie | `#2A1030` | `#F5EDF2` | berry |
+| snack | `#241A10` | `#F4EDE0` | cocoa |
+| stirfry | `#1E1A10` | `#F2EFE2` | soy |
+| tunabowl | `#122630` | `#EDF2F0` | ocean |
+
 `breakfast` was made with waves
 `#F2EFE6,#4C3F8F,#D9A02B,#C8A46A,#B8763F` and the title
-`WHAT IS IN YOUR BREAKFAST`. The wave colours are the foods', top to bottom.
+`WHAT IS IN YOUR BREAKFAST`, on the old shared pair — as were the fifteen after
+it. Only `roast` shipped with its own.
+
+**Re-basing an existing topic costs a generation.** The row colours are in the
+poster's pixels, so changing them means a new base AND a new poster from the
+generator — it is not a re-render. Sixteen topics is sixteen handovers of the
+user's time, and that number goes to them before the queue starts, not after.
 
 ## 2. The prompt
 
