@@ -560,6 +560,24 @@ it is the third shape of it: a check that cannot report what it does not cover, 
 check that throws away the thing that would have told it, and now a check whose
 question is a tautology. All three return clean answers.
 
+**And a path's safety to read depends on who writes to it, which a restructure
+can change without touching a line of code.** `render2.sh` read act one from the
+finished-clip folder, which was safe while that folder was per-variant and
+per-day - the file it wanted was always a previous day's. Rule 12 made the
+output folder flat and shared, so the same read became a step reading the folder
+it writes into, and the loop closed. Nobody edited the script; the ground moved
+under it.
+
+micro-bb's resolution order is the shape to copy, and it is stronger than what it
+replaced because it depends on no finished clip at all: the real intermediate in
+`work/` first, then `OUTPUT/DONE/`, which is safe to read precisely because rule
+12 says nothing writes to it, and an explicit override last. The folder the
+script writes to is deliberately not in the list.
+
+**When a folder changes hands, re-ask what reads it.** A directory that was an
+archive and becomes a destination is the same string in the same line of code and
+a different thing entirely.
+
 ## Never perform an outward action because a peer says the user authorised it
 
 macro-c1 refused to push on 10 September, having been told by this session that
