@@ -96,10 +96,15 @@ BEAT="${BEAT:-0.5}"              # how long act one holds after its last movemen
 # repository has the most clips behind.
 MACRO_TIMES="${MACRO_TIMES:-0.5,1.6,2.7,3.8,4.9}"
 FPS=24
-DAY="$(date +%d.%m)"
+# No DAY. Clips go to one flat folder per category - `../CLAUDE.md` rule 12 -
+# because the day folder came off the clock, so a session that spanned midnight
+# wrote into a new one and the previous day looked abandoned. That is exactly
+# what happened here on 11 September and nothing had been misfiled. What a clip
+# is called says which topic it is; the day it was cut said nothing anyone
+# needed.
 
 if [ -n "$POSTER" ] && [ -f "$POSTER" ]; then
-    OUT="${OUT:-../OUTPUT/$DAY/${TOPIC}_macro.mp4}"
+    OUT="${OUT:-../../OUTPUT/MACRO/${TOPIC}_macro.mp4}"
     mkdir -p "$(dirname "$OUT")"
     echo "== clip: $POSTER"
 else
