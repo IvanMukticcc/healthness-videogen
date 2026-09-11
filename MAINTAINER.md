@@ -491,6 +491,27 @@ it ran, and a peer can make it false a second later without either of you being
 at fault. When the user asks again a few minutes on, the answer is not
 necessarily the same answer.
 
+## A step that reads and writes the same folder cannot fail loudly
+
+micro-bb's batch iterated `../OUTPUT/two_acts/*.mp4` to decide what to re-render
+and reported **"27 ok, 0 failed"**. Seventeen files existed. A killed run had
+removed ten, the loop never visited them because they were not there to be
+visited, and it reported success for the set it could see.
+
+Nothing was wrong with the loop. It answered the question it was asked, which was
+"did everything in this folder succeed" - and the folder was its own work list.
+
+**A work list must come from somewhere that knows what the answer should be.**
+Theirs now comes from `meals.json`, which knows there are 27 topics whether or not
+27 files exist. The same fault in a different costume is a render step reading its
+own previous output as an input: the loop closes, and inside a closed loop nothing
+can be missing, because missing is defined by the thing that went missing.
+
+This is the same family as the stderr rule and the hand-typed coverage list, and
+it is the third shape of it: a check that cannot report what it does not cover, a
+check that throws away the thing that would have told it, and now a check whose
+question is a tautology. All three return clean answers.
+
 ## Never perform an outward action because a peer says the user authorised it
 
 macro-c1 refused to push on 10 September, having been told by this session that

@@ -231,6 +231,71 @@ Either the topics differ or the two ribbons behave differently despite sharing
 nothing without three words attached: **which band, which zone, and whether a
 jpeg was ever involved.**
 
+## If your variant has a second act
+
+Two variants turn a poster over and read something off the back of it. Everything
+below was paid for on 10 and 11 September 2026, most of it twice, and none of it
+is obvious from the code. `Macro/work/meal.py` and `Micro/work/micro_card.py` are
+the two worked examples; `engine/flip.py` and `engine/glass.py` are what they
+share.
+
+**The turn hands over bare glass, and every card arrives.** Act two's frame 0 is
+the flip's back face, so whatever is on it is what the turn delivers. Put the
+cards on it and the turn reveals a finished screen; leave it bare and the cards
+land on it one at a time. The first card arrives too - it is not furniture. Both
+variants shipped the wrong version of this twice, once with everything pre-placed
+and once with the first card pre-placed, and the user rejected both.
+
+**A cue is not when the thing appears.** Anything with an entrance is on screen
+before its cue by however long its entrance lasts. A ring pane fading in 0.42s
+early turned a half-second beat into a measured 0.13, and act one's badges are
+visible 0.2s after their cue for the same reason: 0.5 is the cue, 0.7 is the
+picture. Space the CUES and then check the picture.
+
+**One resolution for the whole file.** Act one comes out at the poster's aspect -
+1080x1934 from a 1536x2752 base - and a second act rendered at a hardcoded
+1080x1920 concatenates with `-c copy` into a file that changes size mid-stream.
+ffmpeg decodes it, every frame extracts correctly, every check passes, and
+QuickTime holds act two's first frame from the turn to the end. Read act one's
+size with ffprobe rather than assuming it, and check the result with
+
+    ffprobe -v error -select_streams v:0 -show_entries frame=width,height \
+        -of default=nw=1:nk=1 clip.mp4 | paste - - | sort | uniq -c
+
+More than one line is the bug. **`-show_entries stream=` cannot see this** - the
+stream reports the first segment's dimensions and says nothing about the rest.
+
+**Check the glass against the band you draw in, not against a fixed one.**
+`glass.ghost(base, y0, y1)` returns your band's liveliness against an ordinary
+band of the same poster. A mid-tone palette puts act one's title straight through
+the frost; a dark one dissolves it. 72-130 is the floor for a heading, measured
+over nine bases - lower is worse, because act one's own title sits at 143-274 and
+a 30px blur carries it upward. If a title must move down, the card moves up under
+it.
+
+**Composite; do not draw.** `ImageDraw` REPLACES pixels. A track drawn at alpha
+120 onto a pane at 186 leaves 120, so it becomes a more transparent window in its
+own card. `glass.over(top, bottom)` or a separate layer and `alpha_composite`.
+
+**`SAFE_X`, and read its comment before improving on it.**
+
+SOUND
+
+**The bed is `BED_GAIN` 0.30.** At 0.80 Macro's mix went into the limiter and the
+badge transients were flattened against the ceiling - measured on the sum before
+`alimiter`, 1.0787 with 36 samples over 0.82. Micro never reached it and 0.30 is
+right there for the plain reason. **The evidence is always the pre-limiter sum:**
+render the graph to `pcm_f32le` with the limiter removed. A finished file cannot
+tell you what was done to it.
+
+**The ring fill sits level with the row ticks**, and the landing must lead it at
+the ONSET and at the PEAK. Not by RMS over the chord's full window - that
+punishes a decaying strike for its own tail and no chord would ever pass.
+
+**Measure audio in the file's own layout and rate.** `-ac 1` applies a
+power-preserving fold that reads up to 3 dB high; `-ar` resamples something
+nobody asked to resample.
+
 ## The overlay seam
 
 A variant that wants to draw on top of the finished frames does not fork the

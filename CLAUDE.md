@@ -166,3 +166,16 @@ right. Do not rediscover them.
     things to think about. Exercise has the same exposure and hit it
     independently, which is what makes it a house rule rather than one folder's
     note.
+
+11. **A new category inherits the second act's rules; it does not rediscover
+    them.** If what you are building turns the poster over - and two variants now
+    do - read **"If your variant has a second act"** in `engine/README.md` before
+    writing a line of it. It carries the turn handing over bare glass with every
+    card arriving, cues against pictures, one resolution for the whole file,
+    checking the frost against the band you draw in, compositing rather than
+    drawing, `SAFE_X`, the bed at 0.30, and how to measure any of it. Every
+    entry cost a render and most cost two.
+
+    The same applies to a new TOPIC in an existing variant: its palette is new
+    even when its code is not, and `glass.ghost(base, y0, y1)` is one line
+    against a base that has never been through the glass before.
