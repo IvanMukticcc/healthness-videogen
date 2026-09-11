@@ -95,6 +95,34 @@ class Plan:
 LOGICAL = (1080, 1920)
 
 
+def arrive(t, cue, dur=0.34):
+    """A card coming in: `(scale, alpha)`, or None before its cue.
+
+    EVERY CARD IN ACT TWO ARRIVES, INCLUDING THE FIRST. The turn hands over bare
+    frosted glass and the cards land on it one at a time - that sequence is the
+    whole shape of the act, and a card that is simply present at frame 0 is not
+    early, it is missing from the sequence.
+
+    The entrance is act one's badge feel: `overshoot` for the size so it goes a
+    little past and settles, `ease` for the alpha so it is never a hard cut. Same
+    curve for all three, because three cards that arrive differently read as
+    three unrelated events rather than as one list being built.
+    """
+    tt = (t - cue) / dur
+    if tt <= 0:
+        return None
+    return overshoot(min(tt, 1.0)), ease(min(tt, 1.0))
+
+
+def grown(box, k, floor=0.94):
+    """`box` scaled about its own centre - 94% at k=0, full size at k=1."""
+    x0, y0, x1, y1 = box
+    cx, cy = (x0 + x1) / 2.0, (y0 + y1) / 2.0
+    f = floor + (1.0 - floor) * k
+    return (cx + (x0 - cx) * f, cy + (y0 - cy) * f,
+            cx + (x1 - cx) * f, cy + (y1 - cy) * f)
+
+
 def render(plan, t, W=1080, H=1920, behind=None):
     """One frame. `behind` is an act-one frame; without one the pane is opaque grey."""
     LW, LH = LOGICAL
@@ -129,15 +157,21 @@ def render(plan, t, W=1080, H=1920, behind=None):
 
     fb = footer(LW)
     foot_top = LH - fb.height
-    # NOTHING ON THIS CARD ARRIVES TWICE. Act two's frame 0 is the face the flip
-    # turns towards the viewer, so whatever it is, the turn has already delivered
-    # it. Returning early here made that face a bare frosted pane and then had
-    # the title, the panes and the chips fade in on top of it - the card arriving
-    # a second time, after the turn already said it had. What settles now is the
-    # content; the furniture is there from the first frame because the flip put
-    # it there.
-
-    text(d, (LW / 2, 96), plan.title, f_title, INK, anchor="ma")
+    # FRAME 0 IS BARE GLASS AND NOTHING IS ON IT.
+    #
+    # This is what the turn reveals: an empty frosted surface. Two attempts got
+    # it wrong in opposite directions and both were mine. Handing the face over
+    # with nothing and then fading the whole card in on top of it made the card
+    # arrive twice. Making the panes furniture so they were there from frame 0
+    # cured that and cost the sequence - three empty cards delivered at once,
+    # which is the thing that made the act read as a list being built.
+    #
+    # The answer is neither: the glass is empty, and then the cards LAND on it,
+    # one at a time, each one animating in and each one doing something the
+    # moment it settles. The first card arrives like the other two, because a
+    # first card that is simply already there is not first, it is absent.
+    if plan.settle > 0 and t <= 0:
+        return deliver()
 
     # ---- the column, measured from both ends ------------------------------
     # The footer is fixed at the bottom and the title at the top; everything
@@ -155,8 +189,17 @@ def render(plan, t, W=1080, H=1920, behind=None):
     rowh = 96
     n = len(plan.rows)
     listbox = (pad, top, LW - pad, top + 34 + rowh * n)
-    shadow(img, listbox, 30)
-    pane(d, listbox, 30)
+    # CARD ONE arrives at `settle`, a quarter second after the turn, and carries
+    # the heading with it - the title is this card's, not the act's, and a
+    # heading hanging over an empty surface before the first card lands is the
+    # same "already there" fault one element smaller.
+    c1 = arrive(t, plan.settle)
+    if c1 is None:
+        return deliver()
+    k1, a1 = c1
+    text(d, (LW / 2, 96), plan.title, f_title, INK[:3] + (int(255 * a1),), anchor="ma")
+    shadow(img, grown(listbox, k1), 30, alpha=int(15 * a1))
+    pane(d, grown(listbox, k1), 30, a1)
     for i, r in enumerate(plan.rows):
         tt = (t - (plan.food0 + plan.foodgap * i)) / 0.40
         if tt <= 0:
@@ -178,51 +221,56 @@ def render(plan, t, W=1080, H=1920, behind=None):
     ringtop = listbox[3] + gap
     ring_h = max(560, foot_top - note_h - chip_h - gap * 3 - ringtop)
     ringbox = (pad, ringtop, LW - pad, ringtop + ring_h)
-    # THE RING PANE IS FURNITURE, and its track is a ring at zero.
+    # THE RING CARD ARRIVES. IT IS NOT FURNITURE, AND THIS WAS MY MISTAKE.
     #
-    # This pane used to arrive by cut - a 20.8 level step mid-act - and the fix
-    # for that was a fade with a 0.10 lead. Making the card's other panes present
-    # from frame 0 exposed what the fade was really hiding: for the first second
-    # and a half of act two there was a HOLE between the list and the chips,
-    # where this card is going to be. A gap in the middle of the frame is worse
-    # than either the cut or the fade, and it exists for the same reason both of
-    # them did - the pane was treated as something that arrives.
+    # The flip turns ONE card towards the viewer, and it is the list above. That
+    # card must not arrive twice, because the turn already delivered it. This one
+    # is below it and was never on the face, so nothing about it arrives twice
+    # and it has no claim to being there from frame 0.
     #
-    # It does not arrive. The flip already turned this card towards the viewer.
-    # An empty ring is not a placeholder for a ring; it is a ring at zero, which
-    # is what the app draws before you have eaten anything, and it holds the
-    # bottom half of the card while the list counts in. Only the arc waits for
-    # the cue, which is the same rule act one's plate has followed since the wave
-    # had nothing to end in.
-    shadow(img, ringbox, 30, alpha=15)
-    pane(d, ringbox, 30)
-    cx, cy = LW / 2, ringtop + ring_h * 0.44
-    rad, wid = min(214, ring_h * 0.31), 44
-    p = ease((t - plan.ring0) / plan.ring_dur)
-    frac = plan.tot["kcal"] / plan.who["kcal"] * p
-    col = ORANGE if plan.tot["kcal"] > plan.who["kcal"] else GREEN
-    ring(d, cx, cy, rad, wid, frac, col)
-    shown = plan.tot["kcal"] * p
-    text(d, (cx, cy - 34), f"{shown:,.0f}".replace(",", "."), f_big, INK, anchor="mm")
-    text(d, (cx, cy + 66), f"/ {plan.who['kcal']:,.0f} kcal".replace(",", "."),
-         f_of, SUB, anchor="mm")
-    if t > plan.verdict:
-        pct = 100 * plan.tot["kcal"] / plan.who["kcal"]
-        v = ease((t - plan.verdict) / 0.4)
-        vc = col + (int(255 * v),)
-        text(d, (cx, ringbox[3] - 62), f"{pct:.0f}% of a day", f_verd, vc, anchor="mm")
+    # Drawing it unconditionally put all three panes on screen empty at the turn
+    # and destroyed the thing the user liked most - the cards coming in one at a
+    # time. The rule generalised one step too far: "the flip already delivered
+    # that card" is about the face, not about every pane in the act.
+    #
+    # The fade stays, and so does its 0.10 lead: this pane used to arrive by cut,
+    # a 20.8 level step mid-act, and a pane that starts fading 0.42s before its
+    # cue is ON SCREEN 0.42s before it, which is how the half-second between the
+    # food and the ring got spent on the pane's own fade.
+    c2 = arrive(t, plan.ring0)
+    if c2 is not None:
+        k2, ring_in = c2
+        shadow(img, grown(ringbox, k2), 30, alpha=int(15 * ring_in))
+        pane(d, grown(ringbox, k2), 30, ring_in)
+        cx, cy = LW / 2, ringtop + ring_h * 0.44
+        rad, wid = min(214, ring_h * 0.31), 44
+        p = ease((t - plan.ring0) / plan.ring_dur)
+        frac = plan.tot["kcal"] / plan.who["kcal"] * p
+        col = ORANGE if plan.tot["kcal"] > plan.who["kcal"] else GREEN
+        ring(d, cx, cy, rad, wid, frac, col)
+        shown = plan.tot["kcal"] * p
+        text(d, (cx, cy - 34), f"{shown:,.0f}".replace(",", "."), f_big, INK, anchor="mm")
+        text(d, (cx, cy + 66), f"/ {plan.who['kcal']:,.0f} kcal".replace(",", "."),
+             f_of, SUB, anchor="mm")
+        if t > plan.verdict:
+            pct = 100 * plan.tot["kcal"] / plan.who["kcal"]
+            v = ease((t - plan.verdict) / 0.4)
+            vc = col + (int(255 * v),)
+            text(d, (cx, ringbox[3] - 62), f"{pct:.0f}% of a day", f_verd, vc, anchor="mm")
 
     # ---- the three chips --------------------------------------------------
     chiptop = ringbox[3] + gap
     cw = (LW - pad * 2 - 24) / 3
     for i, key in enumerate(("carbs", "protein", "fat")):
         tt = (t - (plan.chip0 + plan.chipgap * i)) / plan.chip_dur
+        c3 = arrive(t, plan.chip0 + plan.chipgap * i)
+        if c3 is None:                  # three chips, three cues, one at a time
+            continue
+        k3, a3 = c3
         x0 = pad + i * (cw + 12)
         box = (x0, chiptop, x0 + cw, chiptop + chip_h)
-        shadow(img, box, 26, blur=14, alpha=12)
-        pane(d, box, 26)
-        if tt <= 0:                     # the pane is furniture; the figures wait
-            continue
+        shadow(img, grown(box, k3), 26, blur=14, alpha=int(12 * a3))
+        pane(d, grown(box, k3), 26, a3)
         val, ref = plan.tot[key], plan.who[key]
         k = ease(min(tt, 1.0))
         text(d, (x0 + 26, chiptop + 30), key.capitalize(), f_chip, SUB)

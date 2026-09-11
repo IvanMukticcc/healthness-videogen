@@ -33,7 +33,29 @@ BASE="../INPUT/base_${TOPIC}.png"
 CLEAN="base_${TOPIC}_clean.png"
 LAYOUT="base_${TOPIC}_layout.json"
 BED="${BED:-../../engine/sfx/flow_soft_warmer_8s.m4a}"
-BED_GAIN="${BED_GAIN:-0.8}"
+# 0.40, not 0.80. The water is a bed and the badge pops were not getting in
+# front of it: measured on a shipped clip, badge windows against the gaps
+# between them, the pop sat only 5.0 dB above the water. Five decibels is
+# "slightly louder", not "something landed", which is why a pop that is doing
+# its job still read as part of the room.
+#
+#   BED_GAIN 0.80   water -20.9   pop -15.9    5.0 dB
+#   BED_GAIN 0.55   water -24.1   pop -16.6    7.6 dB
+#   BED_GAIN 0.40   water -26.9   pop -16.9   10.0 dB
+#   BED_GAIN 0.30   water -29.4   pop -17.1   12.3 dB
+#
+# THE POP BARELY MOVES ACROSS THAT RANGE - -15.9 to -17.1 - so this foregrounds
+# the badges rather than quietening the clip. The bed was eating the headroom
+# the pops needed and the limiter was holding the mix on top of it.
+#
+# 0.30 IS THE FLOOR AND THIS IS IT. The user asked for one more step after
+# hearing 0.40 and this is the last one on the table above. The bed is normalised
+# to -18 LUFS, so at 0.30 it is more than 11 dB under its own reference: below
+# this it stops reading as a room and starts sounding like an effect somebody
+# left on, which is a different fault from the one being fixed. If the water
+# should be further away again, the answer is a different bed rather than a
+# smaller number - `engine/sfx/` has four that have never been tried this low.
+BED_GAIN="${BED_GAIN:-0.30}"
 POP_GAIN="${POP_GAIN:-0.85}"
 # 0.82, the same ceiling as every other variant. It was briefly 0.74 here, to
 # buy headroom against an AAC overshoot that does not exist - I had measured the
