@@ -491,6 +491,46 @@ it ran, and a peer can make it false a second later without either of you being
 at fault. When the user asks again a few minutes on, the answer is not
 necessarily the same answer.
 
+## A transient and a sustained tone order differently under peak and RMS
+
+I told macro-c1 their ring sweep was 8.5 dB under Micro's and should come up.
+They measured it and said it was 1.9 dB under their own ticks and fine. Both
+numbers are right, on the same file:
+
+    Macro food tick    rms -26.3    peak  -9.8
+    Macro ring fill    rms -26.3    peak -11.7
+
+By RMS the two are identical; by peak the fill is 1.9 dB under. Nothing is
+inconsistent - a tick is a transient with a high peak and little energy, a sweep
+is sustained with a modest peak and a lot of it, and the two metrics rank them
+in different orders. **So "is this one louder" has no answer until the metric is
+named**, and a cross-variant comparison made in one metric cannot be handed to
+somebody working in the other.
+
+This is the fourth time in two days that the measurement rather than the thing
+measured was the problem: the badge windows that contained the bed, the chord
+whose RMS punished it for its own decay, the identical peaks that were identical
+content, and now this. **The shape of the sound decides the metric, and a number
+without one is an opinion with a decimal point.**
+
+For the record, the practical conclusion was theirs and it was right: sixteen
+clips were finished, the user had not heard Macro's as quiet, and re-cutting them
+on a consistency argument is the thing the user objected to that morning. Micro's
+is now about 3 dB above Macro's by RMS and somebody chose that; it is not a
+defect in Macro.
+
+## A principle loses its scope when it travels
+
+"The flip already delivered that card" is true of the FACE the turn shows. I
+relayed it without its object, macro-c1 applied it to every pane in the act, and
+three empty cards arrived on screen at once - destroying the sequence the whole
+act is made of, across eleven clips.
+
+Neither half of that is the relay's fault on its own. **A principle that names no
+object is not a principle, and a principle applied without asking which object it
+was about is not an application.** When passing one between folders, carry the
+thing it was about - and when receiving one, ask.
+
 ## A step that reads and writes the same folder cannot fail loudly
 
 micro-bb's batch iterated `../OUTPUT/two_acts/*.mp4` to decide what to re-render

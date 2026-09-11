@@ -279,6 +279,22 @@ own card. `glass.over(top, bottom)` or a separate layer and `alpha_composite`.
 
 **`SAFE_X`, and read its comment before improving on it.**
 
+**A database name can contain the character your tool parses on.**
+`add_labels.py` splits on commas and `Bell pepper, red` is a real food name - 442
+of the app's 2272 carry one, all USDA-sourced and all able to reach a row. That
+one failed loudly, "6 label pairs for 5 rows", which is the good case; the quiet
+one is a name whose comma splits into a pair that still parses. The fix belongs
+to the caller that builds the string, not to the tool, whose contract was never
+wrong.
+
+**Judge a poster before it enters the folder.** `check_base.py` takes a path, so
+a generation can be measured while it is still in Downloads. A rejected poster
+sitting in `work/` is a file somebody will later mistake for the good one.
+
+**`render.sh` names its day folder from the clock.** A session that spans
+midnight writes into a new one and yesterday's looks abandoned. Nothing is
+misfiled; the folder name is just a day old.
+
 SOUND
 
 **The bed is `BED_GAIN` 0.30.** At 0.80 Macro's mix went into the limiter and the
