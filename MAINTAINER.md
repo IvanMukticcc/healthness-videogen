@@ -523,13 +523,32 @@ thing in the repository to put the mix over the limiter's ceiling, checked that
 the limiter held, and wrote down that the ceiling had "now been tested, which it
 never had been". All true. Nobody asked whether engaging it was harmless.
 
-It was not. Every clip shipped on 10 September peaks at **exactly 0.8145**, to
-four decimal places, across clips with entirely different content - which is the
-signature of a ceiling being held rather than of anything in the audio. The bed
-was pushing the mix into the limiter and the badge transients were being flattened
-against it. So a pop doing its job still read as part of the room: it was not
-merely competing with the water, it was being squashed by a ceiling the water had
-pushed it into.
+It was not, in Macro. The bed was pushing the mix into the limiter and the badge
+transients were being flattened against it, so a pop doing its job still read as
+part of the room - not competing with the water but squashed by a ceiling the
+water had pushed it into.
+
+**The evidence for that is the pre-limiter sum, and nothing else is.** Macro's,
+in stereo, the whole graph up to but not including `alimiter`:
+
+    BED_GAIN 0.80    pre-limiter peak 1.0787    36 samples over 0.82
+    BED_GAIN 0.30    pre-limiter peak 0.7292     0 samples over
+
+**The tell I first wrote down here was wrong and micro-bb caught it.** I said
+that every shipped clip peaking at exactly 0.8145 across different content was
+the signature of a ceiling being held. It is not, wherever the clips share their
+audio by construction - and Micro's do: its badge cues are `1, 2, 3.2, 4.4, 5.6`
+and its finale 6.38 for **every topic**, so bed, pops and riser sum to the same
+waveform whatever is on the poster. Identical peaks there mean identical content.
+Macro's act-one cues are fixed too, which makes the tell weak evidence even where
+the conclusion happened to be true.
+
+**Micro never reached the limiter at any bed level** - 0.709, 0.661, 0.649
+pre-limiter at the three gains. The same fix was right there for the plain
+reason: the water was too loud against the pops. Nothing was being flattened.
+
+One mechanism, two variants, and only one of them had it. A cause that explains
+the symptom in the folder you are standing in is not a cause that travels.
 
 macro-c1's measurement, lowering the bed in two steps:
 
@@ -546,9 +565,10 @@ limited at all.
 Two things to carry:
 
 **A limiter that is holding is a limiter that is changing the mix**, and "it held"
-is only half a check. The other half is what the level looks like on either side
-of the thing it held. A ceiling reached identically across every clip in a folder
-is the tell, and it costs one line to look for.
+is only half a check. The other half is the sum arriving at it - render the graph
+to `pcm_f32le` with the limiter removed and look at the peak. That is one line
+and it is the only thing that settles it; a finished file cannot tell you what
+was done to it.
 
 **When a gain change moves something that is not the thing you changed**, the
 gain was not the mechanism. Lowering the bed should move the bed. It moved the
