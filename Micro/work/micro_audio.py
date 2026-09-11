@@ -106,7 +106,29 @@ def act_two(cues, flip_seconds, seconds, root=ROOT, gain=0.45):
     t = np.linspace(0, dur, int(dur * SR), endpoint=False)
     f = root * 0.5 * (1 + 1.4 * (t / dur) ** 1.7)
     env = np.sin(np.pi * (t / dur) ** 0.8) ** 1.4
-    place(0.12 * gain * env * np.sin(2 * np.pi * np.cumsum(f) / SR),
+    # 0.45, and this is the ceiling for this sound rather than a step towards
+    # more. At 0.45 the sweep's RMS equals the chord's ONSET RMS: it still reads
+    # as a landing because the chord's peak is 12 dB above it and a transient is
+    # what the ear takes as an arrival, but there is nothing left over. If it is
+    # asked for louder again, both go up together by the same amount so the
+    # landing keeps its margin - and `impact.finale` enters at the engine's own
+    # gain, so that means a multiplier here, measured against ACT ONE's chord as
+    # well, which is the same buffer and must not drift from this one.
+    #
+    # 0.36 was the step before, and 0.12 before that. At 0.12 the fill measured -34.8 dB
+    # against -25.0 for the row ticks and -26.7 for the closing chord: the one
+    # sound in act two that runs UNDER a number counting was the quietest thing
+    # in it, and the user's words were "jako jako tiho". +9.6 dB puts it just
+    # above a tick and just under the chord.
+    #
+    # Under the chord is the constraint, and it is checked at the chord's ONSET
+    # or its PEAK, never at an RMS window over its length. The chord is a strike
+    # that decays and the sweep is flat, so a 1.2s average punishes the chord for
+    # its own tail: by that number the sweep passed the chord at 0.36 while the
+    # landing was still 3 dB over it where it is actually heard. Measure the
+    # first 0.3s, or measure peaks. The same shape as the badge windows in
+    # render.sh - the window held more than the thing being tested.
+    place(0.45 * gain * env * np.sin(2 * np.pi * np.cumsum(f) / SR),
           flip_seconds + cues["ring"])
 
     # THE ENDING IS ACT ONE'S CHORD, and it lands when the number stops moving.
