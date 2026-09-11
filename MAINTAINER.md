@@ -516,6 +516,45 @@ in that position by relaying the instruction.
 When the user answers the wrong one of us, send that they were asked. Do not
 send the instruction a second time.
 
+## The limiter engaging was never the finding - what it was doing was
+
+Yesterday this session established that Macro's tightened rhythm was the first
+thing in the repository to put the mix over the limiter's ceiling, checked that
+the limiter held, and wrote down that the ceiling had "now been tested, which it
+never had been". All true. Nobody asked whether engaging it was harmless.
+
+It was not. Every clip shipped on 10 September peaks at **exactly 0.8145**, to
+four decimal places, across clips with entirely different content - which is the
+signature of a ceiling being held rather than of anything in the audio. The bed
+was pushing the mix into the limiter and the badge transients were being flattened
+against it. So a pop doing its job still read as part of the room: it was not
+merely competing with the water, it was being squashed by a ceiling the water had
+pushed it into.
+
+macro-c1's measurement, lowering the bed in two steps:
+
+    BED_GAIN 0.80   pops -1.8 -3.9 -1.9 -3.7 -4.7   water -22.9   separation 19.7 dB
+    BED_GAIN 0.40   pops -6.0 -6.9 -4.6 -6.1 -4.9   water -28.9   separation 23.2 dB
+    BED_GAIN 0.30   pops -6.7 -6.5 -5.6 -6.5 -5.1   water -31.4   separation 25.3 dB
+
+**The first step is not the same kind of step as the second.** From 0.80 to 0.40
+the pops themselves drop 2.7 dB - that is the limiter releasing, not the bed
+moving. From 0.40 to 0.30 they move 0.7 dB and the water moves 2.5, which is what
+"turning the bed down" actually looks like. At 0.30 nothing in the clip is
+limited at all.
+
+Two things to carry:
+
+**A limiter that is holding is a limiter that is changing the mix**, and "it held"
+is only half a check. The other half is what the level looks like on either side
+of the thing it held. A ceiling reached identically across every clip in a folder
+is the tell, and it costs one line to look for.
+
+**When a gain change moves something that is not the thing you changed**, the
+gain was not the mechanism. Lowering the bed should move the bed. It moved the
+pops by 2.7 dB, and that discrepancy was the whole diagnosis sitting in plain
+sight in a table that had already been measured.
+
 ## Measure audio in its native channel layout
 
 `ffmpeg -map 0:a -f f32le -ac 1 -` is the obvious way to get samples into numpy
