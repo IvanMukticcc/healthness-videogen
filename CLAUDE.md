@@ -19,7 +19,8 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
     Foods/ Micro/ Exercise/ Biohacks/   four variants, three folders each:
     Longevity/             the father: five rows are one fast, not five topics
         INPUT/             base_<topic>.png, and nothing else
-        OUTPUT/            finished clips, a folder per day
+        OUTPUT/            (was per-variant; see below - clips now ship to the
+                           repository's own OUTPUT/, one folder per category)
         work/              everything else
     archive/               checkpoints from before this was a repository
 
@@ -68,7 +69,8 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    and keeps no copy.
 
 5. **Shipped is shipped.** A rule found halfway through a day applies to the
-   clips made after it, never backwards. Nothing already in an `OUTPUT/<DD.MM>/`
+   clips made after it, never backwards. Nothing already in a shipped
+   `OUTPUT/` folder
    folder is rebuilt because a later clip does it better. Do not offer to.
 
 6. **Every clip ships with sound.** The silent pass is an intermediate: keep it
@@ -105,7 +107,7 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    **A second generation of the same base is `<topic>2`, never `<topic>` again.**
    Micro's convention, adopted by Macro on 10 September and worth stating at the
    root because the reason is rule 5 rather than tidiness: once a clip is in an
-   `OUTPUT/<DD.MM>/` folder, the poster it was measured against may not be
+   shipped `OUTPUT/` folder, the poster it was measured against may not be
    overwritten, and a regeneration that reuses the name overwrites it. The second
    file is carried whether or not a clip is ever made from it - an unused
    generation still cost a generation, and it is still the only copy of itself.
@@ -179,3 +181,24 @@ right. Do not rediscover them.
     The same applies to a new TOPIC in an existing variant: its palette is new
     even when its code is not, and `glass.ghost(base, y0, y1)` is one line
     against a base that has never been through the glass before.
+
+12. **Every clip from every category ships to one place: `ShortPrompt/OUTPUT/`.**
+    Set by the user on 11 September 2026, replacing a per-variant `OUTPUT/` with
+    a folder per day inside it.
+
+        OUTPUT/MICRO/  MACRO/  FITNESS/  BIOHACKS/    what has been made
+        OUTPUT/DONE/MICRO/  MACRO/  FITNESS/  BIOHACKS/   what has gone out
+
+    **Flat, and no day folders.** The date came off the clock, so a session that
+    spanned midnight wrote into a folder that looked abandoned and a clip's
+    filename was the only thing that said which topic it was - the day it was
+    cut said nothing anyone needed. `render.sh` in every variant writes
+    `../OUTPUT/$DAY/` and all six need changing to `../../OUTPUT/<CATEGORY>/`.
+
+    **`DONE/` is the user's, not a variant's.** They move a clip there by hand
+    once it has been published, and that is the only record anywhere of what has
+    gone out - nothing in this repository tracks it. A clip missing from the
+    made-folder was filed, not lost. Ask rather than search.
+
+    `Exercise/` ships to `FITNESS/`. `Foods/` and `Longevity/` have no folder
+    yet and have not been given one.

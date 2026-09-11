@@ -63,6 +63,7 @@ __pycache__/
 !*_poster.jpeg
 *.mp4
 OUTPUT/
+/OUTPUT/
 INPUT/
 
 # derived: base_<topic>.png and its two companions come out of one
