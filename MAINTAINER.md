@@ -541,6 +541,14 @@ visited, and it reported success for the set it could see.
 Nothing was wrong with the loop. It answered the question it was asked, which was
 "did everything in this folder succeed" - and the folder was its own work list.
 
+**And a progress marker must not be a string the tools you run also emit.**
+micro-bb's first attempt at the same batch was killed after one clip and their
+log read said eight: ffmpeg's own error lines open with a bracket, and they were
+counting lines starting with `[` as completed topics. One topic done, eight lines
+matched. The markers are `>>>` now, which ffmpeg does not write - and the work
+list for the re-run came from measuring the ring fill in all 27 and taking the 26
+still at the old level, so it could not inherit the miscount.
+
 **A work list must come from somewhere that knows what the answer should be.**
 Theirs now comes from `meals.json`, which knows there are 27 topics whether or not
 27 files exist. The same fault in a different costume is a render step reading its
