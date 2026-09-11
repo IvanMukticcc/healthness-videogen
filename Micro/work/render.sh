@@ -57,13 +57,29 @@ POP_GAIN="${POP_GAIN:-0.85}"
 # 0.8, down from 1.0 on 8 September: the water was asked to sit back a little.
 # -1.9 dB on the bed alone, and in the finished mix the badges and the finale do
 # not move, so the whole clip comes out about 0.6 LUFS quieter with the same peak.
-BED_GAIN="${BED_GAIN:-0.8}"
+# 0.40, down from 0.8 on 11 September: the user reported the water drowning the
+# badge pops, and the measurement agreed - the bed sat 5.0 dB under them, and at
+# 0.40 it sits 10.0. The pops move by 1 dB across that whole range, so this is
+# the badges coming forward rather than the clip getting quieter.
+BED_GAIN="${BED_GAIN:-0.30}"
 WIDTH="${WIDTH:-1080}"          # 540 while tuning: 26s a render against 66s, same timing
 DAY="$(date +%d.%m)"
 # Overridable so the mix can be re-measured without writing into a day folder:
 # what is in ../OUTPUT/<DD.MM>/ has shipped and is never rebuilt (../CLAUDE.md
 # rule 5), so a test render points OUT somewhere else and leaves it alone.
 OUT="${OUT:-../OUTPUT/$DAY/${TOPIC}_micro.mp4}"
+# And the comment above is now a guard, because a comment is not one. A second
+# render of a topic on the same day walks straight over the clip already in the
+# day folder, which is the one thing rule 5 forbids - and the run that does it
+# looks exactly like the run that made it. FORCE=1 is the deliberate way past,
+# for the case where the poster was regenerated and the shipped file is known to
+# be the wrong one.
+if [ -f "$OUT" ] && [ -z "${FORCE:-}" ]; then
+    echo "$OUT already exists - that clip has shipped (../CLAUDE.md rule 5)." >&2
+    echo "  OUT=somewhere_else.mp4 ./render.sh ...   to render without touching it" >&2
+    echo "  FORCE=1 ./render.sh ...                  to overwrite it deliberately" >&2
+    exit 1
+fi
 
 for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$ANCHORED" \
          "$DIR/base_${TOPIC}_layout.json" "$BED"; do

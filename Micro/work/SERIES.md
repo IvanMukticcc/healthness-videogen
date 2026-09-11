@@ -68,6 +68,8 @@ right-hand caption is the organ, one word where it can be.
 | **19** | lime → MENISCUS | pecans → ACHILLES | onion → CORONARY | dandelion → PORTAL | cinnamon → ISLETS |
 | **20** | quinoa → COCHLEA | rosemary → AIRWAYS | turkey → AMYGDALA | spinach → MACULA | tempeh → OMENTUM |
 | **21** | butter beans → PELVIC FLOOR | poppy seeds → EAR BONES | potato → RIB MUSCLES | mussels → SPINAL CORD | goji → BROWN FAT |
+| **22** | chicken → SHOULDER | kombucha → LIVER | cabbage → STOMACH | kidney beans → RED CELLS | raspberries → IRIS |
+| **23** | cottage cheese → GLUTES | olives → MESENTERY | carrots → LUNGS | brussels sprouts → BONE | coconut water → KIDNEY |
 
 ## The themed clips
 
@@ -94,6 +96,10 @@ makes them the way out when the organ pool runs dry.
 | **ALL-DAY ENERGY** | oats | lentils | eggs | beetroot | matcha |
 | **CHOLESTEROL** | barley | aubergine | red lentils | okra | almonds |
 | **ALWAYS TIRED** (iron) | hemp seeds | molasses | tofu | duck | amaranth |
+| **BLOOD PRESSURE** | beetroot | dark chocolate | garlic | blueberries | bananas |
+| **STRESS RELIEF** | oranges | figs | kefir | mackerel | matcha |
+| **METABOLISM** | chilli | coffee | greek yogurt | seaweed | grapefruit |
+| **AGE SLOWER** | kiwi | blackberries | sardines | green tea | apples |
 
 BRAIN POWER, KIDNEY HEALTH and GUT HEALTH also spend organs the numbered series
 would otherwise still have: the hippocampus, the myelin sheath, the synapse, the
@@ -134,11 +140,17 @@ it - `recolor_base.py` prints "asked vs got" and they are not the same number.
 | superfoods21 | `#2A2F35` | `#F1EEE7` | `#F3E1B3` `#35323B` `#EBC05B` `#3E5E7A` `#E64C22` |
 | cholesterol | `#2E2A26` | `#F2EEE4` | `#E8DFC4` `#4A2A55` `#D9682A` `#4E7A2A` `#C99B6B` |
 | iron | `#1E1C1B` | `#F1EEE6` | `#CBD49A` `#3A2415` `#EFEAE2` `#8E2B2E` `#E3C878` |
+| pressure | `#163012` | `#F0F0E4` | `#B01756` `#482819` `#F4E9D3` `#3C4185` `#F6D453` |
+| stress | `#2E2630` | `#F2EEE6` | `#F48622` `#6E2748` `#F5F2E8` `#657A8A` `#78C339` |
+| metabolism | `#3E340B` | `#F3EDDC` | `#DB2D17` `#382114` `#F5F2E6` `#2D614F` `#F65B47` |
+| ageing | `#420C42` | `#F2EDE6` | `#8BC838` `#3C1142` `#ADB9C1` `#2D6F3E` `#EBCE62` |
+| superfoods22 | `#0C420C` | `#F2EFE3` | `#E6CCA3` `#CC8825` `#C9DFA6` `#7E1E2F` `#C91E4E` |
+| superfoods23 | `#420C27` | `#F2EEE7` | `#F6F4EB` `#30242A` `#EC711A` `#3E6F29` `#F0E5B5` |
 
 **The darks run from grey to vivid, and the gap is at the grey end.** HSV
 saturation, measured: ALWAYS TIRED's `#1E1C1B` is the least saturated at 10.0%,
 then CHOLESTEROL's `#2E2A26` at 17.4%, part 21's `#2A2F35` at 20.8%, 19 at 25.0%, 10 at 27.8% and 12 at 28.2%; the
-other nineteen sit between 39% and 86%, with ALL-DAY ENERGY's near-black brown at the top. So a new topic wanting a
+other twenty sit between 39% and 86%, with ALL-DAY ENERGY's near-black brown at the top. So a new topic wanting a
 background that is not any of these has one clear direction and it is towards
 grey - the four already there are far enough apart to read as different, but a
 fifth in the 39-50% band will look like immune, 17 or 20 and there are three of
@@ -146,6 +158,25 @@ those already.
 
 The claim this table replaced said part 21's grey was "the first" the series had
 used. It is the greyest, not the first, and the number is what shows it.
+
+**And when hue runs out, measure instead of arguing.** METABOLISM's `#3E340B`
+was not chosen from this table by eye: every dark above was converted to Lab and
+the dark range searched for the colour whose *nearest* shipped neighbour is
+farthest away. The answer was a dark olive-gold, hue 48°, at dE 20.9 - against
+17.2 for the best cool candidate and 13.5 for the best green. Part 12's `#22271C`
+is the same hue family and reads as charcoal, because at 28% saturation it is
+grey; this one is a colour. The search is worth rerunning rather than reading:
+its answer changes every time a clip ships.
+
+**Saturation is one axis and hue is the other, and the hole in hue was 136°.**
+Sorting the twenty-one saturated darks by hue leaves one gap far larger than any
+other: from ALL-DAY ENERGY's brown at 26° to part 16's blue-green at 162°, with
+nothing in between except part 12 (87°) and part 19 (130°), both under 30%
+saturation and so reading as grey rather than as a colour. BLOOD PRESSURE took
+it - `#163012`, hue 112°, saturation 62.5% - and it is the first background here
+that reads as green. Every other gap between neighbouring hues is under 32°, so
+this is the last one of its size: the next topic wanting a background nobody
+recognises is back to the grey end that the paragraph above describes.
 
 ## What is left
 
@@ -175,7 +206,21 @@ already), the shoulder, the elbow, the foot arch, the grip, the glutes, the psoa
 and the neck (all fresh, but all one nutrient story - protein and magnesium - and
 `flow.md` is right that five rows of one story reads as one word repeated).
 
+**Part 22 is what the numbered series looks like from here: fresh FOODS, second
+views of organs.** All five of its foods - chicken, kombucha, cabbage, kidney
+beans, raspberries - are first appearances, which is the currency the series
+still has; of its organs only the shoulder muscle and the iris are new, and the
+liver, stomach and red cells are deliberate second views, chosen because those
+three come back standalone every time. It took two generations, and both faults
+were already written down: "shoulder muscle" drew the joint because *shoulder* is
+an address, and the appendix arrived wearing its caecum. The fixes were the ones
+`flow.md` prescribes - drop the address, swap the row.
+
 **So the honest read is that the numbered series is close to done**, and the
 themed format is not. A themed clip spends five foods and no organs, and the
-topics nobody has made yet - stress and cortisol, blood pressure, memory, joints,
-metabolism, skin, iron and tiredness, recovery - are all still open.
+topics nobody has made yet - memory, joints, skin, recovery - are all still open,
+and three of those four are one-organ topics, which is the trap `flow.md` calls
+one word repeated. AGE SLOWER is the way round it: not an organ but the five
+places ageing shows, one food each. Five went on 10 September - iron and
+tiredness as ALWAYS TIRED, blood pressure as BLOOD PRESSURE, stress and cortisol
+as STRESS RELIEF, metabolism as METABOLISM, and ageing as AGE SLOWER.

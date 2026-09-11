@@ -55,6 +55,91 @@ def write_wav(path, x, sr=SR):
         w.writeframes(d.tobytes())
 
 
+def act_two(cues, flip_seconds, seconds, root=ROOT, gain=0.45):
+    """Everything after the turn, as one buffer starting at the flip's first frame.
+
+    **It is the same strike act one's badges land on, not a bell.** The first cut
+    used `impact.bell` on the reasoning that nothing hits anything behind glass -
+    a row of type fades up, an arc sweeps - and the user rejected it against the
+    other variant: one clip may not change instrument halfway through. So act two
+    is `impact.strike`, the engine's own hit, at about half act one's level and
+    climbing the same `impact.SCALE`. The card is the continuation of the count,
+    and it should sound like the same hand.
+
+    Times in the cue file are act two's own; the flip sits in front of them, so
+    everything is offset by `flip_seconds` here and nowhere else.
+    """
+    n = int(round((flip_seconds + seconds) * SR)) + SR
+    buf = np.zeros(n, dtype=np.float64)
+
+    def place(x, t):
+        i = int(round(t * SR))
+        if i < 0:
+            x, i = x[-i:], 0
+        j = min(len(buf), i + len(x))
+        if j > i:
+            buf[i:j] += x[:j - i]
+
+    # THE TURN ITSELF, which had no sound at all until now: the card moved and
+    # the mix simply went quiet under it, so the join read as a gap. Two engine
+    # parts, both already in this clip's vocabulary:
+    #
+    #   the riser LEADS the turn - it has to be arriving as the card starts to
+    #   move, so it is placed to END on the last frame of the flip rather than to
+    #   start on the first. Same gesture act one's finale uses.
+    #   the card LANDS on the half-turn, where the back face comes round: one
+    #   low strike at 96 Hz, which is the badge hit an octave and a half under
+    #   itself and reads as weight rather than as another badge.
+    r = impact.riser(dur=max(0.18, flip_seconds * 0.8))
+    place(r * 0.55, max(0.0, flip_seconds - len(r) / SR))
+    place(impact.strike(96.0, dur=0.42) * 0.55, flip_seconds * 0.52)
+
+    for k, t in enumerate(cues["rows"]):
+        semis = impact.SCALE[k % len(impact.SCALE)] + 12 * (k // len(impact.SCALE))
+        place(impact.strike(root * 2 ** (semis / 12.0), dur=0.34) * gain,
+              flip_seconds + t)
+
+    # The ring's sweep: a quiet rise under the arcs, ending as they do. Not
+    # impact.riser, which is 0.26s and belongs to act one's finale - this is 1.3s
+    # of the same idea, and it lives here because no other variant fills a ring.
+    dur = cues.get("ring_dur", 1.3)
+    t = np.linspace(0, dur, int(dur * SR), endpoint=False)
+    f = root * 0.5 * (1 + 1.4 * (t / dur) ** 1.7)
+    env = np.sin(np.pi * (t / dur) ** 0.8) ** 1.4
+    place(0.12 * gain * env * np.sin(2 * np.pi * np.cumsum(f) / SR),
+          flip_seconds + cues["ring"])
+
+    # THE ENDING IS ACT ONE'S CHORD, and it lands when the number stops moving.
+    #
+    # Not a bell and not a strike: `impact.finale` is what act one already closes
+    # on, so the clip ends on the sound it has ended on once already. Macro made
+    # the same move and for the same reason - the user picked it knowing it
+    # repeats. It goes in at the engine's own gain and render.sh mixes act two at
+    # unity: the level impact.py returns is the level it has to arrive at, which
+    # is the whole reason the riser is not summed into the pops.
+    #
+    # Generated in its own 2.6s buffer and PLACED, rather than asked for at an
+    # offset inside a buffer of act two's length - `finale` returns an array of
+    # `seconds`, so adding them directly is a shape mismatch waiting to happen.
+    #
+    # The instant is where the count finishes, not where it starts: the number
+    # rolls from 0 to the score over `ring_dur`, and a chord under a number still
+    # moving reads as landing early.
+    score_end = cues["score"] + cues.get("ring_dur", 1.3)
+    place(impact.finale(0.0, 2.6, root=root), flip_seconds + score_end)
+
+    # Deliberately NOT normalised. Act one's pops are, because they are fifteen
+    # of one sound and the peak is arbitrary; this buffer ends on impact.finale,
+    # and scaling the buffer to fit a peak would move the chord off the level the
+    # engine hands it over at - the exact fault that put one number in impact.py
+    # into the mix at three different levels. If it clips, lower `gain`, which is
+    # the rows, not the chord.
+    pk = np.abs(buf).max()
+    if pk > 0.99:
+        print(f"  act two peaks at {pk:.3f} - lower gain rather than normalising")
+    return buf[:int(round((flip_seconds + seconds) * SR))]
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--cues", help="comma separated seconds")
@@ -77,9 +162,35 @@ def main():
                                         "that file and the riser is not a badge. "
                                         "Defaults to <out>_riser.wav")
     p.add_argument("--gain", type=float, default=0.72)
-    p.add_argument("-o", "--out", required=True)
+    # Not required: with --act2-cues alone this file writes act two and
+    # nothing else, and demanding an act-one path it will not use meant
+    # render2.sh had to recompute the badge pops into /dev/null to get a
+    # card wav out of it.
+    p.add_argument("-o", "--out")
+    # Act two. Its own cue file, its own wav, and it is not mixed into the pops:
+    # a badge gain belongs to badges (see the note below the riser), and the card
+    # is a different level entirely.
+    p.add_argument("--act2-cues", help="the json micro_card.py's Plan wrote")
+    p.add_argument("--act2-seconds", type=float)
+    p.add_argument("--flip-seconds", type=float, default=0.0,
+                   help="the turn, which sits between the two acts")
+    p.add_argument("--act2-out", help="everything from the first frame of the turn")
     args = p.parse_args()
 
+    if args.act2_cues:
+        import json
+        c = json.load(open(args.act2_cues))
+        secs = args.act2_seconds or c.get("seconds", 7.0)
+        x = act_two(c, args.flip_seconds, secs, root=args.root)
+        out = args.act2_out or "act2.wav"
+        write_wav(out, x)
+        print(f"  act two: {len(c['rows'])} rows, ring at {c['ring']:.2f}s, "
+              f"{args.flip_seconds + secs:.2f}s -> {out}")
+        if not (args.cues or args.cues_file):
+            return
+
+    if not args.out:
+        raise SystemExit("-o is required for the badge pops")
     if args.cues_file:
         args.cues = open(args.cues_file).read().strip()
     if args.cues:

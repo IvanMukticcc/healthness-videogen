@@ -139,6 +139,30 @@ anyone finds out.
 `safe to animate` means the mask still fits. Anything else: ask for a
 regeneration, do not try to animate around it.
 
+**Copy the poster before regenerating over it.** `grab.py` replaces
+`<topic>_poster.jpeg`, and on 10 September that destroyed the better generation:
+AGE SLOWER's first pass had four rows right and one wrong, the second pass had
+three right, and the first no longer existed to ship. Nothing had shipped from
+it, so nothing in `../CLAUDE.md` rule 9 was broken - and that was the wrong
+reading of the rule, because what was at risk was not a clip but the only copy of
+a generation. `cp <topic>_poster.jpeg <topic>2_poster.jpeg` before the next grab
+costs a second and keeps both on the table; `render.sh` takes the poster path as
+its second argument, so shipping from the copy needs no second base and no
+rename.
+
+**Check that the poster is a new poster.** On 10 September the same image was
+grabbed three times under three filenames - `...143431`, `...143909`,
+`...144659` - because what was being saved was the generation already in the
+thread, not the one asked for after it. `check_base.py` printed the same five
+wave differences each time (3.7, 9.3, 3.2, 9.9, 6.4) and every measured disc
+matched to a tenth of a percent, which is the tell; the proof is one line:
+
+    ../.venv/bin/python -c "import hashlib;from PIL import Image;\
+        print(hashlib.md5(Image.open('<topic>_poster.jpeg').tobytes()).hexdigest()[:12])"
+
+Identical pixels mean the regeneration has not happened yet. Say so and wait -
+the clip built from it would be the clip the regeneration was meant to replace.
+
 **A base element missing from the poster is a regeneration, full stop.** The row
 stripes, the waves, the caption bars and the logo are the base's own; if one of
 them comes back covered or painted out, ask for the poster again with the same
@@ -432,6 +456,17 @@ These were all found by measurement, and each one cost an hour. Do not rediscove
   the work instead. "The chewing muscle just in front of the ear that clenches,
   under the skin of a living face, with no bone showing" keeps the same row and
   the same food, because what magnesium relaxes is the muscle, not the hinge.
+  **And that sentence stopped working on 10 September.** STRESS RELIEF pasted it
+  verbatim and got a whole flayed head - a face with the skin off, filling 72% of
+  its guide circle, the same prop among four soft organs the part 14 skull was.
+  The address is what does it: "just in front of the ear, under the skin of a
+  living face" names a face, and a face is what gets drawn. So drop the address
+  as well as the joint and ask for the muscle as an object - "a single skeletal
+  muscle lifted out on its own, its fibres running the length of it and tapering
+  to a pale tendon at each end, with no bone, no skin and no head anywhere in the
+  image" came back a clean spindle at 38% of the disc on the next pass. The rule
+  that survives both is the one two entries down: ask for a thing that could be
+  lifted out of a body in one piece, and say nothing about where it lived.
 - **A caption fitted on its own is a caption of its own size.** Ten labels fitted
   one by one came out at ten sizes - 'OATS' at 60px beside 'SLOWER ABSORPTION' at
   38 - and the poster read as ten decisions instead of one label style. One size
@@ -459,6 +494,60 @@ These were all found by measurement, and each one cost an hour. Do not rediscove
   a part has no outline of its own until the thing it belongs to is drawn around
   it. Treat the parent organ as spent when you choose the row, or accept that the
   row is a second view of it, and pick foods and captions knowing that.
+- **Asking for a piece of tissue asks for a slab of it.** "A piece of skin torn
+  at its edges so that it ends in an irregular outline" is `flow.md`'s own fix for
+  part 15's lens bubble, and on AGE SLOWER it produced a **rectangular tile** with
+  hard vertical sides - twice, the second time against a sentence that said "no
+  straight edges and no square corners anywhere on it". The tooth in the same clip
+  did the same thing: "one tooth in the gum" came back as a **cut block of jaw**,
+  and so did "with no jaw, no block of bone and nothing cut square". Both are the
+  section rule from further down, arriving as a box instead of as a frame: a piece
+  of a sheet-like organ has no outline of its own, so the generator supplies the
+  cut. The measurement is the organ's own bounding box - **how much of it the
+  artwork fills**. Four cut-out organs on that poster filled 43-60% of theirs; the
+  tile filled 85% and the skin block 76%, against ~100% for a true rectangle. Over
+  about 70% and it is a slab, whatever the sentence asked for. What works is an
+  organ with a boundary of its own: the tooth row became a heart and arrived right
+  on the first pass, at 61% of its disc and 54% of its box.
+- **`ImageDraw` replaces pixels, it does not composite them.** Act two draws a
+  header sheet over the glass pane to hide what is behind it. Drawn white at
+  alpha 166 over a pane at 186 it made that band *more* transparent, not less -
+  measured on the same patch, the ghost went **14.4 -> 18.9 levels** when the
+  sheet meant to kill it was added. Every element with alpha over the pane had
+  the same fault and none of them looked obviously wrong: the row bars at 120
+  and the ring's own tracks at 46 were cutting windows in the card and showing
+  more of the poster through them. Each one now goes through `micro_card.over()`
+  - its own transparent layer, then `img.alpha_composite(lay)` - and the sheet
+  measures **4.3 levels**, under the frost's own quiet bands. If a translucent
+  thing over another translucent thing looks weaker than it should, this is why.
+- **Act one's title ghosts into exactly where act two puts its heading.** The
+  poster's title sits at y 203-390, which is video y 143-274, and act two's
+  header block lands at 196-298. Through a pane passing 27% it was legible:
+  a viewer could read BLOOD PRESSURE / FOODS THAT BRING IT DOWN under act two's
+  own BLOOD PRESSURE. `engine/glass.title_survival()` measures it - the title
+  band's contrast against an ordinary band of the same poster - and every Micro
+  palette fails it: pressure 74.3 against 16.8, metabolism 81.1 against 19.6,
+  ageing 91.9. Macro passes on navy alone, which greys out and takes its white
+  type with it.
+
+  **Two fixes that do not work, both measured before the one that does.** More
+  frost is a linear blend, so it scales the title band and the quiet band
+  together and the ratio is invariant: 0.34 -> 0.62 takes 74.3 to 42.0 and 16.8
+  to 8.6. Cropping the title band out of the backdrop trades one set of words
+  for another - the poster's caption bars move up into the same place and
+  BEETROOT | NITRATES ghosts instead. What works is giving the header its own
+  ground: a sheet at 0.90 compound alpha, which puts any poster's title under 5
+  levels regardless of its palette, including the plum that cropping made worse.
+- **A structure thinner than a finger comes back correct and unreadable.** The
+  vagus nerve, asked for as "a pale cord with fine branches coming off it, lifted
+  clear of the tissue around it", arrived exactly as described and covered
+  **2 965 px, 5.0% of its guide circle** - against 51 to 78% for the adrenal, the
+  stomach, the heart and the brain on the same poster. Nothing was wrong with it
+  except that at arm's length the row reads as a bowl and a wave running into
+  empty background. `flowanim.py` prints this number per row when it lights the
+  organs, and the poster can be measured for it before any of that: artwork
+  inside the right-hand circle, as a percentage of the circle. Under about 30% is
+  a row with no organ in it, and the fix is a thicker organ, not a bigger prompt.
 - **Two organs cannot be had at all, and the sentence is not the problem.** The
   spleen came back as a kidney twice on 10 September - bean shape, concave hilum,
   artery, vein and ureter - the second time against a sentence that named all
@@ -474,6 +563,12 @@ These were all found by measurement, and each one cost an hour. Do not rediscove
   small intestine to the stomach, which comes back standalone every time - and
   both new organs arrived right on the first pass. Four generations for one clip,
   three of them spent describing instead of swapping.
+  STRESS RELIEF added a third case and the same answer: "the lining of the gut,
+  its velvety inner surface facing the viewer, a short piece torn at its edges"
+  came back as the whole colon frame, which also hung **523 px of itself 21 px
+  into a caption bar 78 px tall** - so the row failed twice over, the wrong organ
+  and a base element covered. The row moved to the stomach, which is now three
+  for three.
 - **18px in the audit is the subtitle, not artwork.** `iron` reported 18 px
   outside the wave: a **1px wide, 22px tall line at poster x 867, y 341-362**,
   which is inside the subtitle, plus two single pixels. bones2 measured the same
@@ -482,6 +577,25 @@ These were all found by measurement, and each one cost an hour. Do not rediscove
   with a width of one pixel is this, and it does not need looking at twice - but
   do locate it rather than shipping on the word `clean`, which is what the
   threshold prints for anything under 400.
+  **It is not only the title block.** METABOLISM reported 17 px in one frame pair
+  and both clusters were captions: **1 px wide, 16 px tall at poster x 253,
+  y 751-772**, which is inside row 1's caption bar, and a single pixel at x 226,
+  y 1998 inside row 4's. Same signature, different type - so the test is the
+  *width*, one pixel, and not where it sits. `audit.py` does not print positions;
+  this locates them, and it writes nothing (`../CLAUDE.md` rule 6):
+
+      ../.venv/bin/python -c "
+      import numpy as np, sys; sys.path.insert(0,'.'); import audit
+      from PIL import Image; from scipy import ndimage
+      W,H=1080,1934
+      m=Image.open('../../engine/ribbon_mask.png').convert('L').resize((W,H),Image.LANCZOS)
+      allowed=ndimage.binary_dilation(np.array(m)>128,np.ones((31,31)))
+      f0=audit.frame('<clip>',0.05,W,H); f1=audit.frame('<clip>',0.05+1/12,W,H)
+      stray=(np.abs(f0-f1).max(axis=2)>10)&~allowed
+      lab,n=ndimage.label(stray)
+      [print(int((lab==k).sum()),'px  x',np.where(lab==k)[1].min(),np.where(lab==k)[0].min())
+       for k in range(1,n+1)]"
+
 - **Ask for a thing that could be lifted out of a body in one piece.** This is
   the rule the two failures below are both special cases of, and part 17 is the
   test that it holds: five organs written as whole objects with their own

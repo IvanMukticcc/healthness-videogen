@@ -1,0 +1,793 @@
+{
+ "_comment": "Act one names five foods; act two has to weigh them, because a total needs grams. One entry per row, top row first, in the row's own order. `id` is the row in the app's Resources/en.lproj/foods.json - the plain whole-food entry a person would actually log, never the variant that happens to carry more micros: 'Dried blueberry' has all eighteen and 'Blueberries' has seven, and picking the dried one to fill the ring would be quoting a food nobody in the clip is eating. `grams` is one ordinary serving of that food, not a portion tuned to make the number look good. `label` is what act two prints. THREE FOODS THE APP'S TABLE DOES NOT CARRY: chamomile (DEEP SLEEP row 1), kombucha (part 22 row 2) and bone broth (HAIR & NAILS row 2, part 7 row 1) have no entry, so those rows are absent here rather than guessed at. Both are almost entirely water and their real micro contribution is close to zero, so the totals are honest; what they cost is one row of calories. Matcha and butter beans are present under other names - green tea and lima beans - which is the same food, not a substitute.",
+ "pressure": {
+  "title": "BLOOD PRESSURE",
+  "foods": [
+   {
+    "id": 79,
+    "grams": 150,
+    "label": "Beetroot"
+   },
+   {
+    "id": 121,
+    "grams": 30,
+    "label": "Dark chocolate"
+   },
+   {
+    "id": 21,
+    "grams": 6,
+    "label": "Garlic"
+   },
+   {
+    "id": 91,
+    "grams": 100,
+    "label": "Blueberries"
+   },
+   {
+    "id": 18,
+    "grams": 120,
+    "label": "Banana"
+   }
+  ]
+ },
+ "ageing": {
+  "title": "AGE SLOWER",
+  "foods": [
+   {
+    "id": 94,
+    "grams": 150,
+    "label": "Kiwi"
+   },
+   {
+    "id": 275,
+    "grams": 100,
+    "label": "Blackberries"
+   },
+   {
+    "id": 40,
+    "grams": 60,
+    "label": "Sardines"
+   },
+   {
+    "id": 886,
+    "grams": 250,
+    "label": "Green tea"
+   },
+   {
+    "id": 17,
+    "grams": 180,
+    "label": "Apples"
+   }
+  ]
+ },
+ "stress": {
+  "title": "STRESS RELIEF",
+  "foods": [
+   {
+    "id": 83,
+    "grams": 150,
+    "label": "Oranges"
+   },
+   {
+    "id": 262,
+    "grams": 100,
+    "label": "Figs"
+   },
+   {
+    "id": 237,
+    "grams": 250,
+    "label": "Kefir"
+   },
+   {
+    "id": 199,
+    "grams": 100,
+    "label": "Mackerel"
+   },
+   {
+    "id": 886,
+    "grams": 250,
+    "label": "Matcha"
+   }
+  ]
+ },
+ "metabolism": {
+  "title": "METABOLISM",
+  "foods": [
+   {
+    "id": 255,
+    "grams": 10,
+    "label": "Chilli"
+   },
+   {
+    "id": 148,
+    "grams": 250,
+    "label": "Coffee"
+   },
+   {
+    "id": 52,
+    "grams": 200,
+    "label": "Greek yogurt"
+   },
+   {
+    "id": 261,
+    "grams": 10,
+    "label": "Seaweed"
+   },
+   {
+    "id": 266,
+    "grams": 150,
+    "label": "Grapefruit"
+   }
+  ]
+ },
+ "cholesterol": {
+  "title": "CHOLESTEROL",
+  "foods": [
+   {
+    "id": 1000953,
+    "grams": 60,
+    "label": "Barley"
+   },
+   {
+    "id": 71,
+    "grams": 150,
+    "label": "Aubergine"
+   },
+   {
+    "id": 482,
+    "grams": 100,
+    "label": "Red lentils"
+   },
+   {
+    "id": 251,
+    "grams": 100,
+    "label": "Okra"
+   },
+   {
+    "id": 99,
+    "grams": 30,
+    "label": "Almonds"
+   }
+  ]
+ },
+ "immune": {
+  "title": "IMMUNE DEFENCE",
+  "foods": [
+   {
+    "id": 1000082,
+    "grams": 120,
+    "label": "Red peppers"
+   },
+   {
+    "id": 72,
+    "grams": 100,
+    "label": "Mushrooms"
+   },
+   {
+    "id": 19,
+    "grams": 200,
+    "label": "Yoghurt"
+   },
+   {
+    "id": 886,
+    "grams": 250,
+    "label": "Green tea"
+   },
+   {
+    "id": 175,
+    "grams": 8,
+    "label": "Ginger"
+   }
+  ]
+ },
+ "inflam": {
+  "title": "INFLAMMATION",
+  "foods": [
+   {
+    "id": 742,
+    "grams": 5,
+    "label": "Turmeric"
+   },
+   {
+    "id": 91,
+    "grams": 100,
+    "label": "Blueberries"
+   },
+   {
+    "id": 11,
+    "grams": 15,
+    "label": "Olive oil"
+   },
+   {
+    "id": 15,
+    "grams": 120,
+    "label": "Broccoli"
+   },
+   {
+    "id": 93,
+    "grams": 100,
+    "label": "Cherries"
+   }
+  ]
+ },
+ "liver": {
+  "title": "LIVER RESET",
+  "foods": [
+   {
+    "id": 67,
+    "grams": 80,
+    "label": "Leafy greens"
+   },
+   {
+    "id": 79,
+    "grams": 150,
+    "label": "Beetroot"
+   },
+   {
+    "id": 742,
+    "grams": 5,
+    "label": "Turmeric"
+   },
+   {
+    "id": 15,
+    "grams": 120,
+    "label": "Broccoli"
+   },
+   {
+    "id": 148,
+    "grams": 250,
+    "label": "Coffee"
+   }
+  ]
+ },
+ "lungs": {
+  "title": "BREATHE EASY",
+  "foods": [
+   {
+    "id": 17,
+    "grams": 150,
+    "label": "Apples"
+   },
+   {
+    "id": 21,
+    "grams": 6,
+    "label": "Garlic"
+   },
+   {
+    "id": 252,
+    "grams": 150,
+    "label": "Pumpkin"
+   },
+   {
+    "id": 100,
+    "grams": 30,
+    "label": "Walnuts"
+   },
+   {
+    "id": 886,
+    "grams": 250,
+    "label": "Green tea"
+   }
+  ]
+ },
+ "thyroid": {
+  "title": "THYROID RESET",
+  "foods": [
+   {
+    "id": 261,
+    "grams": 10,
+    "label": "Seaweed"
+   },
+   {
+    "id": 284,
+    "grams": 10,
+    "label": "Brazil nuts"
+   },
+   {
+    "id": 108,
+    "grams": 20,
+    "label": "Pumpkin seeds"
+   },
+   {
+    "id": 14,
+    "grams": 100,
+    "label": "Eggs"
+   },
+   {
+    "id": 52,
+    "grams": 200,
+    "label": "Greek yogurt"
+   }
+  ]
+ },
+ "energy": {
+  "title": "ALL-DAY ENERGY",
+  "foods": [
+   {
+    "id": 55,
+    "grams": 60,
+    "label": "Oats"
+   },
+   {
+    "id": 109,
+    "grams": 100,
+    "label": "Lentils"
+   },
+   {
+    "id": 14,
+    "grams": 100,
+    "label": "Eggs"
+   },
+   {
+    "id": 79,
+    "grams": 150,
+    "label": "Beetroot"
+   },
+   {
+    "id": 886,
+    "grams": 250,
+    "label": "Matcha"
+   }
+  ]
+ },
+ "hair": {
+  "title": "HAIR & NAILS",
+  "foods": [
+   {
+    "id": 14,
+    "grams": 100,
+    "label": "Eggs"
+   },
+   {
+    "id": 103,
+    "grams": 30,
+    "label": "Cashews"
+   },
+   {
+    "id": 67,
+    "grams": 80,
+    "label": "Spinach"
+   },
+   {
+    "id": 36,
+    "grams": 120,
+    "label": "Salmon"
+   }
+  ]
+ },
+ "sleep": {
+  "title": "DEEP SLEEP",
+  "foods": [
+   {
+    "id": 93,
+    "grams": 100,
+    "label": "Cherries"
+   },
+   {
+    "id": 94,
+    "grams": 150,
+    "label": "Kiwi"
+   },
+   {
+    "id": 100,
+    "grams": 30,
+    "label": "Walnuts"
+   },
+   {
+    "id": 50,
+    "grams": 250,
+    "label": "Milk"
+   }
+  ]
+ },
+ "iron": {
+  "title": "ALWAYS TIRED",
+  "foods": [
+   {
+    "id": 287,
+    "grams": 20,
+    "label": "Hemp seeds"
+   },
+   {
+    "id": 759,
+    "grams": 20,
+    "label": "Molasses"
+   },
+   {
+    "id": 44,
+    "grams": 100,
+    "label": "Tofu"
+   },
+   {
+    "id": 647,
+    "grams": 100,
+    "label": "Duck"
+   },
+   {
+    "id": 566,
+    "grams": 150,
+    "label": "Amaranth"
+   }
+  ]
+ },
+ "superfoods7": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 207,
+    "grams": 60,
+    "label": "Beef liver"
+   },
+   {
+    "id": 223,
+    "grams": 100,
+    "label": "Oysters"
+   },
+   {
+    "id": 1001170,
+    "grams": 10,
+    "label": "Spirulina"
+   },
+   {
+    "id": 269,
+    "grams": 150,
+    "label": "Papaya"
+   }
+  ]
+ },
+ "superfoods12": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 21,
+    "grams": 6,
+    "label": "Garlic"
+   },
+   {
+    "id": 25,
+    "grams": 100,
+    "label": "Strawberry"
+   },
+   {
+    "id": 88,
+    "grams": 150,
+    "label": "Mango"
+   },
+   {
+    "id": 444,
+    "grams": 2,
+    "label": "Sage"
+   },
+   {
+    "id": 1000892,
+    "grams": 60,
+    "label": "Natto"
+   }
+  ]
+ },
+ "superfoods13": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 110,
+    "grams": 100,
+    "label": "Chickpeas"
+   },
+   {
+    "id": 97,
+    "grams": 40,
+    "label": "Dates"
+   },
+   {
+    "id": 263,
+    "grams": 100,
+    "label": "Apricots"
+   },
+   {
+    "id": 37,
+    "grams": 120,
+    "label": "Tuna"
+   },
+   {
+    "id": 438,
+    "grams": 10,
+    "label": "Parsley"
+   }
+  ]
+ },
+ "superfoods14": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 114,
+    "grams": 100,
+    "label": "Edamame"
+   },
+   {
+    "id": 104,
+    "grams": 30,
+    "label": "Hazelnuts"
+   },
+   {
+    "id": 252,
+    "grams": 150,
+    "label": "Pumpkin"
+   },
+   {
+    "id": 248,
+    "grams": 80,
+    "label": "Chard"
+   },
+   {
+    "id": 198,
+    "grams": 40,
+    "label": "Anchovies"
+   }
+  ]
+ },
+ "superfoods15": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 101,
+    "grams": 30,
+    "label": "Peanuts"
+   },
+   {
+    "id": 1000875,
+    "grams": 20,
+    "label": "Miso"
+   },
+   {
+    "id": 1000656,
+    "grams": 100,
+    "label": "Peas"
+   },
+   {
+    "id": 31,
+    "grams": 100,
+    "label": "Beef"
+   },
+   {
+    "id": 103,
+    "grams": 30,
+    "label": "Cashews"
+   }
+  ]
+ },
+ "superfoods16": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 39,
+    "grams": 120,
+    "label": "Cod"
+   },
+   {
+    "id": 569,
+    "grams": 60,
+    "label": "Buckwheat"
+   },
+   {
+    "id": 105,
+    "grams": 20,
+    "label": "Sunflower"
+   },
+   {
+    "id": 266,
+    "grams": 150,
+    "label": "Grapefruit"
+   },
+   {
+    "id": 11,
+    "grams": 15,
+    "label": "Olive oil"
+   }
+  ]
+ },
+ "superfoods17": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 72,
+    "grams": 100,
+    "label": "Mushrooms"
+   },
+   {
+    "id": 96,
+    "grams": 100,
+    "label": "Pomegranate"
+   },
+   {
+    "id": 286,
+    "grams": 20,
+    "label": "Sesame"
+   },
+   {
+    "id": 250,
+    "grams": 60,
+    "label": "Watercress"
+   },
+   {
+    "id": 23,
+    "grams": 120,
+    "label": "Cucumber"
+   }
+  ]
+ },
+ "superfoods18": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 65,
+    "grams": 100,
+    "label": "Corn"
+   },
+   {
+    "id": 249,
+    "grams": 60,
+    "label": "Rocket"
+   },
+   {
+    "id": 75,
+    "grams": 100,
+    "label": "Celery"
+   },
+   {
+    "id": 85,
+    "grams": 120,
+    "label": "Grapes"
+   },
+   {
+    "id": 558,
+    "grams": 80,
+    "label": "Kimchi"
+   }
+  ]
+ },
+ "superfoods19": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 267,
+    "grams": 30,
+    "label": "Lime"
+   },
+   {
+    "id": 285,
+    "grams": 30,
+    "label": "Pecans"
+   },
+   {
+    "id": 20,
+    "grams": 80,
+    "label": "Onion"
+   },
+   {
+    "id": 426,
+    "grams": 60,
+    "label": "Dandelion"
+   },
+   {
+    "id": 749,
+    "grams": 4,
+    "label": "Cinnamon"
+   }
+  ]
+ },
+ "superfoods20": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 58,
+    "grams": 60,
+    "label": "Quinoa"
+   },
+   {
+    "id": 442,
+    "grams": 2,
+    "label": "Rosemary"
+   },
+   {
+    "id": 209,
+    "grams": 120,
+    "label": "Turkey"
+   },
+   {
+    "id": 67,
+    "grams": 80,
+    "label": "Spinach"
+   },
+   {
+    "id": 297,
+    "grams": 100,
+    "label": "Tempeh"
+   }
+  ]
+ },
+ "superfoods21": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 295,
+    "grams": 100,
+    "label": "Butter beans"
+   },
+   {
+    "id": 288,
+    "grams": 15,
+    "label": "Poppy seeds"
+   },
+   {
+    "id": 63,
+    "grams": 180,
+    "label": "Potato"
+   },
+   {
+    "id": 197,
+    "grams": 100,
+    "label": "Mussels"
+   },
+   {
+    "id": 1316,
+    "grams": 30,
+    "label": "Goji"
+   }
+  ]
+ },
+ "superfoods22": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 1,
+    "grams": 120,
+    "label": "Chicken"
+   },
+   {
+    "id": 76,
+    "grams": 150,
+    "label": "Cabbage"
+   },
+   {
+    "id": 112,
+    "grams": 50,
+    "label": "Kidney beans"
+   },
+   {
+    "id": 92,
+    "grams": 100,
+    "label": "Raspberries"
+   }
+  ]
+ },
+ "superfoods23": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 45,
+    "grams": 150,
+    "label": "Cottage cheese"
+   },
+   {
+    "id": 177,
+    "grams": 40,
+    "label": "Olives"
+   },
+   {
+    "id": 66,
+    "grams": 120,
+    "label": "Carrots"
+   },
+   {
+    "id": 243,
+    "grams": 100,
+    "label": "Sprouts"
+   },
+   {
+    "id": 386,
+    "grams": 250,
+    "label": "Coconut water"
+   }
+  ]
+ }
+}
