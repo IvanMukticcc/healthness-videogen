@@ -202,3 +202,24 @@ right. Do not rediscover them.
 
     `Exercise/` ships to `FITNESS/`. `Foods/` and `Longevity/` have no folder
     yet and have not been given one.
+
+13. **An argument that was authored is recorded, not only passed.** Micro's
+    badge list - the five nutrients a topic names - existed in exactly two
+    places: `prompt_<topic>.txt`, which rule 8 forbids reading back, and the
+    pixels of the finished clips. Nothing else. It was recovered for 28 topics
+    by matching each drawn disc against `icons/`, which worked, and would not
+    have if the clips had been cleaned before the prompts were.
+
+    **The test is whether a command can produce it.** A base comes back from
+    `recolor_base.py`, a clip from `render.sh`, a label string from
+    `foods.py --labels`. A list somebody *chose* does not come back from
+    anything, and that is the same argument rule 9 makes about posters.
+
+    So: per-topic authored data goes in a `*.json` beside the code that uses it.
+    Micro's `meals.json` already does this for act two's grams and the badge
+    list belongs with them. **Macro has no such file at all** - its five foods
+    and its meal are typed at the command line and recorded nowhere.
+
+    This is not rule 8 loosened. The prompt is still not a file and still is not
+    read back; the point is that the *inputs* the prompt was built from have to
+    live somewhere a program may read.

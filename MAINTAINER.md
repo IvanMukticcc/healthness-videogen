@@ -491,6 +491,38 @@ it ran, and a peer can make it false a second later without either of you being
 at fault. When the user asks again a few minutes on, the answer is not
 necessarily the same answer.
 
+## Validate a recovery against answers you already have
+
+micro-bb recovered 28 topics' badge lists by reading the finished clips - each
+drawn disc matched against the icon set at the geometry the overlay computes.
+Before trusting it on the 21 topics whose answer was unknown, they ran it on two
+whose answer they already had: `pressure` came back 15 of 15, then `ageing` 15 of
+15.
+
+Their reason is the one to keep: **a recovery method that is wrong in the same
+way every time looks exactly like one that works.** It returns a full, plausible,
+internally consistent answer for every input, and nothing about the output says
+which kind it is. The only thing that separates them is a case where the truth is
+already known.
+
+The same shape as `--hacks` verifying a typed sentence, and as a batch taking its
+work list from the folder it writes into: a clean confident answer to a question
+nobody checked was the right one.
+
+## A resume test must not be satisfiable by a partial result
+
+The batch skipped topics it had already done by asking "is this clip shorter than
+the old cut". `render.sh` writes act one to the same path as the finished clip, so
+a topic whose act two was interrupted sat there as an 8.0 second file - shorter
+than the old cut, and skipped as finished by every later run.
+
+It is a band now, 11.3 to 12.4, because 8.0 is not the new cut either. **A
+one-sided test cannot tell "further along" from "stopped early"**, and any step
+that writes an intermediate to its final path will produce something that passes
+it.
+
+Fourth time in a day a check answered a different question than the one asked.
+
 ## A frame-difference check has a floor, and quiet things live under it
 
 Act two's closing note - small grey type fading up over 0.2s - was the genuine
