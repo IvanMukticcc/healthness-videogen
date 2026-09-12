@@ -86,13 +86,30 @@ def find(name):
     silent pick among them is a wrong number on screen with nothing to notice it
     by.
     """
+    # THE COMMA IS STRIPPED FROM BOTH SIDES BEFORE MATCHING, and this is the
+    # input half of the problem `caption_name` fixes on the way out. Every
+    # string a topic is described with here - the five foods, the meal - is
+    # comma-separated, so a food whose own name contains one cannot be typed:
+    # `--meal '100 Cucumber, with peel,...'` is six fields, not five. 442 of the
+    # app's 2272 foods are named that way, all USDA-sourced, so a fifth of the
+    # database was unreachable.
+    #
+    # Worse than unreachable: `find` told you to fix it in a way it would not
+    # accept. "Cucumber" raised "matches 3 foods ... Use the full name", and the
+    # full name is `Cucumber, with peel`, which the caller then splits in half.
+    # Advice a tool cannot take is worse than no advice.
+    #
+    # Matching on the name with its commas removed makes `Cucumber with peel`
+    # resolve, which is what a person would type anyway, and it cannot introduce
+    # an ambiguity that was not already there - removing a character can only
+    # merge names that differ by nothing else.
     foods = all_foods()
-    n = name.strip().lower()
-    exact = [f for f in foods if f["name"].lower() == n]
+    n = name.strip().lower().replace(",", "")
+    exact = [f for f in foods if f["name"].lower().replace(",", "") == n]
     if len(exact) == 1:
         return exact[0]
-    for pick in (lambda f: f["name"].lower().startswith(n),
-                 lambda f: n in f["name"].lower()):
+    for pick in (lambda f: f["name"].lower().replace(",", "").startswith(n),
+                 lambda f: n in f["name"].lower().replace(",", "")):
         hits = [f for f in foods if pick(f)]
         if len(hits) == 1:
             return hits[0]

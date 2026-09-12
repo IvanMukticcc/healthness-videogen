@@ -117,6 +117,26 @@ command can remake (`../../CLAUDE.md` rule 9).
 
 ## What is already known to break
 
+**The caption cannot disagree with the database, and nothing stops it disagreeing
+with the BOWL.** `foods.py --labels` guarantees the word and the numbers come from
+the same row of `foods.json`, which is the failure it was built for. It knows
+nothing about which bowl is in which row of the poster.
+
+That order is decided twice, in two places, by hand: once when the base is built
+(`--waves`, top to bottom) and written into the prompt as Row 1 to Row 5, and
+again when the label string is typed. On `sushi` those two disagreed - the base
+and the prompt had sesame on row 4 and cucumber on row 5, the label string had
+them the other way round - and the clip rendered with a bowl of sesame seeds
+captioned CUCUMBER WITH PEEL. Every check passed: waves 0.0px, bars 0.00%,
+captions sourced, totals correct. Nothing in the pipeline compares a caption to
+the picture above it.
+
+**So the five foods are ONE ordered list, written once and used for all three
+things** - the `--waves` order, the prompt's Row 1..5, and the `--labels` string.
+Not retyped per step. If it is ever retyped, read it back against the poster
+before rendering, because the render will not.
+
+
 **The goal is a person, and the footer naming them is load-bearing.**
 `dailygoal.py` computes the day's goal the way the app does - Mifflin-St Jeor for
 adults, Schofield under 18, times the activity factor, times the fitness-goal
