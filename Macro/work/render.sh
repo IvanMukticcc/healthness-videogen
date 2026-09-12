@@ -99,7 +99,7 @@ ACT1_S="${ACT1_S:-8}"
 # This is a FIVE-FOOD number. `verdict` is ring0 + ring_dur + 0.25 and ring0
 # comes off the last food row, so a meal of a different length moves it and this
 # has to move with it. `meal.py` prints the cues it used.
-ACT2_S="${ACT2_S:-5.8}"
+ACT2_S="${ACT2_S:-6.15}"          # land (4.78 + 0.35) + 1.0, see meal.py Plan.land
 FLIP_N="${FLIP_N:-14}"           # frames of turn; 14 at 24fps is 0.583s
 # 0.5, not 0.12. The measurement said the dead hold was 1.08s and I removed 1.00
 # of it, which left two frames - and two frames is not a pause, it is a cut. A

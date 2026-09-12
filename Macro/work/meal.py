@@ -83,7 +83,32 @@ class Plan:
         """What act two's audio has to land on. Written to disk, never typed twice."""
         c = [self.food0 + self.foodgap * i for i in range(len(self.rows))]
         return {"foods": c, "ring": self.ring0, "verdict": self.verdict,
+                "land": self.land,
                 "chips": [self.chip0 + self.chipgap * i for i in range(3)]}
+
+    @property
+    def land(self):
+        """When the LAST THING ON SCREEN has finished arriving.
+
+        Not `verdict`, which is when the "% of a day" line starts fading up, and
+        not `verdict + 0.4`, which is when its alpha stops being recomputed. An
+        ease-out spends its last quarter moving less than a level of 255, so the
+        line looks finished well before the maths does: measured on its own band
+        it goes 37 -> 146 at the cue and is still at 228 by the time it settles,
+        0.29s later, with nothing after that.
+
+        Solved rather than measured, so it holds if the fade length changes:
+        alpha is `255 * ease(x)` and its last distinguishable step is at
+        `ease(x) >= 254.5/255`, which for the cubic is x = 0.874.
+
+        WHY THE RING NUMBER DOES NOT DECIDE THIS. It has the same crawl - the
+        score is `round(v * ease(x))`, so a 444 kcal ring reaches its last digit
+        at x = 0.896 and a 799 one later still - but it finishes before the
+        verdict line even starts, because `verdict` is 0.25s past the end of the
+        ring's own fill. In this variant the last word on screen is always the
+        verdict, and it is always 0.874 of a fixed 0.4s fade after its cue.
+        """
+        return self.verdict + 0.4 * 0.874
 
 
 # The layout is authored once, at this size, and delivered at whatever size is
@@ -260,6 +285,7 @@ def render(plan, t, W=1080, H=1920, behind=None):
 
     # ---- the three chips --------------------------------------------------
     chiptop = ringbox[3] + gap
+    last_chip = 0.0
     cw = (LW - pad * 2 - 24) / 3
     for i, key in enumerate(("carbs", "protein", "fat")):
         tt = (t - (plan.chip0 + plan.chipgap * i)) / plan.chip_dur
@@ -267,6 +293,7 @@ def render(plan, t, W=1080, H=1920, behind=None):
         if c3 is None:                  # three chips, three cues, one at a time
             continue
         k3, a3 = c3
+        last_chip = a3 if i == 2 else last_chip
         x0 = pad + i * (cw + 12)
         box = (x0, chiptop, x0 + cw, chiptop + chip_h)
         shadow(img, grown(box, k3), 26, blur=14, alpha=int(12 * a3))
@@ -292,12 +319,24 @@ def render(plan, t, W=1080, H=1920, behind=None):
     # So it does not get shortened for space, dropped to fit a longer meal, or
     # covered by anything. If act two's layout is ever tightened, tighten
     # something else. macro-c1's point, and it is the right one.
-    text(d, (LW / 2, chiptop + chip_h + 22),
-         f"{plan.who['who']} · {plan.who['activity']} · {plan.who['goal']}",
-         f_note, SUB, anchor="ma")
-    text(d, (LW / 2, chiptop + chip_h + 52),
-         f"goal {plan.who['kcal']:.0f} kcal from BMR {plan.who['bmr']:.0f} "
-         f"· Mifflin-St Jeor", f_note, SUB, anchor="ma")
+    # IT ARRIVES WITH THE CHIPS, because it is about the chips. These two lines
+    # were drawn unconditionally, so they appeared the instant card one landed -
+    # at full opacity, in one frame, under empty glass, about three seconds
+    # before the three bars whose reference they name. A footnote that turns up
+    # before the thing it annotates is not early, it is unexplained.
+    #
+    # No frame-difference check would have found this. Small grey type is under
+    # the floor: on a held frame the codec alone moves a few hundred pixels by
+    # four or five levels, so a threshold low enough to see the note is
+    # measuring x264. It was found by asking the code when it draws.
+    if last_chip > 0:
+        nc = SUB[:3] + (int(SUB[3] * last_chip),)
+        text(d, (LW / 2, chiptop + chip_h + 22),
+             f"{plan.who['who']} · {plan.who['activity']} · {plan.who['goal']}",
+             f_note, nc, anchor="ma")
+        text(d, (LW / 2, chiptop + chip_h + 52),
+             f"goal {plan.who['kcal']:.0f} kcal from BMR {plan.who['bmr']:.0f} "
+             f"· Mifflin-St Jeor", f_note, nc, anchor="ma")
     return deliver()
 
 

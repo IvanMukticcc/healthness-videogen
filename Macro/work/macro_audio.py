@@ -153,7 +153,12 @@ def main():
     # offset inside a buffer of act two's length: `finale` returns an array of
     # `seconds`, and act two's buffer is longer than that by design, so adding
     # them directly is a shape mismatch waiting on whichever is longer today.
-    place(buf, impact.finale(0.0, 2.6, root=a.root), off + c["verdict"])
+    # ON THE LAST VISIBLE CHANGE, not on the cue that starts it. `verdict` is
+    # when the "% of a day" line BEGINS fading up; the chord placed there landed
+    # 0.3s before the picture was finished, which tells the ear the clip is over
+    # while the eye is still being given something. `land` is when that line has
+    # arrived, and meal.py computes it rather than anyone estimating it.
+    place(buf, impact.finale(0.0, 2.6, root=a.root), off + c.get("land", c["verdict"]))
 
     write_wav(a.act2_out, buf[:int(total * SR)])
     print(f"  act one: {len(cues)} pops"
