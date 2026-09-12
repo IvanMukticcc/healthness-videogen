@@ -87,7 +87,16 @@ FLIP_N="${FLIP_N:-14}"           # frames of turn; 14 at 24fps is 0.583s
 # of it, which left two frames - and two frames is not a pause, it is a cut. A
 # user looking at a held poster asking for "much faster" means the hold should
 # stop being the point, not that the transition should stop existing.
-BEAT="${BEAT:-0.5}"              # how long act one holds after its last movement
+# 0.25, and the reason it changed is worth more than the number. At 0.5 it was
+# measured from the SURGE's end, so the eye had just watched something large
+# finish and half a second read as a breath. With the finale gone it is measured
+# from one small badge settling, and half a second of nothing after a small
+# event is a different half second entirely. Same number, different content.
+#
+# 0.12 IS THE FLOOR AND IT IS ALREADY KNOWN. That was the value this morning
+# before the finale went, and the user's words for it were that the turn arrived
+# as if there were no pause at all. Two frames is a cut, not a beat.
+BEAT="${BEAT:-0.25}"             # the beat after the last badge has settled
 # The rhythm. The overlay still defaults to 1,2,3.2,4.4,5.6 for anyone calling it
 # directly; this is the shipped one and it starts at half a second. A viewer
 # gives a vertical clip about that long before deciding, and the first second
