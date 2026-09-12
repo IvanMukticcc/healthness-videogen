@@ -63,23 +63,20 @@ POP_GAIN="${POP_GAIN:-0.85}"
 # the badges coming forward rather than the clip getting quieter.
 BED_GAIN="${BED_GAIN:-0.30}"
 WIDTH="${WIDTH:-1080}"          # 540 while tuning: 26s a render against 66s, same timing
-DAY="$(date +%d.%m)"
-# Overridable so the mix can be re-measured without writing into a day folder:
-# what is in ../OUTPUT/<DD.MM>/ has shipped and is never rebuilt (../CLAUDE.md
-# rule 5), so a test render points OUT somewhere else and leaves it alone.
-OUT="${OUT:-../OUTPUT/$DAY/${TOPIC}_micro.mp4}"
-# And the comment above is now a guard, because a comment is not one. A second
-# render of a topic on the same day walks straight over the clip already in the
-# day folder, which is the one thing rule 5 forbids - and the run that does it
-# looks exactly like the run that made it. FORCE=1 is the deliberate way past,
-# for the case where the poster was regenerated and the shipped file is known to
-# be the wrong one.
-if [ -f "$OUT" ] && [ -z "${FORCE:-}" ]; then
-    echo "$OUT already exists - that clip has shipped (../CLAUDE.md rule 5)." >&2
-    echo "  OUT=somewhere_else.mp4 ./render.sh ...   to render without touching it" >&2
-    echo "  FORCE=1 ./render.sh ...                  to overwrite it deliberately" >&2
-    exit 1
-fi
+# ../../OUTPUT/MICRO/, flat and dateless (../CLAUDE.md rule 12). The day folder
+# is gone and with it the fault it caused: its name came from the clock, so a
+# session that ran past midnight wrote into a new one and the evening's work
+# looked abandoned. What has gone out lives in ../../OUTPUT/DONE/MICRO/, which
+# the user fills by hand and nothing here writes to.
+OUT="${OUT:-../../OUTPUT/MICRO/${TOPIC}_micro.mp4}"
+# THE GUARD THAT USED TO BE HERE IS GONE, and deliberately rather than by
+# oversight. It refused when the target already existed, which was right when a
+# day folder meant "cut today": a second render of a topic into the same day was
+# a mistake worth stopping. In a flat folder the target exists after the first
+# render of a topic forever, so the same guard would refuse every legitimate
+# re-cut. What it protected is now protected by the structure - OUTPUT/MICRO is
+# what has been made and is rewritable, OUTPUT/DONE/MICRO is what has gone out
+# and nothing here writes to it.
 
 for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$ANCHORED" \
          "$DIR/base_${TOPIC}_layout.json" "$BED"; do
@@ -87,7 +84,34 @@ for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$ANCHORED" \
 done
 mkdir -p "$(dirname "$OUT")"
 
+# FINALE=off is for the two-act cut and only for it. The finale - the surge, the
+# organs lighting again, the chord - is an ENDING, and in a two-act clip act one
+# is not the end: the user's words were that it "looks too much like the end of
+# the whole video". A single-act clip keeps it, because there it is the end.
+#
+# Off also means no ${TOPIC}_finale.txt, which is what the duck and the riser
+# below are conditional on, so they drop out on their own rather than needing
+# their own switch. The stale-file case is handled the same way it always was:
+# the file is removed first, so its presence can only mean this run wrote it.
+MICRO_TIMES="${MICRO_TIMES:-0.25,1.35,2.45,3.55,4.65}"
+FINALE="${FINALE:-auto}"
+if [ "$FINALE" = off ]; then
+    rm -f "${TOPIC}_finale.txt"
+    FIN_ARGS=(--finale off)
+else
+    FIN_ARGS=(--finale auto --finale-cue "${TOPIC}_finale.txt"
+              --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05)
+fi
+
 echo "== liquid, badges and finale"
+# THE RHYTHM IS A VARIABLE NOW, because it has moved twice in two days.
+#
+# 0.25,1.35,2.45,3.55,4.65 from 1,2,3.2,4.4,5.6 on 12 September: the first pop
+# used to land a full second in, which is most of the window a vertical feed
+# gives a clip before the thumb moves. The user asked for it inside 0.3s. The
+# 1.1s spacing is Macro's, so the two variants read as one series.
+#
+# The earlier note, which is still the reason the rhythm is not simply spread out:
 # --micro-times moved in from 1,2,4,5.5,7: at the shipped rhythm the last pop
 # settled at 7.60 of an 8s clip, 0.35s from the end, and a finale needs about
 # 1.8s after the last row - 0.65 for the row to settle, 0.8 for the finale, 0.4
@@ -102,9 +126,8 @@ echo "== liquid, badges and finale"
     --layout "$DIR/base_${TOPIC}_layout.json" \
     --drops 0 --reach 0 \
     --micro "$MICRO" --micro-cues "${TOPIC}_cues.txt" \
-    --micro-times 1,2,3.2,4.4,5.6 \
-    --finale auto --finale-cue "${TOPIC}_finale.txt" \
-    --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05 \
+    --micro-times "$MICRO_TIMES" \
+    "${FIN_ARGS[@]}" \
     -o "${TOPIC}_silent.mp4" "$@"
 
 SECONDS_USED=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "${TOPIC}_silent.mp4")
@@ -163,12 +186,16 @@ echo "== water, pops and picture"
 # what the user picked it at, and Exercise's 0.62 put it 4.2 dB under. One number
 # in the engine arriving as three levels is exactly what impact.py exists to stop.
 # A badge gain belongs to badges.
+# `"${arr[@]}"` on an EMPTY array is an unbound-variable error under `set -u` in
+# bash 3.2, which is what macOS ships. It never fired before because the riser
+# always existed; FINALE=off is the first run without one. The `+` form expands
+# to nothing when the array is empty and to the array when it is not.
 FIN_IN=(); FIN_F=""; FIN_MIX=""
 if [ -f "${TOPIC}_riser.wav" ]; then
     FIN_IN=(-i "${TOPIC}_riser.wav"); FIN_F="[3:a]volume=1.0[f];"; FIN_MIX="[f]"
 fi
 ffmpeg -y -loglevel error \
-    -i "${TOPIC}_silent.mp4" -i "$BED" -i "${TOPIC}_pops.wav" "${FIN_IN[@]}" \
+    -i "${TOPIC}_silent.mp4" -i "$BED" -i "${TOPIC}_pops.wav" ${FIN_IN[@]+"${FIN_IN[@]}"} \
     -filter_complex "[1:a]volume=${BED_GAIN},${DUCK}[w];[2:a]volume=${POP_GAIN}[p];${FIN_F}\
 [w][p]${FIN_MIX}amix=inputs=$(( 2 + ${#FIN_IN[@]} / 2 )):duration=first:normalize=0[m];\
 [m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[a]" \

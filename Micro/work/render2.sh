@@ -22,8 +22,9 @@
 # cut is the first act of the old one, frame for frame. Only `<topic>_finale.txt`
 # is needed from work/, for the instant to cut on.
 #
-# Nothing lands in a day folder. ../OUTPUT/two_acts/ sits beside Done/, so 09.09
-# and 10.09 keep holding exactly what shipped (../CLAUDE.md rule 5).
+# The finished clip goes to ../../OUTPUT/MICRO/ (../CLAUDE.md rule 12): flat, per
+# category, no dates. ../../OUTPUT/DONE/MICRO/ is what has gone out, the user
+# fills it by hand, and nothing here writes to it.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -33,7 +34,10 @@ FPS="${FPS:-24}"
 # 7.0 left 1.4s of dead air under a picture that had stopped moving. 6.4 holds
 # the finished card for 2.2s after the last thing lands, which is long enough to
 # read the score and short enough not to be silence. ACT2_S=7.0 puts it back.
-ACT2_S="${ACT2_S:-6.4}"
+# `auto`: micro_card works out where the last visible change is and makes act
+# two one second longer than that. A fixed length was what left the picture
+# finished and the clip still running - the user counted three seconds of it.
+ACT2_S="${ACT2_S:-auto}"
 FLIP_N="${FLIP_N:-14}"                  # 0.583s at 24fps, as Macro's turn
 LANG_="${LANG_:-en}"
 ACT2_GAIN="${ACT2_GAIN:-1.0}"
@@ -56,31 +60,33 @@ PY=../.venv/bin/python
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-# The shipped clip, wherever it is. Falls back to the silent pass for a topic
-# that has not shipped yet.
-# DAY FOLDERS ONLY, and never the folder this script writes into.
+# WHERE ACT ONE COMES FROM, IN ORDER, AND NEVER FROM WHERE WE WRITE.
 #
-# `../OUTPUT/*/` used to be the search and it started matching ../OUTPUT/two_acts/
-# the moment that folder existed. For the eight topics that shipped inside
-# 09.09/FOOD/ - not directly in a day folder - the day-folder pattern missed and
-# the two-act pattern hit, so a re-render read its own previous output as act
-# one. The trim still produced act one's frames, so the clip looked plausible;
-# what came out wrong was everything downstream of it - the flip turned in front
-# of the PREVIOUS TURN's frames, and act two's frosted backdrop walked into the
-# previous act two, so the old card was ghosting behind the new one.
+# Under rule 12 the deliverable is `OUTPUT/MICRO/<topic>_micro.mp4` and it is the
+# TWO-ACT cut - the thirteen the user has filed in OUTPUT/DONE/MICRO run 14.36s.
+# So act one and the finished clip now share a filename, and reading act one from
+# the folder this script writes into would be the same fault that produced clips
+# turning in front of their own previous turn.
 #
-# `[0-9]*` matches 09.09 and 10.09 and cannot match two_acts or Done.
+#   1. work/<topic>_silent.mp4   the real intermediate, and since the sound is
+#                                rebuilt from the cue files this is all that is
+#                                needed - the picture
+#   2. OUTPUT/DONE/MICRO/        the user's published copy. Read-only by rule 12,
+#                                which makes it safe to read
+#   3. ACT1=... given explicitly, for anything else
+#
+# OUTPUT/MICRO is deliberately NOT in the list. Pass ACT1= if you mean it.
 ACT1="${ACT1:-}"
 if [ -z "$ACT1" ]; then
-    for c in ../OUTPUT/[0-9]*/"${TOPIC}_micro.mp4" ../OUTPUT/[0-9]*/*/"${TOPIC}_micro.mp4"; do
+    for c in "${TOPIC}_silent.mp4" ../../OUTPUT/DONE/MICRO/"${TOPIC}_micro.mp4"; do
         [ -f "$c" ] && ACT1="$c" && break
     done
 fi
-[ -n "$ACT1" ] || ACT1="${TOPIC}_silent.mp4"
 [ -f "$ACT1" ] || { echo "no act one for $TOPIC - looked in ../OUTPUT and work/"; exit 1; }
-[ -f "${TOPIC}_finale.txt" ] || { echo "no ${TOPIC}_finale.txt - it says where to cut"; exit 1; }
+# The cut now comes from the badge cues, not from a finale instant.
+[ -f "${TOPIC}_cues.txt" ] || { echo "no ${TOPIC}_cues.txt - it says where the badges land"; exit 1; }
 
-OUT="${OUT:-../OUTPUT/two_acts/${TOPIC}_micro.mp4}"
+OUT="${OUT:-../../OUTPUT/MICRO/${TOPIC}_micro.mp4}"
 mkdir -p "$(dirname "$OUT")"
 # And a belt to the braces above: reading the file we are about to overwrite
 # produces a clip that is wrong in ways no check here would catch.
@@ -99,9 +105,41 @@ fi
 W=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$ACT1")
 H=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$ACT1")
 
-FIN=$(cat "${TOPIC}_finale.txt")
-ACT1_N=$(awk -v f="$FIN" -v r="$FPS" 'BEGIN{printf "%d", int((f + 1.0) * r + 0.5)}')
-FINALE_N=$(awk -v f="$FIN" -v r="$FPS" 'BEGIN{printf "%d", int(f * r + 0.5)}')
+# WHERE ACT ONE ENDS, NOW THAT IT HAS NO FINALE.
+#
+# It used to end a beat after the finale settled. The finale is gone from the
+# two-act cut - it announced an ending in the middle of a clip, and the user was
+# hearing act one's chord as the real one - so the cut is measured from the last
+# badge instead: **half a second after it is ON SCREEN**, not after its cue.
+#
+# The two are 0.47s apart and that gap is the whole reason this rule is written
+# this way. Measured on part 24: the last cue is 5.780 and the badge band stops
+# changing at 6.25, so the badge is still arriving for nearly half a second after
+# the sound that announces it. Cutting at cue + 0.5 would start the turn while
+# the thing the viewer is watching is still moving.
+SETTLE="${SETTLE:-0.47}"          # cue -> fully on screen, measured
+# 0.25 from 0.50 on 12 September, and the reason it moved is not that half a
+# second was always wrong - it is that what fills the space changed. The gap used
+# to be measured from the end of the finale surge, so the eye had just watched
+# something large finish; now it is measured from one small badge settling, and
+# half a second after that is a different half-second entirely.
+#
+# 0.12 is the floor and it is known rather than guessed: at that value this
+# morning the turn read as no pause at all. Two frames is a cut; six is a beat.
+GAP="${GAP:-0.25}"
+LASTCUE=$(awk -F, '{print $NF}' "${TOPIC}_cues.txt")
+ACT1_S_RAW=$(awk -v c="$LASTCUE" -v s="$SETTLE" -v g="$GAP" 'BEGIN{printf "%.4f", c + s + g}')
+ACT1_N=$(awk -v t="$ACT1_S_RAW" -v r="$FPS" 'BEGIN{printf "%d", int(t * r + 0.5)}')
+FINALE_N=$(( ACT1_N - 1 ))        # the walk's floor: the last frame of act one
+
+# A finale file means act one was rendered WITH the surge, and the glow is in the
+# picture - cutting at 6.75 would show it and then cut away from it. Refuse
+# rather than ship a clip that announces an ending it does not have.
+if [ -s "${TOPIC}_finale.txt" ]; then
+    echo "${TOPIC}_finale.txt exists, so act one carries the finale glow." >&2
+    echo "  FINALE=off ./render.sh ${TOPIC} <poster> <badges>   re-render it without" >&2
+    exit 1
+fi
 ACT1_S=$(awk -v n="$ACT1_N" -v r="$FPS" 'BEGIN{printf "%.4f", n / r}')
 FLIP_S=$(awk -v n="$FLIP_N" -v r="$FPS" 'BEGIN{printf "%.4f", n / r}')
 
@@ -119,18 +157,14 @@ ffmpeg -v error -i "$ACT1" -frames:v "$ACT1_N" -an -c:v libx264 -preset slow -cr
 # `<topic>_finale.txt`, and the synthesis is deterministic from those, so the
 # mix can be made again with the same badge landings and a quieter bed. The
 # PICTURE is still the shipped one, frame for frame - only the sound is rebuilt.
+# No finale means no riser and no duck: the duck existed to step the water back
+# under the chord, and there is no chord in act one any more. Act two's landing
+# is the clip's only one, which is the point of the change.
 $PY micro_audio.py --cues-file "${TOPIC}_cues.txt" --seconds 8 \
-    --finale-file "${TOPIC}_finale.txt" --finale-out "$TMP/riser.wav" \
     -o "$TMP/pops.wav" >/dev/null
-DUCK="anull"
-if [ -s "${TOPIC}_finale.txt" ]; then
-    D0="$(awk -v t="$FIN" 'BEGIN{printf "%.2f", t - 0.28}')"
-    D1="$(awk -v t="$FIN" 'BEGIN{printf "%.2f", t + 1.12}')"
-    DUCK="volume='1-0.28*clip(min((t-${D0})/0.20,(${D1}-t)/0.35),0,1)':eval=frame"
-fi
-ffmpeg -v error -i "$BED" -i "$TMP/pops.wav" -i "$TMP/riser.wav" \
-    -filter_complex "[0:a]volume=${BED_GAIN},${DUCK}[w];[1:a]volume=${POP_GAIN}[p];\
-[2:a]volume=1.0[f];[w][p][f]amix=inputs=3:duration=first:normalize=0[m];\
+ffmpeg -v error -i "$BED" -i "$TMP/pops.wav" \
+    -filter_complex "[0:a]volume=${BED_GAIN}[w];[1:a]volume=${POP_GAIN}[p];\
+[w][p]amix=inputs=2:duration=first:normalize=0[m];\
 [m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[a]" \
     -map "[a]" -ac 2 -ar 48000 "$TMP/act1.wav" -y
 
@@ -160,12 +194,21 @@ printf "file '%s'\nfile '%s'\nfile '%s'\n" \
     "$TMP/act1shown.mp4" "$TMP/turn.mp4" "$TMP/act2.mp4" > "$TMP/list"
 ffmpeg -v error -f concat -safe 0 -i "$TMP/list" -c:v copy "$TMP/silent.mp4" -y
 
+# micro_card decides the length when ACT2_S is `auto`, so the real number comes
+# back out of the cue file it just wrote rather than being assumed here.
+ACT2_S=$($PY -c "import json;print(json.load(open('${TOPIC}_act2.json'))['seconds'])")
 $PY micro_audio.py --act2-cues "${TOPIC}_act2.json" --act2-seconds "$ACT2_S" \
     --flip-seconds "$FLIP_S" --act2-out "${TOPIC}_act2.wav"
 
 # Act one's sound is the shipped mix, unchanged, and it fades THROUGH the turn
 # rather than stopping at the cut: a bed that ends on act one's last frame makes
 # the join audible as a join. Act two comes in at unity behind it.
+# The chord is still ringing when the clip ends - it has to be, since the clip
+# ends one second after the chord lands and the chord runs 2.6. Cutting it there
+# is audible at about -9 dB; 0.15s of fade takes the rest without reading as a
+# cut. Fade AFTER the limiter, or the limiter puts back what the fade removed.
+TOTAL=$(awk -v a="$ACT1_S" -v f="$FLIP_S" -v b="$ACT2_S" 'BEGIN{printf "%.4f", a+f+b}')
+FADE_END=$(awk -v t="$TOTAL" 'BEGIN{printf "%.4f", t - 0.15}')
 DELAY=$(awk -v s="$ACT1_S" 'BEGIN{printf "%d", s * 1000}')
 FADE0=$(awk -v s="$ACT1_S" 'BEGIN{printf "%.3f", s - 0.10}')
 ffmpeg -v error -i "$TMP/silent.mp4" -i "$TMP/act1.wav" -i "${TOPIC}_act2.wav" \
@@ -173,7 +216,8 @@ ffmpeg -v error -i "$TMP/silent.mp4" -i "$TMP/act1.wav" -i "${TOPIC}_act2.wav" \
 [1:a]afade=t=out:st=${FADE0}:d=0.75[w];\
 [2:a]volume=${ACT2_GAIN},adelay=${DELAY}|${DELAY}[c];\
 [w][c]amix=inputs=2:duration=longest:normalize=0[m];\
-[m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[a]" \
+[m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[l];\
+[l]afade=t=out:st=${FADE_END}:d=0.15[a]" \
     -map 0:v -map "[a]" -shortest \
     -c:v copy -c:a aac -b:a 192k -movflags +faststart "$OUT" -y
 

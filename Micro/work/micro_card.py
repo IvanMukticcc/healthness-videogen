@@ -92,7 +92,8 @@ class Plan:
     """
 
     def __init__(self, res, seconds=7.0, lang="en"):
-        self.res, self.seconds, self.lang = res, seconds, lang
+        self.res, self.lang = res, lang
+        self.seconds = seconds          # may be "auto"; resolved at the end
         self.rows = self.pick(res)
         # WHAT THE TURN HANDS OVER IS GLASS, NOT A CARD.
         #
@@ -113,7 +114,34 @@ class Plan:
         self.ring0 = self.pane2 + self.card_dur + 0.10
         self.ring_dur = 1.30
         self.score0 = self.ring0 + 0.30          # the number counts with the arc
-        self.under0 = self.ring0 + self.ring_dur + 0.20
+        # The note arrives DURING the fill rather than after it, so that the last
+        # thing to appear on the card is the number reaching its value. It used
+        # to come 0.2s after the count ended, which made "everything has
+        # appeared" a moment nobody could see - small grey text fading up is
+        # below the threshold of anything watching the frame, including me.
+        self.under0 = self.ring0 + 0.70
+
+        # WHERE THE PICTURE ACTUALLY STOPS, which is not where the count ends.
+        #
+        # The number is round(score*100 * ease(x)) and `ease` is cubic, so it
+        # reaches its final integer at x = 0.735 and then crawls the last half
+        # percent for a third of a second with nothing visibly changing. The
+        # chord was landing at the end of that crawl - 0.34s after the last
+        # thing the eye could see, which reads as the sound being late and the
+        # clip being over before it arrives.
+        v = round((res["score"] or 0) * 100)
+        if v > 0:
+            x = 1 - (1 - (v - 0.5) / v) ** (1 / 3)
+        else:
+            x = 1.0
+        self.land = self.score0 + self.ring_dur * x
+
+        # `auto` is one second after the last visible change, which is what the
+        # user asked for: long enough to look again at something missed, short
+        # enough not to be a held still frame. The chord lands on `land` and its
+        # tail is faded into the cut by render2.sh rather than chopped.
+        if self.seconds == "auto":
+            self.seconds = round(self.land + 1.0, 3)
 
     @staticmethod
     def pick(res):
@@ -132,7 +160,7 @@ class Plan:
     def cues(self):
         """What act two's sound lands on. Written to disk, never typed twice."""
         return {"rows": [self.row0 + self.rowgap * i for i in range(len(self.rows))],
-                "cards": [self.card1, self.pane2],
+                "cards": [self.card1, self.pane2], "land": self.land,
                 "ring": self.ring0, "ring_dur": self.ring_dur,
                 "score": self.score0, "under": self.under0, "seconds": self.seconds}
 
@@ -428,7 +456,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--topic", required=True)
     p.add_argument("--lang", default="en", choices=["en", "hr"])
-    p.add_argument("--seconds", type=float, default=7.0)
+    p.add_argument("--seconds", default=7.0,
+                   help="length of act two, or 'auto' for one second after the "
+                        "last visible change")
     p.add_argument("--fps", type=int, default=24)
     p.add_argument("--width", type=int, default=1080)
     p.add_argument("--height", type=int, default=1920)
@@ -445,7 +475,8 @@ def main():
     a = p.parse_args()
 
     res = mr.result(a.topic, a.age, a.gender)
-    plan = Plan(res, a.seconds, a.lang)
+    plan = Plan(res, a.seconds if a.seconds == "auto" else float(a.seconds), a.lang)
+    a.seconds = plan.seconds
     if a.cues:
         with open(a.cues, "w") as fh:
             json.dump(plan.cues(), fh, indent=1)

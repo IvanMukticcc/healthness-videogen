@@ -789,5 +789,35 @@
     "label": "Coconut water"
    }
   ]
+ },
+ "superfoods24": {
+  "title": "SUPERFOODS",
+  "foods": [
+   {
+    "id": 69,
+    "grams": 150,
+    "label": "Cauliflower"
+   },
+   {
+    "id": 754,
+    "grams": 2,
+    "label": "Black pepper"
+   },
+   {
+    "id": 96,
+    "grams": 100,
+    "label": "Pomegranate"
+   },
+   {
+    "id": 57,
+    "grams": 60,
+    "label": "Brown rice"
+   },
+   {
+    "id": 565,
+    "grams": 60,
+    "label": "Millet"
+   }
+  ]
  }
 }

@@ -70,6 +70,7 @@ right-hand caption is the organ, one word where it can be.
 | **21** | butter beans → PELVIC FLOOR | poppy seeds → EAR BONES | potato → RIB MUSCLES | mussels → SPINAL CORD | goji → BROWN FAT |
 | **22** | chicken → SHOULDER | kombucha → LIVER | cabbage → STOMACH | kidney beans → RED CELLS | raspberries → IRIS |
 | **23** | cottage cheese → GLUTES | olives → MESENTERY | carrots → LUNGS | brussels sprouts → BONE | coconut water → KIDNEY |
+| **24** | cauliflower → BRAIN | black pepper → GALLBLADDER | pomegranate → HEART | brown rice → PANCREAS | millet → NAILS |
 
 ## The themed clips
 
@@ -146,6 +147,7 @@ it - `recolor_base.py` prints "asked vs got" and they are not the same number.
 | ageing | `#420C42` | `#F2EDE6` | `#8BC838` `#3C1142` `#ADB9C1` `#2D6F3E` `#EBCE62` |
 | superfoods22 | `#0C420C` | `#F2EFE3` | `#E6CCA3` `#CC8825` `#C9DFA6` `#7E1E2F` `#C91E4E` |
 | superfoods23 | `#420C27` | `#F2EEE7` | `#F6F4EB` `#30242A` `#EC711A` `#3E6F29` `#F0E5B5` |
+| superfoods24 | `#324210` | `#F2F0E2` | `#F5F1E2` `#302822` `#A81139` `#98774B` `#EBCF6B` |
 
 **The darks run from grey to vivid, and the gap is at the grey end.** HSV
 saturation, measured: ALWAYS TIRED's `#1E1C1B` is the least saturated at 10.0%,

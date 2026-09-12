@@ -147,8 +147,12 @@ def act_two(cues, flip_seconds, seconds, root=ROOT, gain=0.45):
     # The instant is where the count finishes, not where it starts: the number
     # rolls from 0 to the score over `ring_dur`, and a chord under a number still
     # moving reads as landing early.
-    score_end = cues["score"] + cues.get("ring_dur", 1.3)
-    place(impact.finale(0.0, 2.6, root=root), flip_seconds + score_end)
+    # `land` is where the number last visibly changes, which is 0.34s before the
+    # count nominally ends: the ease-out crawls the final half percent with
+    # nothing moving. The chord goes on the visible instant, not the arithmetic
+    # one - the same distinction as a badge's cue against its arrival.
+    land = cues.get("land", cues["score"] + cues.get("ring_dur", 1.3))
+    place(impact.finale(0.0, 2.6, root=root), flip_seconds + land)
 
     # Deliberately NOT normalised. Act one's pops are, because they are fifteen
     # of one sound and the peak is arbitrary; this buffer ends on impact.finale,
