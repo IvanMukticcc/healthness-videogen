@@ -1,0 +1,278 @@
+{
+ "_": "What each topic IS. Nothing here comes back from a command - see ../CLAUDE.md rule 13.",
+ "topics": {
+  "breakfast": {
+   "title": "WHAT IS IN YOUR BREAKFAST",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F2EFE6,#4C3F8F,#D9A02B,#C8A46A,#B8763F",
+   "foods": [
+    "Greek yogurt",
+    "Blueberries",
+    "Honey",
+    "Oats",
+    "Almonds"
+   ],
+   "meal": "200 Greek yogurt,80 Blueberries,20 Honey,60 Oats,15 Almonds"
+  },
+  "cheeseboard": {
+   "title": "WHAT IS IN YOUR CHEESE BOARD",
+   "rows": "#2A1226,#F5EFE8",
+   "waves": "#F2EFE6,#4A2050,#E8892A,#6B4A2A,#DCE0A8",
+   "foods": [
+    "Ricotta",
+    "Grapes",
+    "Orange",
+    "Hazelnuts",
+    "Pear"
+   ],
+   "meal": "60 Ricotta,120 Grapes,120 Orange,20 Hazelnuts,150 Pear"
+  },
+  "curry": {
+   "title": "WHAT IS IN YOUR CURRY",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F5F2EC,#2E5A28,#E08A24,#B08A4A,#E8CE9E",
+   "foods": [
+    "Coconut milk",
+    "Kale",
+    "Pumpkin",
+    "Chickpeas",
+    "Cashews"
+   ],
+   "meal": "120 Coconut milk,80 Kale,200 Pumpkin,120 Chickpeas,20 Cashews"
+  },
+  "dinner": {
+   "title": "WHAT IS IN YOUR DINNER",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#EDD9BE,#3B6B2E,#C6A277,#C0342A,#E8CE7A",
+   "foods": [
+    "Chicken breast",
+    "Broccoli",
+    "Brown rice",
+    "Tomato",
+    "Parmesan"
+   ],
+   "meal": "180 Chicken breast,150 Broccoli,70 Brown rice,120 Tomato,20 Parmesan"
+  },
+  "fishsupper": {
+   "title": "WHAT IS IN YOUR FISH SUPPER",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#E8C878,#3F6B2A,#F2EFE8,#7A9A4E,#EFC44E",
+   "foods": [
+    "Potato",
+    "Asparagus",
+    "Cod",
+    "Leek",
+    "Butter"
+   ],
+   "meal": "250 Potato,120 Asparagus,180 Cod,80 Leek,10 Butter"
+  },
+  "kefir": {
+   "title": "WHAT IS IN YOUR KEFIR BOWL",
+   "rows": "#320A26,#EDF2DC",
+   "waves": "#F2EFE8,#B81E3C,#8FC04A,#6B4A2A,#DCE0A8",
+   "foods": [
+    "Kefir",
+    "Pomegranate",
+    "Kiwi",
+    "Hazelnuts",
+    "Pear"
+   ],
+   "meal": "200 Kefir,100 Pomegranate,120 Kiwi,20 Hazelnuts,150 Pear"
+  },
+  "lunch": {
+   "title": "WHAT IS IN YOUR LUNCH",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F0845E,#2E6B33,#E08526,#9A8A22,#E0D2AE",
+   "foods": [
+    "Salmon",
+    "Spinach",
+    "Sweet potato",
+    "Olive oil",
+    "Quinoa"
+   ],
+   "meal": "150 Salmon,60 Spinach,200 Sweet potato,10 Olive oil,60 Quinoa"
+  },
+  "lunchbox": {
+   "title": "WHAT IS IN YOUR LUNCHBOX",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F0E4B8,#7A5430,#D14038,#4A2C2A,#D4A05C",
+   "foods": [
+    "Popcorn",
+    "Walnuts",
+    "Apple",
+    "Raisins",
+    "Peanut butter"
+   ],
+   "meal": "25 Popcorn,25 Walnuts,150 Apple,30 Raisins,20 Peanut butter"
+  },
+  "mezze": {
+   "title": "WHAT IS IN YOUR MEZZE",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#EFE9DC,#4A2352,#B8A882,#C4622A,#C8A89A",
+   "foods": [
+    "Cauliflower",
+    "Eggplant",
+    "Sunflower seeds",
+    "Lentils",
+    "Sardines"
+   ],
+   "meal": "150 Cauliflower,200 Eggplant,20 Sunflower seeds,60 Lentils,60 Sardines"
+  },
+  "omelette": {
+   "title": "WHAT IS IN YOUR OMELETTE",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F0C63C,#8B6F4E,#F7F5F0,#D4737A,#E8DFCC",
+   "foods": [
+    "Egg",
+    "Mushrooms",
+    "Milk",
+    "Ham",
+    "Onion"
+   ],
+   "meal": "150 Egg,60 Mushrooms,30 Milk,40 Ham,40 Onion"
+  },
+  "pasta": {
+   "title": "WHAT IS IN YOUR PASTA",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#EBD9A8,#6B2E22,#D13B2C,#3F6B2E,#E8CE7A",
+   "foods": [
+    "Pasta",
+    "Ground beef",
+    "Tomato",
+    "Zucchini",
+    "Parmesan"
+   ],
+   "meal": "180 Pasta,100 Ground beef,120 Tomato,80 Zucchini,15 Parmesan"
+  },
+  "roast": {
+   "title": "WHAT IS IN YOUR ROAST",
+   "rows": "#241A14,#F3EDE2",
+   "waves": "#EFE2C4,#7A3020,#BCCF8A,#8A6A3A,#E8E8E0",
+   "foods": [
+    "Parsnip",
+    "Lamb",
+    "Celery",
+    "Buckwheat",
+    "Blue cheese"
+   ],
+   "meal": "150 Parsnip,120 Lamb,80 Celery,60 Buckwheat,20 Blue cheese"
+  },
+  "ryeplate": {
+   "title": "WHAT IS IN YOUR RYE PLATE",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#EDE4C4,#4A5A2A,#E0506A,#5A3A22,#A8B4BE",
+   "foods": [
+    "Sauerkraut",
+    "Pumpkin seeds",
+    "Radish",
+    "Rye bread",
+    "Mackerel"
+   ],
+   "meal": "100 Sauerkraut,20 Pumpkin seeds,60 Radish,80 Rye bread,120 Mackerel"
+  },
+  "salad": {
+   "title": "WHAT IS IN YOUR SALAD",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#A8C46A,#3A4021,#F2F0EA,#A0446E,#6E9A3E",
+   "foods": [
+    "Lettuce",
+    "Olives",
+    "Feta",
+    "Red onion",
+    "Avocado"
+   ],
+   "meal": "120 Lettuce,40 Olives,60 Feta,50 Red onion,100 Avocado"
+  },
+  "sandwich": {
+   "title": "WHAT IS IN YOUR SANDWICH",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#E0BFA0,#B8873F,#F5F2EA,#C42A22,#EFC44E",
+   "foods": [
+    "Turkey breast",
+    "Bread",
+    "Mozzarella",
+    "Bell pepper",
+    "Butter"
+   ],
+   "meal": "60 Turkey breast,80 Bread,30 Mozzarella,40 Bell pepper,10 Butter"
+  },
+  "seafood": {
+   "title": "WHAT IS IN YOUR SEAFOOD PLATE",
+   "rows": "#0C2A2A,#EBF2EF",
+   "waves": "#F2EFE8,#2E5A2A,#E8956E,#A8622A,#E0C070",
+   "foods": [
+    "Sour cream",
+    "Dill",
+    "Trout",
+    "Mussels",
+    "Millet"
+   ],
+   "meal": "30 Sour cream,10 Dill,150 Trout,120 Mussels,60 Millet"
+  },
+  "smoothie": {
+   "title": "WHAT IS IN YOUR SMOOTHIE",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F0A828,#2E2A26,#F5F2EC,#C8A020,#EDE4D0",
+   "foods": [
+    "Mango",
+    "Chia seeds",
+    "Yogurt",
+    "Pineapple",
+    "Soy milk"
+   ],
+   "meal": "150 Mango,15 Chia seeds,150 Yogurt,100 Pineapple,200 Soy milk"
+  },
+  "snack": {
+   "title": "WHAT IS IN YOUR SNACK",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F0EDE4,#3A2318,#EFD98A,#7E9440,#E03048",
+   "foods": [
+    "Cottage cheese",
+    "Dark chocolate",
+    "Banana",
+    "Pistachios",
+    "Strawberries"
+   ],
+   "meal": "120 Cottage cheese,15 Dark chocolate,100 Banana,20 Pistachios,100 Strawberries"
+  },
+  "stirfry": {
+   "title": "WHAT IS IN YOUR STIR FRY",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#F2EBD8,#4E7A2A,#F09070,#C8641A,#DDE8C8",
+   "foods": [
+    "Tofu",
+    "Peas",
+    "Shrimp",
+    "Carrot",
+    "Cabbage"
+   ],
+   "meal": "150 Tofu,100 Peas,120 Shrimp,80 Carrot,120 Cabbage"
+  },
+  "sushi": {
+   "title": "WHAT IS IN YOUR SUSHI BOWL",
+   "rows": "#0A3A52,#F2DFAE",
+   "waves": "#F2EFE6,#D4614A,#7FB33A,#8A6A3A,#C4E0A8",
+   "foods": [
+    "Rice",
+    "Crab",
+    "Edamame",
+    "Sesame seeds",
+    "Cucumber with peel"
+   ],
+   "meal": "70 Rice,100 Crab,80 Edamame,10 Sesame seeds,120 Cucumber with peel"
+  },
+  "tunabowl": {
+   "title": "WHAT IS IN YOUR TUNA BOWL",
+   "rows": "#12262B,#EDF0EE",
+   "waves": "#E8C33A,#7B1E3C,#E8A88A,#4A7A34,#D8C49A",
+   "foods": [
+    "Corn",
+    "Beetroot",
+    "Tuna",
+    "Green beans",
+    "Hummus"
+   ],
+   "meal": "100 Corn,100 Beetroot,120 Tuna,100 Green beans,40 Hummus"
+  }
+ }
+}

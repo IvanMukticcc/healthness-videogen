@@ -115,6 +115,36 @@ command can remake (`../../CLAUDE.md` rule 9).
 `WIDTH=540` while tuning. Everything after the fourth argument goes to
 `flowanim.py` untouched.
 
+## meals.json
+
+**What each topic IS, and nothing in it comes back from a command.** The five
+foods, their grams, the row palette, the wave colours and the title are all
+chosen. `../CLAUDE.md` rule 13 is the test: a base comes back from
+`recolor_base.py`, a clip from `render.sh`, a caption string from
+`foods.py --labels` - a list somebody picked comes back from nothing, which is
+the argument rule 9 already makes about posters.
+
+Until this file existed they lived in `render.sh`'s third and fourth arguments,
+typed at a command line, surviving in shell history and nowhere else. A cleaned
+folder would have ended twenty-one topics.
+
+**Two thirds of it is verified against artefacts on disk, and one third is not.**
+That distinction matters more than the file:
+
+  - rows, waves, title - **all 21 bases rebuild byte-identical** from the
+    recorded values, compared by md5 against `../INPUT/base_<topic>.png`
+  - the five foods and their order - **all 20 posters relabel byte-identical**,
+    the caption string re-derived from the file and run through `add_labels`
+    against the existing `<topic>_labelled.png`
+  - **the grams are not verified by anything.** They exist on screen only as
+    pixels in act two's list, and nothing on disk carries them. They are the one
+    part of this file taken on trust.
+
+A recovery or a transcription that is wrong the same way every time returns a
+full, plausible, internally consistent answer for every input, and nothing in
+the output says which kind you have. Two thirds of this file cannot be wrong
+that way. The other third can.
+
 ## What is already known to break
 
 **The caption cannot disagree with the database, and nothing stops it disagreeing
