@@ -104,6 +104,14 @@ def main():
     per_row = [(i // 3, i % 3) for i in range(len(cues))]
     write_wav(a.out, impact.build(cues, a.act1_seconds, per_row,
                                   root=a.root, gain=a.gain))
+    # t0 stays None when there is no finale, and the log line below tests THAT
+    # rather than testing whether the flags were passed. The two conditions had
+    # drifted: render.sh passes --finale-file always, so with the file absent -
+    # which is now every run, since act one ships without a finale - the print
+    # reached for a t0 that this branch never assigned and the whole render died
+    # after the clip was made. Same shape as the log that said "bell" while the
+    # code placed a chord: what the report tests must be what the code did.
+    t0 = None
     if a.finale_out and a.finale_file and os.path.exists(a.finale_file):
         t0 = float(open(a.finale_file).read().strip())
         write_wav(a.finale_out, impact.finale(t0, a.act1_seconds, root=a.root))
@@ -149,7 +157,7 @@ def main():
 
     write_wav(a.act2_out, buf[:int(total * SR)])
     print(f"  act one: {len(cues)} pops"
-          + (f", chord at {t0:.2f}s" if a.finale_out and a.finale_file else "")
+          + (f", chord at {t0:.2f}s" if t0 is not None else "")
           # "chord" in both halves on purpose: it is the same buffer at the
           # same gain, and the two times are the spacing that keeps the repeat
           # reading as a bracket rather than an echo.

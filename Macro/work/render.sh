@@ -94,7 +94,14 @@ BEAT="${BEAT:-0.5}"              # how long act one holds after its last movemen
 # used to be five bare rings and a poster - nothing had happened yet at the only
 # moment it mattered. 1.1 apart is Micro's spacing, which is the one this
 # repository has the most clips behind.
-MACRO_TIMES="${MACRO_TIMES:-0.5,1.6,2.7,3.8,4.9}"
+# 0.25, not 0.5. The user asked for the first pop no later than 0.3s in. Same
+# 1.1 spacing, shifted a quarter second earlier.
+#
+# WORTH KNOWING IF THEY ASK AGAIN: the cue is when the pop STARTS, not when the
+# badge is on screen. At 0.25 it finishes arriving around 0.72, and no cue can
+# put a badge fully on screen by 0.3 - that would be a faster `POP` in
+# macro_overlay.py, which is this folder's own file and not shared with Micro.
+MACRO_TIMES="${MACRO_TIMES:-0.25,1.35,2.45,3.55,4.65}"
 FPS=24
 # No DAY. Clips go to one flat folder per category - `../CLAUDE.md` rule 12 -
 # because the day folder came off the clock, so a session that spanned midnight
@@ -123,6 +130,23 @@ TMP="${TMPDIR:-/tmp}/macro_${TOPIC}_$$"
 mkdir -p "$TMP"
 trap 'rm -rf "$TMP"' EXIT
 
+# NOTHING WRITES THE FINALE CUE ANY MORE, SO NOTHING MAY READ AN OLD ONE.
+# `--finale off` stops flowanim writing `<topic>_finale.txt`; it does not remove
+# the one a previous render left, and `macro_audio` reads that file to place act
+# one's chord. The first render after the finale was dropped still had the chord
+# in it, at 5.67s - 0.16s before the turn - because a six-byte file from an hour
+# earlier was still on disk. Deleting it here makes the absence structural rather
+# than a thing housekeeping has to remember.
+# A finale cue on disk means act one carries the glow in its PICTURE, so cutting
+# after it would show the glow and then cut away from it. Loud failure beats a
+# clip that announces an ending it does not have.
+if [ -s "${TOPIC}_finale.txt" ] && [ -z "${ALLOW_FINALE:-}" ]; then
+    echo "refusing: ${TOPIC}_finale.txt exists, so act one was rendered with a" >&2
+    echo "  finale in its picture. This variant ships without one - delete it," >&2
+    echo "  or set ALLOW_FINALE=1 if you really mean to keep the glow." >&2
+    exit 1
+fi
+rm -f "${TOPIC}_finale.txt"
 echo "== act one: liquid, macros, calories"
 ../.venv/bin/python ../../engine/flowanim.py "$POSTER" \
     --width "$W" --seconds "$ACT1_S" \
@@ -131,33 +155,50 @@ echo "== act one: liquid, macros, calories"
     --drops 0 --reach 0 \
     --macro "$FOODS" --macro-cues "${TOPIC}_cues.txt" \
     --macro-times "$MACRO_TIMES" \
-    --finale auto --finale-cue "${TOPIC}_finale.txt" \
-    --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05 \
+    --finale off \
     -o "$TMP/act1.mp4" "$@" | tee "$TMP/act1.log"
 
 ACT1_FULL=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$TMP/act1.mp4")
 ACT1_N=$(ffprobe -v error -select_streams v:0 -count_frames \
     -show_entries stream=nb_read_frames -of csv=p=0 "$TMP/act1.mp4")
 
-# WHERE ACT ONE STOPS MOVING, taken from the engine's own report rather than
-# re-derived here. flowanim prints the surge window it actually used - "surge
-# +30% over 5 rows, 6.37-6.91s" - and that end is the last movement in the act:
-# the badges are done by 6.29 and after the surge settles nothing but the liquid
-# is in motion. Measured on the 10.09 clip, the step outside the ribbon runs
-# 0.0006-0.008 from 6.29 to 7.96, and inside it the surge peaks at 6.67 and is
-# back to the flow baseline by 6.92.
+# THE TURN COMES BEAT AFTER THE LAST BADGE IS ON SCREEN.
 #
-# The clip used to run to 8.0 regardless, so it held a finished poster for 1.08
-# seconds before the turn began. It now cuts BEAT after the last movement.
-SURGE_END=$(sed -n 's/.*surge .*, [0-9.]*-\([0-9.]*\)s.*/\1/p' "$TMP/act1.log" | tail -1)
-if [ -z "$SURGE_END" ] && [ -s "${TOPIC}_finale.txt" ]; then
-    SURGE_END=$(awk -v t="$(cat "${TOPIC}_finale.txt")" 'BEGIN{printf "%.3f", t+0.55}')
-fi
-CUT="${CUT:-$(awk -v e="${SURGE_END:-$ACT1_FULL}" -v b="$BEAT" -v f="$ACT1_FULL" \
+# It used to come BEAT after the surge settled, because act one ended on a
+# finale - a glow and a chord - and that was the last thing moving. The finale
+# is gone: it read as the end of the whole video, which it is not, and the clip
+# now has exactly one chord in it, act two's landing, which is the only place
+# anything actually ends.
+#
+# THE CUE IS NOT THE ARRIVAL. A badge is cued at `t` and takes `POP` seconds to
+# scale in, so it is ON SCREEN at t+POP - the distinction found this morning
+# when the user asked for the first badge at 0.5s and it appeared at 0.7. The
+# user asked for half a second after the last badge pops onto the screen, so the
+# count starts at the arrival and not at the cue.
+#
+# TWO NUMBERS, NOT ONE. SETTLE is a measured property of the animation; GAP is
+# the beat the user asked for. Adding them gives the cut, but they are not the
+# same kind of thing and folding them together loses which one to change.
+#
+# SETTLE IS MEASURED, NOT `POP`. Reading POP=0.42 out of macro_overlay.py looked
+# principled - one number, one file - and it was the wrong number: POP is the
+# disc's scale-in, and the badge is not finished arriving until its figure and
+# its ring have settled too. Watched on row 5's own band, the last badge to
+# land: it leaves the ribbon baseline of 0.738 at its cue and is back to it
+# 0.60s later, peaking at 5.5 around 0.31s in. At POP the turn began 0.33s after
+# the badge stopped moving, not the half second that was asked for.
+#
+# Re-measure this if the badge animation changes. It is not derivable from any
+# constant in the overlay - three things move and the last of them decides it.
+SETTLE="${SETTLE:-0.60}"
+GAP="${GAP:-$BEAT}"
+LAST_CUE=$(printf '%s' "$MACRO_TIMES" | tr ',' '\n' | tail -1)
+ARRIVED=$(awk -v c="$LAST_CUE" -v p="$SETTLE" 'BEGIN{printf "%.3f", c+p}')
+CUT="${CUT:-$(awk -v e="$ARRIVED" -v b="$GAP" -v f="$ACT1_FULL" \
     'BEGIN{c=e+b; print (c<f? c : f)}')}"
 CUT_N=$(awk -v c="$CUT" -v fps="$FPS" 'BEGIN{printf "%d", int(c*fps+0.5)}')
 ACT1_USED=$(awk -v n="$CUT_N" -v fps="$FPS" 'BEGIN{printf "%.4f", n/fps}')
-echo "   last movement ends ${SURGE_END}s; act one is shown to ${ACT1_USED}s of ${ACT1_FULL} (${CUT_N} of ${ACT1_N} frames)"
+echo "   last badge cued ${LAST_CUE}s, settled ${ARRIVED}s (SETTLE ${SETTLE}); turn ${GAP}s later at ${ACT1_USED}s of ${ACT1_FULL} (${CUT_N} of ${ACT1_N} frames)"
 ffmpeg -v error -i "$TMP/act1.mp4" -frames:v "$CUT_N" -c:v copy "$TMP/act1cut.mp4" -y
 mv "$TMP/act1cut.mp4" "$TMP/act1shown.mp4"
 
@@ -171,9 +212,10 @@ mv "$TMP/act1cut.mp4" "$TMP/act1shown.mp4"
 # reach: every frame from the finale on carries all fifteen badges, so bouncing
 # inside that window cannot step in content the way a wrap to frame 0 did.
 OFFSET=$(( CUT_N + FLIP_N ))
-FINALE_N=0
-[ -s "${TOPIC}_finale.txt" ] && FINALE_N=$(awk -v t="$(cat "${TOPIC}_finale.txt")" \
-    -v fps="$FPS" 'BEGIN{printf "%d", int(t*fps)}')
+# The floor of the bounce window was the finale frame, because every frame from
+# there carried all fifteen badges. With no finale that is the last badge's
+# arrival, which is the same guarantee one event earlier.
+FINALE_N=$(awk -v t="$ARRIVED" -v fps="$FPS" 'BEGIN{printf "%d", int(t*fps)}')
 
 echo "== act two: the meal, on glass"
 ../.venv/bin/python meal.py --meal "$MEAL" --title "$TITLE" \
@@ -222,7 +264,14 @@ rm -f "${TOPIC}_riser.wav"
 # at it, because a bed that cuts on the frame the card starts moving tells the
 # ear the file changed; one that fades tells it the room did.
 FADE0=$(awk -v a="$ACT1_USED" 'BEGIN{printf "%.3f", a - 0.15}')
-DUCK="anull"
+# EMPTY, not "anull". This is spliced straight into the filter chain as
+# `volume=${BED_GAIN},${DUCK}afade=...`, so the string has to end with its own
+# comma or be nothing at all. The finale branch below builds one that does;
+# "anull" did not, and produced `anullafade` - No such filter. It never fired
+# while act one had a finale, because the branch always won. Every one of the
+# three faults this change uncovered is the same shape: a fallback that had
+# never been taken.
+DUCK=""
 if [ -s "${TOPIC}_finale.txt" ]; then
     T="$(cat "${TOPIC}_finale.txt")"
     D0="$(awk -v t="$T" 'BEGIN{printf "%.2f", t - 0.28}')"
@@ -231,12 +280,20 @@ if [ -s "${TOPIC}_finale.txt" ]; then
 fi
 A2_AT=$(awk -v a="$ACT1_USED" -v f="$FLIP_S" 'BEGIN{printf "%.3f", a}')
 
+# `${FIN_IN[@]+"${FIN_IN[@]}"}` BELOW, NOT `"${FIN_IN[@]}"`. On an empty array
+# the plain form is an unbound-variable error under `set -u` in bash 3.2, which
+# is what macOS ships and what this runs under. It never fired while act one had
+# a finale, because the riser always existed; `--finale off` is the first run
+# that produces no riser, and the script died at the mux with the clip already
+# rendered - the most expensive place to fail. The `+` form is safe on old and
+# new bash alike. `${#FIN_IN[@]}` further down is fine as it is.
 FIN_IN=(); FIN_F=""; FIN_MIX=""
 if [ -f "${TOPIC}_riser.wav" ]; then
     FIN_IN=(-i "${TOPIC}_riser.wav"); FIN_F="[4:a]volume=1.0[f];"; FIN_MIX="[f]"
 fi
 ffmpeg -y -loglevel error \
-    -i "$TMP/silent.mp4" -i "$BED" -i "${TOPIC}_pops.wav" -i "${TOPIC}_act2.wav" "${FIN_IN[@]}" \
+    -i "$TMP/silent.mp4" -i "$BED" -i "${TOPIC}_pops.wav" -i "${TOPIC}_act2.wav" \
+    ${FIN_IN[@]+"${FIN_IN[@]}"} \
     -filter_complex "\
 [1:a]volume=${BED_GAIN},${DUCK}afade=t=out:st=${FADE0}:d=${FLIP_S}[w];\
 [2:a]volume=${POP_GAIN}[p];\
