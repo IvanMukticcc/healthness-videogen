@@ -491,6 +491,35 @@ it ran, and a peer can make it false a second later without either of you being
 at fault. When the user asks again a few minutes on, the answer is not
 necessarily the same answer.
 
+## A frame-difference check has a floor, and quiet things live under it
+
+Act two's closing note - small grey type fading up over 0.2s - was the genuine
+last thing to appear on screen, and **neither micro-bb's measurement nor mine saw
+it.** Both of us reported the last visible change at 10.67s, which was the number
+in the score. The note arrived 0.2s later and was under the threshold of every
+frame-difference check either of us ran.
+
+That mattered because the chord and the end of the clip were both being keyed to
+"the last visible change". Keyed to a number that was wrong by 0.6s, the clip
+would have ended after a thing nobody had registered - including the two people
+measuring it.
+
+**The floor is real and it is worth knowing its size.** On a held frame at 270
+wide, x264 alone moves 100-280 pixels by 4-5 levels every frame. Anything quieter
+than that is indistinguishable from the encoder. Reaching for a lower threshold
+does not help: dropped fifteen times, the "last change" in a finished clip came
+back as 11.46s, which was the encoder and not the picture.
+
+So a frame difference answers "did something large move", and the honest way to
+find the last **event** is to ask the thing that draws it. micro-bb's fix was to
+solve for the instant analytically - the score's last digit changes when
+`ease(x) = (v-0.5)/v`, which is per-topic because a 17% score reaches its final
+integer at a different point than a 42% one - and then to move the note earlier so
+the number really is the last thing to land.
+
+**When a check has a floor, the fix is a different question, not a lower
+threshold.**
+
 ## A transient and a sustained tone order differently under peak and RMS
 
 I told macro-c1 their ring sweep was 8.5 dB under Micro's and should come up.
