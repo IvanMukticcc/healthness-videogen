@@ -81,7 +81,25 @@ ACTIVITY="${ACTIVITY:-light}"; FITGOAL="${FITGOAL:-mild_gain}"
 DEFAULT_TITLE="TODAY'S BOWL"   # its own variable: an apostrophe inside a
 TITLE="${TITLE:-$DEFAULT_TITLE}"  # ${x:-...} default is not worth the quoting
 ACT1_S="${ACT1_S:-8}"
-ACT2_S="${ACT2_S:-7.5}"
+# 6.2, not 7.5. The user asked for one second after everything has appeared.
+#
+# MEASURED ON THE RENDER, not assumed, and measured TWICE because the first
+# answer was the wrong kind of number. Act two's last big change is the third
+# chip landing at 4.33s; the verdict text then fades in from its cue at 4.78.
+# That fade is nominally 0.4s, so 5.18 looks like the moment everything has
+# appeared - and sizing from it left a 1.42s hold, because the last four-fifths
+# of an ease-out is below anything an eye can see. The last whole-frame step
+# above four times the drift floor is at 4.80. That is when everything HAS
+# appeared, as opposed to when the animation stops computing. 4.80 + 1.0 = 5.8.
+#
+# The hold was 2.62 seconds. Not three, but it reads as longer than it is,
+# because the chord lands at 10.86 and the picture is not finished until 10.96 -
+# the ear is told the clip is over while the eye is still being given something.
+#
+# This is a FIVE-FOOD number. `verdict` is ring0 + ring_dur + 0.25 and ring0
+# comes off the last food row, so a meal of a different length moves it and this
+# has to move with it. `meal.py` prints the cues it used.
+ACT2_S="${ACT2_S:-5.8}"
 FLIP_N="${FLIP_N:-14}"           # frames of turn; 14 at 24fps is 0.583s
 # 0.5, not 0.12. The measurement said the dead hold was 1.08s and I removed 1.00
 # of it, which left two frames - and two frames is not a pause, it is a cut. A
@@ -288,6 +306,11 @@ if [ -s "${TOPIC}_finale.txt" ]; then
     DUCK="volume='1-0.28*clip(min((t-${D0})/0.20,(${D1}-t)/0.35),0,1)':eval=frame,"
 fi
 A2_AT=$(awk -v a="$ACT1_USED" -v f="$FLIP_S" 'BEGIN{printf "%.3f", a}')
+# THE TAIL FADES INTO THE CUT RATHER THAN BEING CHOPPED. Shortening the hold
+# lands the end of the clip while act two's chord is still ringing, and a chord
+# cut mid-ring is plainly audible. 0.15s takes what is left of it.
+TAIL0=$(awk -v a="$ACT1_USED" -v f="$FLIP_S" -v t="$ACT2_S" \
+    'BEGIN{printf "%.3f", a + f + t - 0.15}')
 
 # `${FIN_IN[@]+"${FIN_IN[@]}"}` BELOW, NOT `"${FIN_IN[@]}"`. On an empty array
 # the plain form is an unbound-variable error under `set -u` in bash 3.2, which
@@ -308,7 +331,7 @@ ffmpeg -y -loglevel error \
 [2:a]volume=${POP_GAIN}[p];\
 [3:a]adelay=$(awk -v t="$A2_AT" 'BEGIN{printf "%d", t*1000}')|$(awk -v t="$A2_AT" 'BEGIN{printf "%d", t*1000}'),volume=1.0[q];\
 ${FIN_F}[w][p][q]${FIN_MIX}amix=inputs=$(( 3 + ${#FIN_IN[@]} / 2 )):duration=longest:normalize=0[m];\
-[m]alimiter=level_in=1:level_out=1:limit=${CEIL}:level=disabled,apad[a]" \
+[m]alimiter=level_in=1:level_out=1:limit=${CEIL}:level=disabled,afade=t=out:st=${TAIL0}:d=0.15,apad[a]" \
     -map 0:v -map "[a]" -shortest \
     -c:v copy -c:a aac -b:a 192k -movflags +faststart "$OUT"
 
