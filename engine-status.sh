@@ -35,6 +35,14 @@ if [ $# -ge 1 ]; then VARIANTS=($1); else VARIANTS=($(discover)); fi
 FILES=(make_base.py recolor_base.py grab.py clip.py add_labels.py caption_glass.py
        check_base.py flowanim.py
        impact.py
+       # The micro series' three, shared by Organs and Vitamins since 16 September.
+       # They are on this list for the reason everything else is: two variants
+       # reading one badge set and one nutrient table is exactly the arrangement
+       # that drifted into three generations in a morning the last time it was
+       # three copies. engine/micro/ holds the assets and is checked by being
+       # read - a copy of icons/ in a work/ would show up as a diverged overlay
+       # the moment anything in it moved.
+       micro_overlay.py micro_audio.py micro_icons.py
        base_layer.png ribbon_mask.png ribbon_rgba.png source_wave_poster.jpeg)
 
 # every past version of engine/<file>, so a stale copy can be dated
@@ -131,7 +139,7 @@ ALLOW = {
     ("engine-status.sh", "json.py"): "same sentence",
     ("engine-status.sh", "types.py"): "same sentence",
     ("engine-status.sh", "profile.py"): "this check's own explanation of why it exists",
-    ("Micro/CLAUDE.md", "micro_patch.py"): "the fork the overlay hook replaced, kept as a warning",
+    ("Organs/CLAUDE.md", "micro_patch.py"): "the fork the overlay hook replaced, kept as a warning",
 }
 
 known = set()

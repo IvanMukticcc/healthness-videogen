@@ -10,20 +10,25 @@ is never asked to. Only the food, the organs, the title and the palette change.
 
     ShortPrompt/
       engine/        the shared tools, the three authored wave assets, sfx/
-      Micro/         this variant
+        micro/       the 42 badge balls and nutrients.json, shared with Vitamins
+      Organs/        this variant
         INPUT/       base_<topic>.png, and nothing else - it is the file a
                      person opens, to attach it to the prompt
-        OUTPUT/      finished clips, a folder per day (`08.09/`), sound on them
-        work/        everything else: this file, the overlay, the badges, the
-                     posters as they come back, the scrap renders, the cues
-      Foods/ Exercise/ Biohacks/   the other variants. Not yours to edit
+        OUTPUT/      the old per-variant folder. History; nothing writes to it
+        work/        everything else: this file, the posters as they come back,
+                     the scrap renders, the cues
+      OUTPUT/ORGANS/       the finished clips, flat and dateless
+      OUTPUT/DONE/ORGANS/  what has gone out. The user fills it by hand
+      Vitamins/      the other half of the micro series, split out 16 September
+      Foods/ Exercise/ Biohacks/ Macro/ Longevity/   the rest. Not yours to edit
       archive/       checkpoints from before this was a repository
 
-Run everything from inside `Micro/work/`: the engine is `../../engine/`, the
-day's folder `../OUTPUT/`, and the interpreter `../.venv/bin/python`. Half the
-paths in this file are wrong from anywhere else, which is why `render.sh` cd's
-here before it does anything. `../../engine-status.sh` checks that this folder is
-still calling the engine rather than carrying a copy of it.
+Run everything from inside `Organs/work/`: the engine is `../../engine/`, the
+finished clips go to `../../OUTPUT/ORGANS/`, and the interpreter is
+`../.venv/bin/python`. Half the paths in this file are wrong from anywhere else,
+which is why `render.sh` cd's here before it does anything.
+`../../engine-status.sh` checks that this folder is still calling the engine
+rather than carrying a copy of it.
 
 ## Files that carry the design
 
@@ -39,11 +44,18 @@ still calling the engine rather than carrying a copy of it.
 | `micro_icons.py` | builds the badges. `--all` for the catalogue, `--one 'Label:v\|m\|o'` for one |
 | `micro_overlay.py` | where the badges go and how they enter. Imported by `flowanim.py` |
 | `micro_audio.py` | the pop, synthesised. One note per row, climbing |
-| `nutrients.json` | food → the micronutrients it is known for |
+| `micro/nutrients.json` | food → the micronutrients it is known for |
+| `micro/icons/` | the 42 badge balls |
 | `render.sh` | animate, sound, mux |
+| `meals.json` | what a topic is: title, captions, badge list, the five foods |
 | `audit.py` | what moves that should not. Reads the cues and the finale off disk by itself; the verdict carries how many frame pairs it is based on |
-| `../OUTPUT/<DD.MM>/` | the day's finished clips, sound already on them |
+| `../../OUTPUT/ORGANS/` | the finished clips, sound already on them |
 | `../../engine/sfx/` | the beds, 8 s, normalised to -18 LUFS |
+
+The four `micro_*` rows and `micro/` moved into `../../engine/` on 16 September,
+when the series split into Organs and Vitamins: two categories reading one badge
+set and one nutrient table is exactly the arrangement `../../CLAUDE.md` rule 1
+exists to prevent. They are called by path like every other engine tool.
 
 **`base_layer.png`, `ribbon_mask.png`, `flowanim.py`, `recolor_base.py`,
 `check_base.py` and `make_base.py` are the engine's**, in `../../engine/`, and
@@ -212,14 +224,16 @@ times twice is how a pop ends up half a frame off the badge it belongs to:
 ./render.sh <topic> <topic>_labelled.png 'auto:FOOD,FOOD,FOOD,FOOD,FOOD'
 ```
 
-`auto:` reads `nutrients.json`. To choose the badges by hand, pass them instead -
+`auto:` reads `../../engine/micro/nutrients.json`. To choose the badges by hand, pass them instead -
 `;` between rows, `,` inside one: `'K,Folate,Iron;Nitrates,Folate;...'`. Anything
 after the third argument goes straight to `flowanim.py`.
 
-Out comes `../OUTPUT/<DD.MM>/<topic>_micro.mp4` with the water and the pops on it.
-`work/<topic>_silent.mp4` is the scrap pass; `work/<topic>_cues.txt` is what the
-sound was cut against. `<DD.MM>` is the day's folder - `07.09`, made if it is not
-there yet. **Only the finished cut goes there**: the clip is never published
+Out comes `../../OUTPUT/ORGANS/<topic>_organs.mp4` with the water and the pops on
+it. `work/<topic>_silent.mp4` is the scrap pass; `work/<topic>_cues.txt` is what
+the sound was cut against. The folder is flat and dateless - `../../CLAUDE.md`
+rule 12, because a day folder took its name from the clock and a session that ran
+past midnight wrote into a new one while the evening's work looked abandoned.
+**Only the finished cut goes there**: the clip is never published
 without sound, so a mute mp4 in `OUTPUT/` is only something to mistake for the
 finished one later - and neither does anything else land there. That includes
 what a *check* writes: measuring the mix means decoding a shipped clip, and an
@@ -238,28 +252,41 @@ wrong from anywhere else:
     --base base_<topic>_clean.png --anchored ../INPUT/base_<topic>.png \
     --layout base_<topic>_layout.json --drops 0 --reach 0 \
     --micro 'auto:FOOD,...' --micro-cues <topic>_cues.txt \
-    --micro-times 1,2,3.2,4.4,5.6 \
+    --micro-times 0.25,1.35,2.45,3.55,4.65 \
     --finale auto --finale-cue <topic>_finale.txt \
     --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05 \
     -o <topic>_silent.mp4
 
-../.venv/bin/python micro_audio.py --cues-file <topic>_cues.txt \
+S=$(ffprobe -v error -show_entries format=duration -of csv=p=0 <topic>_silent.mp4)
+
+../.venv/bin/python ../../engine/micro_audio.py --cues-file <topic>_cues.txt \
     --finale-file <topic>_finale.txt --finale-out <topic>_riser.wav \
-    --seconds 8 -o <topic>_pops.wav
+    --seconds "$S" -o <topic>_pops.wav
 
 T=$(cat <topic>_finale.txt)
 D0=$(awk -v t="$T" 'BEGIN{printf "%.2f", t - 0.28}')
 D1=$(awk -v t="$T" 'BEGIN{printf "%.2f", t + 1.12}')
-ffmpeg -y -i <topic>_silent.mp4 -i ../../engine/sfx/flow_soft_8s.m4a \
+ffmpeg -y -loglevel error -i <topic>_silent.mp4 \
+  -i ../../engine/sfx/flow_soft_warmer_8s.m4a \
   -i <topic>_pops.wav -i <topic>_riser.wav \
   -filter_complex \
-"[1:a]volume=1.0,volume='1-0.28*clip(min((t-${D0})/0.20,(${D1}-t)/0.35),0,1)':eval=frame[w];\
+"[1:a]volume=0.30,volume='1-0.28*clip(min((t-${D0})/0.20,(${D1}-t)/0.35),0,1)':eval=frame[w];\
 [2:a]volume=0.85[p];[3:a]volume=1.0[f];\
 [w][p][f]amix=inputs=3:duration=first:normalize=0[m];\
 [m]alimiter=level_in=1:level_out=1:limit=0.82:level=disabled[a]" \
   -map 0:v -map "[a]" -shortest -c:v copy -c:a aac -b:a 192k \
-  ../OUTPUT/<DD.MM>/<topic>_micro.mp4
+  -movflags +faststart ../../OUTPUT/ORGANS/<topic>_organs.mp4
 ```
+
+**This block was run command for command on 16 September 2026 and its output
+compared against `render.sh`'s**: the cue file byte-identical, and the finished
+mp4 byte-identical to `../../OUTPUT/ORGANS/liver_organs.mp4`. That is the only
+version of "the prose matches the script" worth writing down, and this block has
+needed it twice - the second time because the bed changed to `flow_soft_warmer`,
+the bed gain to 0.30 and the rhythm to `0.25,1.35,...` while these lines still
+said `flow_soft_8s`, `volume=1.0` and `1,2,3.2,4.4,5.6`. Anyone following the
+stale version would have rebuilt a clip the mix had already been fixed out of.
+
 
 Three things in there are load-bearing, and each was wrong in this block until
 8 September, when the fallback quietly stopped producing what `render.sh`
@@ -304,7 +331,7 @@ mask, in the windows between one badge finishing and the next one landing - the
 only stretches where the liquid is the only thing entitled to move:
 
 ```
-../.venv/bin/python audit.py ../OUTPUT/<DD.MM>/<topic>_micro.mp4
+../.venv/bin/python audit.py ../../OUTPUT/ORGANS/<topic>_organs.mp4
 ```
 
 **The spec comes off disk now, so the bare command is the strict check.** It
@@ -509,35 +536,13 @@ These were all found by measurement, and each one cost an hour. Do not rediscove
   about 70% and it is a slab, whatever the sentence asked for. What works is an
   organ with a boundary of its own: the tooth row became a heart and arrived right
   on the first pass, at 61% of its disc and 54% of its box.
-- **`ImageDraw` replaces pixels, it does not composite them.** Act two draws a
-  header sheet over the glass pane to hide what is behind it. Drawn white at
-  alpha 166 over a pane at 186 it made that band *more* transparent, not less -
-  measured on the same patch, the ghost went **14.4 -> 18.9 levels** when the
-  sheet meant to kill it was added. Every element with alpha over the pane had
-  the same fault and none of them looked obviously wrong: the row bars at 120
-  and the ring's own tracks at 46 were cutting windows in the card and showing
-  more of the poster through them. Each one now goes through `micro_card.over()`
-  - its own transparent layer, then `img.alpha_composite(lay)` - and the sheet
-  measures **4.3 levels**, under the frost's own quiet bands. If a translucent
-  thing over another translucent thing looks weaker than it should, this is why.
-- **Act one's title ghosts into exactly where act two puts its heading.** The
-  poster's title sits at y 203-390, which is video y 143-274, and act two's
-  header block lands at 196-298. Through a pane passing 27% it was legible:
-  a viewer could read BLOOD PRESSURE / FOODS THAT BRING IT DOWN under act two's
-  own BLOOD PRESSURE. `engine/glass.title_survival()` measures it - the title
-  band's contrast against an ordinary band of the same poster - and every Micro
-  palette fails it: pressure 74.3 against 16.8, metabolism 81.1 against 19.6,
-  ageing 91.9. Macro passes on navy alone, which greys out and takes its white
-  type with it.
-
-  **Two fixes that do not work, both measured before the one that does.** More
-  frost is a linear blend, so it scales the title band and the quiet band
-  together and the ratio is invariant: 0.34 -> 0.62 takes 74.3 to 42.0 and 16.8
-  to 8.6. Cropping the title band out of the backdrop trades one set of words
-  for another - the poster's caption bars move up into the same place and
-  BEETROOT | NITRATES ghosts instead. What works is giving the header its own
-  ground: a sheet at 0.90 compound alpha, which puts any poster's title under 5
-  levels regardless of its palette, including the plum that cropping made worse.
+- **Two entries about act two moved to `../../Vitamins/work/flow.md`** on
+  16 September, when the two-act cut left this folder: `ImageDraw` replacing
+  pixels rather than compositing them, and act one's title ghosting into exactly
+  where act two puts its heading. Both were found here, on these posters, and
+  both now bite only where there is a card to draw - so they live where the card
+  is. The palette numbers in the second one are this corpus's: pressure 74.3
+  against 16.8, metabolism 81.1 against 19.6, ageing 91.9.
 - **A structure thinner than a finger comes back correct and unreadable.** The
   vagus nerve, asked for as "a pale cord with fine branches coming off it, lifted
   clear of the tissue around it", arrived exactly as described and covered

@@ -1,0 +1,17 @@
+{
+  "_comment": "What a Vitamins topic IS, and the only place it is written down. Act one names five foods and puts each one's headline VITAMIN in the right circle; act two weighs the same five foods. Everything a render needs is derived from this file by vitamins.py - the prompt rows, the caption pairs, the badge spec, the vitamin spec - so a topic is authored once here and never typed at a command line. ../../CLAUDE.md rule 13 is the reason: Micro's badge list lived in prompt_<topic>.txt, which rule 8 forbids reading back, and in the pixels of finished clips, and nothing else. The test that file failed is the test this one has to pass: can a command produce it? A base comes back from recolor_base.py, a clip from render.sh, a caption string from `vitamins.py --labels` - but the five foods somebody CHOSE come back from nothing.\n\nPER ROW, top row first:\n  food      what the bowl holds, as the generator is asked for it\n  label     the left caption bar, and the key looked up in engine/micro/nutrients.json\n  vitamin   the right circle and the right caption bar. OPTIONAL: leave it out and vitamins.py takes the first entry of the nutrients.json row that belongs to the vitamin family. Write it only when the derivation is wrong or absent - and when you do, you are the reason it says what it says, which is the whole point of recording it here.\n  id/grams  the app's foods.json row and one ordinary serving, for act two. Same rule as Micro's meals.json: the plain whole-food entry a person would log, never the variant that happens to carry more micros, and a serving nobody tuned to make the score look good.",
+
+  "demo": {
+    "_comment": "THE FORMAT TEST, not a topic to ship. Its picture is Organs' ageing poster with the organs taken out of the right circles and the base put back (../../CLAUDE.md rule 9 allows restoring base pixels), so it exercises the whole Vitamins path - empty right circle, composited ball, no act-one finale, the turn, the card, the score - without waiting for a generated poster. Its five foods were chosen for AGE SLOWER and not for vitamins, which is why three of the five rows come out C: that is the honest derivation and it is also the argument for authoring Vitamins topics around the vitamins rather than reusing an Organs topic.",
+    "title": "VITAMIN TEST",
+    "subtitle": "WHAT FIVE FOODS ACTUALLY CARRY",
+    "rows": [
+      {"food": "green kiwi halves, cut side up", "label": "KIWI", "id": 94, "grams": 150},
+      {"food": "blackberries", "label": "BLACKBERRIES", "id": 275, "grams": 100},
+      {"food": "grilled sardines", "label": "SARDINES", "id": 40, "grams": 60},
+      {"food": "brewed green tea", "label": "GREEN TEA", "id": 886, "grams": 250,
+       "rim": "filling the bowl to just under the rim"},
+      {"food": "red apples", "label": "APPLES", "id": 17, "grams": 180}
+    ]
+  }
+}

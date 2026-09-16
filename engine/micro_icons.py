@@ -43,14 +43,24 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from scipy import ndimage
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# The nine generated vitamin balls, and the badges cut from them. Both are in
-# this folder: the three-folder move on 7 September brought the sources in as
-# icon-sources/ and the badges as icons/, and these two paths were left pointing
-# at where they used to be. Nothing noticed, because a shipped clip never calls
-# this file - micro_overlay.py reads icons/ and the badges were already in it.
-# So --all and --one were writing a catalogue into a directory nobody reads.
-SRC_BALLS = os.path.join(HERE, "icon-sources")               # read only, never written
-OUT = os.path.join(HERE, "icons")                            # what micro_overlay.py reads
+# The nine generated vitamin balls, and the badges cut from them. Both live in
+# engine/micro/ since 16 September, when the series split into Organs and
+# Vitamins: two variants reading one badge set is what puts them in the engine
+# rather than in either work/ folder (../CLAUDE.md rule 1). They are under
+# micro/ rather than beside this file because engine/ is on the import path of
+# every tool that runs from it, and a folder called icons/ next to flowanim.py
+# would be one more name competing for that path.
+#
+# THE PAIR HAS BEEN WRONG BEFORE AND SAID NOTHING. The three-folder move on
+# 7 September brought the sources in as icon-sources/ and the badges as icons/,
+# and these two paths were left pointing at where they used to be: --all and
+# --one wrote a catalogue into a directory nobody reads, and nothing noticed,
+# because a shipped clip never calls this file - micro_overlay.py reads the
+# badges and they were already in place. Whatever moves next, run
+# `--all` afterwards and check it lands on the badges the clips use.
+
+SRC_BALLS = os.path.join(HERE, "micro", "icon-sources")      # read only, never written
+OUT = os.path.join(HERE, "micro", "icons")                   # what micro_overlay.py reads
 TEMPLATE = os.path.join(OUT, "_ball_orange.png")
 FONT = "/Users/ivanmuktic/Library/Fonts/SF-Pro-Display-Heavy.otf"
 
@@ -352,7 +362,7 @@ def main():
                    help="'Label:family' where family is v, m or o")
     p.add_argument("--rebuild", action="store_true", help="re-derive the sphere first")
     p.add_argument("--size", type=int, default=512)
-    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "micro_sheet.png"))
+    p.add_argument("--sheet", nargs="?", const=os.path.join(HERE, "micro", "micro_sheet.png"))
     args = p.parse_args()
 
     os.makedirs(OUT, exist_ok=True)

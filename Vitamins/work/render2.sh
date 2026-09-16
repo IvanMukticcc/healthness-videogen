@@ -1,30 +1,33 @@
 #!/usr/bin/env bash
-# render2.sh - the two-act cut: act one, the card turning over, the numbers.
+# render2.sh - the turn and the card: act one, the window turning over, the numbers.
 #
-# render.sh is untouched and still makes the one-act clip. This puts a second act
-# behind a shipped one WITHOUT rebuilding the first: act one's video and its
-# audio come straight out of the finished clip.
+#   ./render.sh demo            the whole clip - this is what you want
+#   ./render2.sh demo           the turn and the card onto an act one already rendered
+#   OUT=somewhere/else.mp4 ./render2.sh demo
 #
-#   ./render2.sh pressure
-#   OUT=somewhere/else.mp4 ./render2.sh liver
+# `render.sh` calls this as its last step, so it is rarely run by hand. On its own
+# it is what re-cuts act two - a different card, a different length, a fixed
+# score - without spending the ninety seconds act one costs.
 #
-# WHY IT READS THE SHIPPED CLIP RATHER THAN RE-RENDERING
+# WHERE ACT ONE'S PICTURE AND ITS SOUND EACH COME FROM, AND WHY THEY DIFFER
 #
-# Nine of the twenty-five topics still have `<topic>_silent.mp4` and their pop
-# and riser wavs in work/; sixteen do not, and rebuilding those from the labelled
-# poster would run them through an engine that has moved a long way since
-# 9 September - a different finale, different badge timing, a different mix. The
-# clip would gain a second act and quietly lose the first one it shipped with.
+# The PICTURE is trimmed from `<topic>_silent.mp4`, which render.sh has just
+# written: the badges and the balls are baked into it and nothing here can or
+# should redraw them.
 #
-# The finished clip already IS act one: the badges are baked into its picture and
-# its sound is the mix that was approved. So the video is trimmed from it, the
-# audio is taken whole and faded through the turn, and the first act of the new
-# cut is the first act of the old one, frame for frame. Only `<topic>_finale.txt`
-# is needed from work/, for the instant to cut on.
+# The SOUND is rebuilt from `<topic>_cues.txt` rather than lifted off a finished
+# mix. That is not a convenience. Taking the mix whole is what once kept act one
+# byte-identical through a retrofit, and it is also what made the water
+# untouchable, because bed, pops and riser are one stream in a finished file and
+# no filter separates them. The cues are on disk, the synthesis is deterministic
+# from them, so the mix can be made again with the same badge landings and a
+# different bed. This file inherited that arrangement from Micro's two-act cut,
+# where act one was a clip that had already shipped; here act one is ninety
+# seconds old, and the arrangement is still the right one for the second reason.
 #
-# The finished clip goes to ../../OUTPUT/MICRO/ (../CLAUDE.md rule 12): flat, per
-# category, no dates. ../../OUTPUT/DONE/MICRO/ is what has gone out, the user
-# fills it by hand, and nothing here writes to it.
+# The finished clip goes to ../../OUTPUT/VITAMINS/ (../../CLAUDE.md rule 12):
+# flat, per category, no dates. ../../OUTPUT/DONE/VITAMINS/ is what has gone out,
+# the user fills it by hand, and nothing here writes to it.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -62,23 +65,25 @@ trap 'rm -rf "$TMP"' EXIT
 
 # WHERE ACT ONE COMES FROM, IN ORDER, AND NEVER FROM WHERE WE WRITE.
 #
-# Under rule 12 the deliverable is `OUTPUT/MICRO/<topic>_micro.mp4` and it is the
-# TWO-ACT cut - the thirteen the user has filed in OUTPUT/DONE/MICRO run 14.36s.
-# So act one and the finished clip now share a filename, and reading act one from
-# the folder this script writes into would be the same fault that produced clips
-# turning in front of their own previous turn.
+# Under rule 12 the deliverable is `OUTPUT/VITAMINS/<topic>_vitamins.mp4` and it
+# is the TWO-ACT cut, so act one and the finished clip share a filename - and
+# reading act one from the folder this script writes into would be the same fault
+# that once produced clips turning in front of their own previous turn. The
+# folder used to be per-variant and per-day, which made that read safe; rule 12
+# made it flat and shared, and nobody edited a line of this script. When a folder
+# changes hands, re-ask what reads it.
 #
 #   1. work/<topic>_silent.mp4   the real intermediate, and since the sound is
 #                                rebuilt from the cue files this is all that is
 #                                needed - the picture
-#   2. OUTPUT/DONE/MICRO/        the user's published copy. Read-only by rule 12,
+#   2. OUTPUT/DONE/VITAMINS/     the user's published copy. Read-only by rule 12,
 #                                which makes it safe to read
 #   3. ACT1=... given explicitly, for anything else
 #
-# OUTPUT/MICRO is deliberately NOT in the list. Pass ACT1= if you mean it.
+# OUTPUT/VITAMINS is deliberately NOT in the list. Pass ACT1= if you mean it.
 ACT1="${ACT1:-}"
 if [ -z "$ACT1" ]; then
-    for c in "${TOPIC}_silent.mp4" ../../OUTPUT/DONE/MICRO/"${TOPIC}_micro.mp4"; do
+    for c in "${TOPIC}_silent.mp4" ../../OUTPUT/DONE/VITAMINS/"${TOPIC}_vitamins.mp4"; do
         [ -f "$c" ] && ACT1="$c" && break
     done
 fi
@@ -86,7 +91,7 @@ fi
 # The cut now comes from the badge cues, not from a finale instant.
 [ -f "${TOPIC}_cues.txt" ] || { echo "no ${TOPIC}_cues.txt - it says where the badges land"; exit 1; }
 
-OUT="${OUT:-../../OUTPUT/MICRO/${TOPIC}_micro.mp4}"
+OUT="${OUT:-../../OUTPUT/VITAMINS/${TOPIC}_vitamins.mp4}"
 mkdir -p "$(dirname "$OUT")"
 # And a belt to the braces above: reading the file we are about to overwrite
 # produces a clip that is wrong in ways no check here would catch.
@@ -160,7 +165,7 @@ ffmpeg -v error -i "$ACT1" -frames:v "$ACT1_N" -an -c:v libx264 -preset slow -cr
 # No finale means no riser and no duck: the duck existed to step the water back
 # under the chord, and there is no chord in act one any more. Act two's landing
 # is the clip's only one, which is the point of the change.
-$PY micro_audio.py --cues-file "${TOPIC}_cues.txt" --seconds 8 \
+$PY ../../engine/micro_audio.py --cues-file "${TOPIC}_cues.txt" --seconds 8 \
     -o "$TMP/pops.wav" >/dev/null
 ffmpeg -v error -i "$BED" -i "$TMP/pops.wav" \
     -filter_complex "[0:a]volume=${BED_GAIN}[w];[1:a]volume=${POP_GAIN}[p];\
@@ -197,7 +202,7 @@ ffmpeg -v error -f concat -safe 0 -i "$TMP/list" -c:v copy "$TMP/silent.mp4" -y
 # micro_card decides the length when ACT2_S is `auto`, so the real number comes
 # back out of the cue file it just wrote rather than being assumed here.
 ACT2_S=$($PY -c "import json;print(json.load(open('${TOPIC}_act2.json'))['seconds'])")
-$PY micro_audio.py --act2-cues "${TOPIC}_act2.json" --act2-seconds "$ACT2_S" \
+$PY ../../engine/micro_audio.py --act2-cues "${TOPIC}_act2.json" --act2-seconds "$ACT2_S" \
     --flip-seconds "$FLIP_S" --act2-out "${TOPIC}_act2.wav"
 
 # Act one's sound is the shipped mix, unchanged, and it fades THROUGH the turn

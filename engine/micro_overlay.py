@@ -26,8 +26,14 @@ from PIL import Image, ImageDraw, ImageFilter
 from scipy import ndimage
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MICRO_DIR = os.path.join(HERE, "icons")
-NUTRIENTS = os.path.join(HERE, "nutrients.json")
+# micro/ rather than beside this file, because this file is in engine/ now and
+# engine/ is on the import path of every tool that runs from it: a folder called
+# icons/ next to flowanim.py would be one more name competing for that path, and
+# the badge set is data rather than a tool. Both variants of the micro series -
+# Organs and Vitamins - read these two, which is the whole reason they are here
+# and not in a work/ folder. See ../CLAUDE.md rule 1.
+MICRO_DIR = os.path.join(HERE, "micro", "icons")
+NUTRIENTS = os.path.join(HERE, "micro", "nutrients.json")
 
 POP = 0.42          # seconds from nothing to settled
 RISE = 0.10         # of that, how long the badge is still fading up

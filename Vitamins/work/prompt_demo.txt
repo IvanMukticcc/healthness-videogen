@@ -1,0 +1,83 @@
+VITAMIN TEST — attach base_demo.png (the one WITH the faint circles)
+====================================================================
+
+Generate at 1536 x 2752. The poster comes back into work/, not into INPUT/:
+INPUT/ holds base images and nothing else (../../CLAUDE.md rule 7), and the base
+is the file you just attached. grab.py takes the newest one out of Downloads.
+
+Filled from ImageSwap.txt by make_prompt.py, so it is the template as it stands,
+not a copy of an older one. The five foods are topics.json's.
+
+Title:    'VITAMIN TEST'
+Subtitle: 'WHAT FIVE FOODS ACTUALLY CARRY'
+
+THE RIGHT CIRCLES STAY EMPTY. The vitamin balls are composited afterwards by
+vitamin_overlay.py out of engine/micro/icons/ - the generator is not asked for
+them and must not draw anything there.
+
+Captions (go on afterwards, not in the prompt):
+  'KIWI|VITAMIN C,BLACKBERRIES|VITAMIN C,SARDINES|VITAMIN D,GREEN TEA|VITAMIN K,APPLES|VITAMIN C'
+
+Vitamins (the right circles, and the right caption bars):
+  'C,C,D,K,C'
+
+
+=== THE PROMPT ===
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the bowls, nothing at all. Text is added later, outside the generator.
+
+THE ONLY THING YOU ADD IS FIVE BOWLS OF FOOD, ONE PER ROW, ON THE LEFT. Nothing else is added anywhere in the image.
+
+EACH ROW HAS TWO FAINT CIRCLES and, under each circle, A FAINT BAR. THE CIRCLES AND THE BARS ARE ALIGNMENT MARKS, NOT ARTWORK. Place the bowl centred in the LEFT circle of its row, large enough to cover that mark completely.
+
+THE RIGHT-HAND CIRCLE OF EVERY ROW STAYS COMPLETELY EMPTY. Leave it exactly as it appears in the attached image. Do not put anything in it, do not put anything near it, do not draw over it, and do not erase or clean it up either - leave that part of the picture untouched. The right half of every row is finished already. Nothing is added there at all: no food, no object, no illustration, no symbol, no capsule, no pill, no tablet, no bottle, no fruit, no leaf, no garnish, no decoration and no second helping of the food that is in the bowl.
+
+THE FOOD DOES NOT SPREAD TO FILL THE EMPTY SPACE. The right side of each row looking bare is correct and intended. Do not widen the bowl, do not lengthen it, do not add a second bowl, a plate, a board, a cloth, a table or a surface, and do not scatter anything across the row towards the right. The bowl stays inside its own circle on the left.
+
+DO NOT REPLACE A CIRCLE WITH ANYTHING ROUND. Do not paint a disc, a plate, a panel, a badge, a sticker background, a lighter patch, a halo or a vignette behind the bowl. Wherever the bowl does not reach, the row's flat background colour must show through unchanged, exactly the colour it is in the attached image, right up to the edge of the food.
+
+The bars are reserved for text that is added later: keep them completely clear, do not cover them with the bowl or anything else, and do not draw on them. The bowl ENDS ABOVE THE BAR - it does not touch it, does not hang over its top edge, and does not overlap it by even a few pixels. If a bowl is too big to sit clear of the bar, draw it smaller.
+
+ALL THE FOOD IS INSIDE THE BOWL. Nothing is spilled, scattered, resting or arranged on the row beside it: no loose pieces, no crumbs, no shards, no stray fruit, no ingredients on a surface. A piece of food outside the bowl lands on the bar the caption needs and covers the word.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster - at 1536 wide, nothing may cross x=110 on the left or x=1426 on the right. That strip is what a vertical feed crops, and the edge of a bowl drawn into it is simply lost.
+
+Every one of the five bowls is a clear, colourless glass bowl, and every one is shot from a low three-quarter angle. Not one of them is seen from above, and not one of them is ceramic, opaque, painted or coloured.
+
+Row 1: a clear glass bowl of green kiwi halves, cut side up, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 2: a clear glass bowl of blackberries, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 3: a clear glass bowl of grilled sardines, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 4: a clear glass bowl of brewed green tea, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, filling the bowl to just under the rim. The right-hand half of this row stays empty.
+
+Row 5: a clear glass bowl of red apples, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+The liquid leaves each bowl at its near rim on the right-hand side. The bowls are photorealistic and cleanly cut out, with no glow and no cast shadow. Keep every wave fully visible along the whole of its length.
+
+=== END OF PROMPT ===
+
+
+
+WHEN THE POSTER COMES BACK, every command from work/
+
+    ../.venv/bin/python ../../engine/grab.py demo
+
+    ../.venv/bin/python ../../engine/check_base.py demo_poster.jpeg \
+        --base ../INPUT/base_demo.png
+
+    ../.venv/bin/python ../../engine/add_labels.py demo_poster.jpeg \
+        -l base_demo_layout.json -o demo_labelled.png \
+        --labels "$(./vitamins.py demo --labels)"
+
+    ./render.sh demo              act one, the turn and the card, in one command
+
+Nothing above retypes a food, a vitamin or a badge: render.sh asks vitamins.py
+for all three, and vitamins.py reads topics.json.

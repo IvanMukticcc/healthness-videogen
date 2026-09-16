@@ -1,16 +1,19 @@
-# Micro/work — the same clip, with the micronutrients on it
+# Organs/work — food for vital organs, with the micronutrients on it
 
-A copy of the 7 September morning checkpoint with one thing added: the vitamins,
-minerals and fibre a food actually carries pop onto its row while the liquid
-runs. Everything about the liquid, the mask, the bases and the poster prompt is
-the checkpoint's and is unchanged, so a command that rendered a clip there
-renders the same clip here — `--micro` is what turns the badges on, and without
-it nothing is different.
+Five foods, the organ each one feeds, and the vitamins, minerals and fibre a food
+actually carries popping onto its row while the liquid runs. One scene, and it
+ends with the finale: the surge runs down the poster, every organ lights again,
+the chord lands.
+
+This folder was `Micro/work` until 16 September 2026. The series split in two and
+the two-act cut went to `../../Vitamins/`, taking `render2.sh`, `micro_card.py`
+and `micro_result.py` with it; the badge machinery went to the engine, because
+both halves read it. What is left here is this category's own.
 
 **Everything of this variant's own lives here, in `work/`.** The poster arrives
-in `../INPUT/` and the finished clip leaves from `../OUTPUT/`. The badges are
-in `icons/`, cut once from `icon-sources/`. The animator, the wave assets and
-the sound are the engine's, two folders up, and are never copied in.
+in `../INPUT/` and the finished clip leaves for `../../OUTPUT/ORGANS/`. The
+animator, the wave assets, the badge set and the sound are the engine's, two
+folders up, and are never copied in.
 
 ## The loop
 
@@ -23,7 +26,7 @@ it belongs to:
     'auto:LEAFY GREENS,BEETROOT,TURMERIC,BROCCOLI,COFFEE'
 ```
 
-`auto:` looks each food up in `nutrients.json` and takes the two or three things
+`auto:` looks each food up in `../../engine/micro/nutrients.json` and takes the two or three things
 it is genuinely known for. To choose by hand, give the badges instead — `;`
 between rows, `,` inside one:
 
@@ -33,24 +36,36 @@ between rows, `,` inside one:
 
 Everything after the third argument goes to `flowanim.py` untouched, so
 `--micro-d`, `--micro-times`, `--seconds` and the rest still work. Output lands
-in `../OUTPUT/<DD.MM>/<topic>_micro.mp4`, sound already on it.
+in `../../OUTPUT/ORGANS/<topic>_organs.mp4`, sound already on it - flat and
+dateless, per ../../CLAUDE.md rule 12. `../../OUTPUT/DONE/ORGANS/` is what has
+gone out and nothing here writes to it.
 
 Steps 1 to 3b of `flow.md` are unchanged: palette, prompt, `check_base.py`,
 `add_labels.py`. `render.sh` replaces steps 4 and 4b.
 
 ## The pieces
 
+Here:
+
 | file | what it is |
 | --- | --- |
-| `micro_icons.py` | builds the badges: recovers the sphere, sets the label, recolours |
-| `micro_overlay.py` | where each badge goes and how it enters; imported by `flowanim.py` |
-| `micro_audio.py` | the pop, synthesised, one note per row |
-| `nutrients.json` | food → the micronutrients it is known for |
 | `render.sh` | animate, sound, mux |
 | `audit.py` | did anything move that should not? Reads its own cues and finale off disk |
 | `make_prompt.py` | fills `ImageSwap.txt` for a topic, so a prompt is never a stale copy |
+| `meals.json` | what a topic is: title, captions, badge list, the five foods and their servings |
 | `SERIES.md` | every food and organ already used, and all 23 palettes - read before picking a topic |
-| `icons/` | 38 badges, 512px, plus `_ball_orange.png`, the blank sphere |
+
+In the engine since 16 September, shared with `../../Vitamins/` and called by
+path, never copied in (../../CLAUDE.md rule 1):
+
+| file | what it is |
+| --- | --- |
+| `../../engine/micro_icons.py` | builds the badges: recovers the sphere, sets the label, recolours |
+| `../../engine/micro_overlay.py` | where each badge goes and how it enters; imported by `flowanim.py` |
+| `../../engine/micro_audio.py` | the pop, synthesised, one note per row |
+| `../../engine/micro/nutrients.json` | food → the micronutrients it is known for |
+| `../../engine/micro/icons/` | 42 badges, 512px, plus `_ball_orange.png`, the blank sphere |
+| `../../engine/micro/icon-sources/` | the nine generated vitamin balls the sphere was recovered from |
 
 ## Staying level with the base generator
 
@@ -63,7 +78,11 @@ prompt before anyone noticed.
 `../../engine-status.sh` reports whether this folder is still calling the
 engine rather than carrying a copy of it. The drift it used to watch for is
 gone: there is one animator now, and `micro_overlay.py` plugs into it through
-`--overlay` rather than being patched into a copy.
+`--overlay` rather than being patched into a copy. Since the split it watches the
+badge machinery too - `micro_overlay.py`, `micro_audio.py` and `micro_icons.py`
+are on its list, because two categories reading one badge set is exactly the
+arrangement that drifted into three generations in a morning the last time it was
+three copies.
 
     same           the geometry and the shared tools. A difference here is drift
     MERGE          flowanim.py and the four docs - ours plus theirs
@@ -107,9 +126,9 @@ otherwise vanish into it.
 `--rebuild` re-derives the sphere; nothing else needs it.
 
 ```
-../.venv/bin/python micro_icons.py --all                 # the catalogue
-../.venv/bin/python micro_icons.py --one 'Choline:o'     # something not in it
-../.venv/bin/python micro_icons.py --sheet               # look at the lot
+../.venv/bin/python ../../engine/micro_icons.py --all                 # the catalogue
+../.venv/bin/python ../../engine/micro_icons.py --one 'Choline:o'     # something not in it
+../.venv/bin/python ../../engine/micro_icons.py --sheet               # look at the lot
 ```
 
 ## What a render spends its time on
@@ -206,7 +225,7 @@ five of them in eight seconds sound like five different rooms.
     sub       an octave under it, 90 ms          the weight behind it
     air       band-passed noise, 35 ms           the spray after it
 
-`micro_audio.py` keeps what is Micro's own - reading the cues `flowanim.py`
+`../../engine/micro_audio.py` keeps what is the series' own - reading the cues `flowanim.py`
 wrote, grouping them back into rows, writing the wav - and calls
 `impact.build(..., root=420.0)` for the sound itself. It is not copied in.
 
@@ -323,7 +342,7 @@ wrote them, and the topic is in the video's filename, so the bare command is the
 strict one:
 
 ```
-../.venv/bin/python audit.py ../OUTPUT/09.09/cholesterol_micro.mp4
+../.venv/bin/python audit.py ../../OUTPUT/ORGANS/cholesterol_organs.mp4
 ```
 
 The flags still override, for an old clip whose files have moved. What changed on
@@ -344,7 +363,7 @@ file says so in a line of its own before it starts.
   note; look at the poster before animating
 - the generator draws a soft shadow around the waves although the prompt forbids
   it, and it sits still while the silhouette ripples
-- `nutrients.json` holds about 130 foods. A food that is not in it stops the
+- `../../engine/micro/nutrients.json` holds 137 foods. A food that is not in it stops the
   render with the name it could not find, rather than guessing
 - a blue badge on a blue wave (lungs, row 2) separates on the shadow and the
   ball's own shading alone. It holds, but it is the thinnest case in the set

@@ -1,7 +1,14 @@
 # The engine
 
-Eight tools and three authored assets. Everything that makes a Healthness Shorts
-poster move is here, and **nowhere else**.
+Eight tools and three authored assets, plus the micro series' three and its badge
+set. Everything that makes a Healthness Shorts poster move is here, and **nowhere
+else**.
+
+**"Micro" in this file means the folder that is now `Organs/` and `Vitamins/`.**
+It split in two on 16 September 2026. Every measurement below that names Micro
+was made on what is now an Organs clip, and is left under the name it was taken
+under rather than re-attributed - a number is a record of a run, and renaming the
+folder does not move the run.
 
     make_base.py        rebuilds base_layer.png, ribbon_mask.png and ribbon_rgba.png
                         from source_wave_poster.jpeg. Deterministic: same source and
@@ -23,6 +30,17 @@ poster move is here, and **nowhere else**.
                         leave the waves alone?
     add_labels.py       the row captions, all ten at one size
     flowanim.py         the animator
+
+    micro_overlay.py    the micronutrient badges, and the response of whatever the
+                        poster put in the right circle. Read by Organs and Vitamins
+    micro_audio.py      the pop under each badge, the act-two ticks and the chord.
+                        Synthesised from impact.py, never sampled
+    micro_icons.py      builds the badge balls: recovers the sphere from the nine
+                        generated vitamin balls, sets the label, recolours by family
+
+    micro/icons/        42 badge balls at 512px, plus _ball_orange.png, the blank
+    micro/icon-sources/ the nine generated vitamin balls the sphere came from
+    micro/nutrients.json  food -> the two or three micros it is known for
 
     base_layer.png      five row stripes, five identical waves, the logo. 1536x2752
     ribbon_mask.png     where the waves are. Authored from base_layer.png, geometry only
@@ -50,7 +68,7 @@ variant, as its own module and its own flags - the way `micro_overlay.py` and
 
 ## One base looks like another
 
-All four variants are built on the same geometry, which is the point of it - and
+All seven variants are built on the same geometry, which is the point of it - and
 it means every test in `check_base.py` passes on a poster belonging to somebody
 else. On 8 September one variant grabbed another's poster out of `~/Downloads`,
 where `grab.py` takes the newest file of the right size and cannot know who
@@ -235,8 +253,8 @@ jpeg was ever involved.**
 
 Two variants turn a poster over and read something off the back of it. Everything
 below was paid for on 10 and 11 September 2026, most of it twice, and none of it
-is obvious from the code. `Macro/work/meal.py` and `Micro/work/micro_card.py` are
-the two worked examples; `engine/flip.py` and `engine/glass.py` are what they
+is obvious from the code. `Macro/work/meal.py` and `Vitamins/work/micro_card.py`
+are the two worked examples; `engine/flip.py` and `engine/glass.py` are what they
 share.
 
 **The turn hands over bare glass, and every card arrives.** Act two's frame 0 is
@@ -291,9 +309,11 @@ wrong.
 a generation can be measured while it is still in Downloads. A rejected poster
 sitting in `work/` is a file somebody will later mistake for the good one.
 
-**`render.sh` names its day folder from the clock.** A session that spans
-midnight writes into a new one and yesterday's looks abandoned. Nothing is
-misfiled; the folder name is just a day old.
+**`render.sh` names its day folder from the clock** - where one still does. A
+session that spans midnight writes into a new one and yesterday's looks
+abandoned. Nothing is misfiled; the folder name is just a day old. `../CLAUDE.md`
+rule 12 replaced the day folder with `OUTPUT/<CATEGORY>/`, flat; Exercise and
+Biohacks had not followed it as of 16 September.
 
 SOUND
 
@@ -329,9 +349,26 @@ any x, which is what an overlay needs to sit *in* the liquid rather than on a ro
 centre the wave crosses twice and sits on nowhere.
 
 Modules are imported from the directory the command was run in, so a variant's
-`work/` folder is where they live. Several can be named, comma separated, and
-they draw in that order: `--overlay body_overlay,muscle_overlay` puts the body
-down first so a badge is never behind it.
+`work/` folder is where they live - **and from here too**, because Python
+searches a script's own directory and `flowanim.py` is in it. That is how
+`Organs/` and `Vitamins/` both name `micro_overlay` without either keeping a
+copy.
+
+Several can be named, comma separated, and they draw in that order:
+`--overlay body_overlay,muscle_overlay` puts the body down first so a badge is
+never behind it. `Vitamins/` chains one of its own in front of a shared one -
+`--overlay vitamin_overlay,micro_overlay` - which is the arrangement to copy when
+a variant wants the shared behaviour plus something of its own, rather than a
+fork of the shared module.
+
+**Chained overlays must not read each other's flags.** Each declares its own in
+`add_arguments`, and where two want the same number the *caller* passes it to
+both from one variable. Biohacks let one read a flag another declared and its
+three overlays stopped being runnable separately at all: `AttributeError:
+'Namespace' object has no attribute 'dial_lead'`, thrown from a module that had
+declared nothing wrong, with the message that would have explained it discarded
+by a `2>/dev/null` around the render. `Vitamins/work/render.sh` is the worked
+example - `--vitamin-times` and `--micro-times`, one `TIMES` variable.
 
 ## sfx/
 

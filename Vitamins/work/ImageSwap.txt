@@ -1,0 +1,195 @@
+ADDING A TOPIC TO base_<topic>.png   —   VITAMINS
+=================================================
+
+The base layer already contains everything that must never change: the five row
+background stripes, the five liquid waves, the title and the Healthness logo.
+The waves are the animated part, and the animation reads them from
+ribbon_mask.png, which was authored from this exact geometry. If a wave moves by
+even a few pixels, the mask no longer fits and the video breaks.
+
+**THIS VARIANT ASKS FOR HALF OF WHAT ORGANS ASKS FOR.** The generator adds a bowl
+on the left of every row and *nothing at all* on the right. The right guide
+circle is where the vitamin ball goes, and the ball is composited afterwards by
+`vitamin_overlay.py` out of `engine/micro/icons/` - the app's own ball, at the
+app's own blue, with the letter already on it.
+
+That is deliberate and it is the same trade the rest of this repository makes:
+what must be identical is never regenerated. A generator asked for "the vitamin C
+in this food" draws pills one time, a bottle the next and an orange the third,
+and it cannot draw the letter at all, because the prompt forbids text in three
+places and has to. So the one element on the poster that has to be exactly right
+is the one element not left to a roll of the dice.
+
+No text of any kind - the title is drawn into the base and the row captions go on
+afterwards with add_labels.py.
+
+Attach the base for the topic (base_<topic>.png, not base_layer.png) and use the
+prompt below.
+
+
+GEOMETRY OF THE BASE LAYER  (1536 x 2752)
+
+  waves span x 229-1289          = 15% to 84% of the width
+  row 1 wave  y  491- 702        row stripes start at 412, 825, 1238, 1649, 2063
+  row 2 wave  y  904-1115        each stripe 413 tall
+  row 3 wave  y 1317-1527
+  row 4 wave  y 1729-1940
+  row 5 wave  y 2142-2353
+  title                          y ~160-368, drawn into the base
+  logo                           y ~2494-2576, centred
+
+  guide circles   r 137, centred x 250 and x 1270, one per row over each wave tip
+  caption bars    380 x 78, centred under each circle, 20px below it
+
+  Both tips of the wave sit on a circle centre, within a pixel, so a bowl that
+  fills its circle takes the liquid in at its middle.
+
+  The bowl fills the LEFT circle. The RIGHT circle is left exactly as it arrives.
+  Both caption bars stay empty: add_labels.py writes the food into the left one
+  and the vitamin into the right one.
+
+  The safe area in the prompt is one FOURTEENTH of the width, not one tenth.
+  The circles reach x 112 and x 1408, and one tenth is 154 - so a tenth tells the
+  model to keep the bowl out of the very circle it is told to fill, and it obeys
+  the sentence rather than the mark. A fourteenth is 110, just outside them.
+
+
+=== THE PROMPT ===  (fill the five rows, paste with base_<topic>.png attached)
+
+Use the attached image as the finished background. Add elements on top of it.
+
+DO NOT CHANGE THE ATTACHED IMAGE. The five coloured liquid waves are already drawn and are final: do not move them, do not redraw them, do not restyle them, do not change their shape, their length, their thickness, their colour or their gloss, and do not extend or shorten them. The five row background colours and the Healthness logo at the bottom are also final and stay exactly as they are. Add no droplets, no splashes, no spray, no sparkles, no glows, no shadows and no particles anywhere in the image.
+
+THE TITLE IS ALREADY IN THE IMAGE. Do not add a title, a subtitle or a heading.
+
+ADD NO TEXT OF ANY KIND. No labels, no captions, no words under the bowls, nothing at all. Text is added later, outside the generator.
+
+THE ONLY THING YOU ADD IS FIVE BOWLS OF FOOD, ONE PER ROW, ON THE LEFT. Nothing else is added anywhere in the image.
+
+EACH ROW HAS TWO FAINT CIRCLES and, under each circle, A FAINT BAR. THE CIRCLES AND THE BARS ARE ALIGNMENT MARKS, NOT ARTWORK. Place the bowl centred in the LEFT circle of its row, large enough to cover that mark completely.
+
+THE RIGHT-HAND CIRCLE OF EVERY ROW STAYS COMPLETELY EMPTY. Leave it exactly as it appears in the attached image. Do not put anything in it, do not put anything near it, do not draw over it, and do not erase or clean it up either - leave that part of the picture untouched. The right half of every row is finished already. Nothing is added there at all: no food, no object, no illustration, no symbol, no capsule, no pill, no tablet, no bottle, no fruit, no leaf, no garnish, no decoration and no second helping of the food that is in the bowl.
+
+THE FOOD DOES NOT SPREAD TO FILL THE EMPTY SPACE. The right side of each row looking bare is correct and intended. Do not widen the bowl, do not lengthen it, do not add a second bowl, a plate, a board, a cloth, a table or a surface, and do not scatter anything across the row towards the right. The bowl stays inside its own circle on the left.
+
+DO NOT REPLACE A CIRCLE WITH ANYTHING ROUND. Do not paint a disc, a plate, a panel, a badge, a sticker background, a lighter patch, a halo or a vignette behind the bowl. Wherever the bowl does not reach, the row's flat background colour must show through unchanged, exactly the colour it is in the attached image, right up to the edge of the food.
+
+The bars are reserved for text that is added later: keep them completely clear, do not cover them with the bowl or anything else, and do not draw on them. The bowl ENDS ABOVE THE BAR - it does not touch it, does not hang over its top edge, and does not overlap it by even a few pixels. If a bowl is too big to sit clear of the bar, draw it smaller.
+
+ALL THE FOOD IS INSIDE THE BOWL. Nothing is spilled, scattered, resting or arranged on the row beside it: no loose pieces, no crumbs, no shards, no stray fruit, no ingredients on a surface. A piece of food outside the bowl lands on the bar the caption needs and covers the word.
+
+KEEP EVERYTHING INSIDE THE SAFE AREA. Nothing may come closer than one fourteenth of the width to the left or the right edge of the poster - at 1536 wide, nothing may cross x=110 on the left or x=1426 on the right. That strip is what a vertical feed crops, and the edge of a bowl drawn into it is simply lost.
+
+Every one of the five bowls is a clear, colourless glass bowl, and every one is shot from a low three-quarter angle. Not one of them is seen from above, and not one of them is ceramic, opaque, painted or coloured.
+
+Row 1: a clear glass bowl of <FOOD 1>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 2: a clear glass bowl of <FOOD 2>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 3: a clear glass bowl of <FOOD 3>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 4: a clear glass bowl of <FOOD 4>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+Row 5: a clear glass bowl of <FOOD 5>, seen from a low three-quarter angle in perspective, its rim an ellipse and the side of the bowl clearly visible, the food heaped above the rim. The right-hand half of this row stays empty.
+
+The liquid leaves each bowl at its near rim on the right-hand side. The bowls are photorealistic and cleanly cut out, with no glow and no cast shadow. Keep every wave fully visible along the whole of its length.
+
+=== END OF PROMPT ===
+
+
+WHY THE PROMPT LOOKS REPETITIVE
+
+Every line of it was paid for once, most of them in the Organs template this one
+was split from on 16 September 2026.
+
+- The camera angle is stated twice: once for all five bowls, then again inside
+  every row. Said only at the top it holds for the first row or two and the rest
+  come out flat, seen straight down - a disc of food, not a bowl. Said only in
+  the rows it is ignored as decoration. Both, and all five are in perspective.
+- "its rim an ellipse and the side of the bowl clearly visible, the food heaped
+  above the rim" is the same instruction made checkable. A three-quarter angle is
+  a phrase the model can nod at; an elliptical rim and a visible side wall are
+  things it either draws or does not.
+- The bowl's material is named in every row too. "A bowl of walnuts" lets the
+  model pick: one poster came back with clear glass, another with opaque ceramic
+  in five different colours, off the same wording. Glass is the one that sits
+  next to a liquid without competing with it, so it is stated, not left to the
+  roll.
+- The no-text rule is split in two - the title, then everything else. Combined in
+  one paragraph the model reads it as being about the heading only and still puts
+  a word under each bowl.
+- The bars are described in the same breath as the circles, because they are the
+  same kind of mark: one to fill, one to leave alone. Mentioned in a paragraph of
+  their own they get treated as part of the background and covered.
+- "No part of the circle is still visible" is not enough on its own, and cost a
+  poster to learn. A generator satisfied it by painting a bright disc over the
+  circle and standing the bowl on that - the mark was gone, and a plate had taken
+  its place, 140 to 155 levels off the base, which no threshold catches without
+  eating the bowl. So the circles are named as alignment marks that are not
+  artwork, and the sentence after it forbids the replacement by name. Saying what
+  must disappear is only half of it; the other half is saying that nothing may
+  take its place.
+
+
+AND THE TWO PARAGRAPHS THAT ARE THIS VARIANT'S OWN
+
+The empty right circle is the new thing here, and an empty half of a row is the
+most suggestive thing you can hand a generator. Both paragraphs exist because
+"leave it empty" is not one instruction, it is two, and they fail differently:
+
+- **The circle itself.** "Leave it exactly as it appears" rather than "leave it
+  blank" or "remove the mark", because untouched is the state the animator can
+  detect: where the poster still equals the anchored base, `flowanim.py` puts the
+  clean base back and the mark is gone for free. A generator that helpfully tidies
+  the ring away has done no harm either, but a generator that paints *something*
+  there has, and the ball then lands on top of it. The list of nouns is long on
+  purpose - capsule, pill, tablet, bottle, fruit, leaf, garnish - because the ones
+  a model reaches for when told "vitamin" are exactly the ones it will reach for
+  when told nothing and left a circle.
+- **The space.** Forbidding the circle does not forbid the row. A model that has
+  been told five times that a bowl goes on the left and nothing goes on the right
+  will still widen the bowl, or lay the food out across the stripe towards the
+  gap, because a composition with one heavy side looks unfinished to it. So the
+  emptiness is named as correct and intended, in its own paragraph, and the ways
+  of filling it that are not "putting something in the circle" are listed.
+
+There is also a rule this variant does not need and Organs cannot avoid, and it is
+worth knowing why: ../../CLAUDE.md rule 10, that a body part named by its address
+draws everything at that address. Nothing here is named by an address, because
+nothing here is a body part. That is one whole class of regeneration this template
+cannot suffer.
+
+
+WHY THERE IS NO NEGATIVE PROMPT
+
+There was one in the parent template until 8 September and it was removed on the
+user's report: the generator sometimes deletes what the base drew - the reserved
+caption bars among them - and the separate negative field is where that comes
+from. The list said `text, letters, caption, label, title` and `changed logo`,
+while the body of the same prompt says the title is already in the image, the logo
+is final and the bars are reserved and must be left completely clear. Handed both,
+a generator can read the negative field as permission to remove exactly those
+things.
+
+The body carries all of it already, and carries it in context. Do not add one
+back. If a generation comes back wrong, the fix is a sentence in the body that
+names the thing and its place - which is what every entry in flow.md's "what is
+already known to break" turned out to be.
+
+
+AFTER GENERATING
+
+Check the wave before animating, from work/ - the tools are the engine's and
+are called by path, never copied in (../../CLAUDE.md rule 1):
+
+    ../.venv/bin/python ../../engine/check_base.py <topic>_poster.jpeg \
+        --base ../INPUT/base_<topic>.png
+
+It reports how far each wave has drifted from the base layer. Under about two
+pixels the authored mask still fits. Above that, regenerate rather than animate:
+the animation cannot correct a wave the generator has redrawn.
+
+Then look at the right-hand circles with your own eyes. `check_base.py` measures
+the wave, not the emptiness, and a bowl that crept rightwards or a stray leaf on
+the stripe is something only a person sees. The ball is 290px across and centred
+on the mark, so it hides anything inside the circle and nothing at all outside it.

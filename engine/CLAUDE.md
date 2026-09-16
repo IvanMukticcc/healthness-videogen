@@ -1,9 +1,16 @@
 # You are in the engine
 
-Everything here is used by **all four variants**. A change to `flowanim.py`
-changes the food clips, the micronutrient clips, the exercise clips and the
-biohack clips at once.
+Everything here is used by **all seven variants**. A change to `flowanim.py`
+changes the food clips, the organ clips, the vitamin clips, the exercise clips,
+the macro clips, the biohack clips and the fasting clips at once.
 That is the point of the folder, and it is also the risk.
+
+Some of it is used by fewer, and that is still not a variant's to change.
+`micro_overlay.py`, `micro_audio.py`, `micro_icons.py` and `micro/` are read by
+`Organs/` and `Vitamins/` only - the two halves of the micro series, split on
+16 September 2026. They are here rather than in either folder because two copies
+of a badge set is the arrangement rule 1 exists to prevent, and a change to them
+is a change to both categories' clips.
 
 ## Before you change anything
 
@@ -37,13 +44,26 @@ is asked for by name, never when it seems to be there.
 
 ## After you change anything
 
-Re-render one clip in each of the four variants and compare against what it
-produced before:
+Re-render one clip in each variant and compare against what it produced before.
+These are invocations that ran on 16 September 2026, not sketches:
 
-    cd ../Foods/work    && ../.venv/bin/python ../../engine/flowanim.py ...
-    cd ../Micro/work    && ./render.sh <topic> <topic>_labelled.png 'auto:...'
-    cd ../Exercise/work && ./render.sh <topic> <topic>_labelled.png 'auto:...'
-    cd ../Biohacks/work && ./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK'
+    cd ../Foods/work     && ./render.sh heart heart_labelled.png
+    cd ../Organs/work    && ./render.sh liver liver_labelled.png \
+                              'auto:LEAFY GREENS,BEETROOT,TURMERIC,BROCCOLI,COFFEE'
+    cd ../Vitamins/work  && ./render.sh demo
+    cd ../Exercise/work  && ./render.sh bigfive bigfive_labelled.png \
+                              'auto:BENCH PRESS,PULL-UP,BACK SQUAT,LATERAL RAISE,DEADLIFT'
+    cd ../Biohacks/work  && ./render.sh calm \
+                              'auto:MORNING LIGHT,COLD FINISH,WALK AFTER LUNCH,LIGHTS DOWN,NOSE BREATHING' \
+                              calm_labelled.png
+    cd ../Macro/work     && ./render.sh breakfast breakfast_labelled.png \
+                              'Greek yogurt,Blueberries,Honey,Oats,Almonds' \
+                              '200 Greek yogurt,80 Blueberries,20 Honey,60 Oats,15 Almonds'
+    cd ../Longevity/work && ./render.sh hour168 16_8 hour168_labelled.png
+
+`WIDTH=540` makes each about 26s instead of 66s and changes no timing. Two of
+them ignore an `OUT=` you give them and write into their own `../OUTPUT/$DAY/`
+- Exercise and Biohacks - so check for a day folder you did not mean to make.
 
 Identical to the frame is the expected result for a refactor. A difference is
 fine when it is a fix arriving - then say which fix, and how large the difference
@@ -53,9 +73,16 @@ is, in pixels and clusters, not in adjectives.
 
 must still say every variant calls the engine and keeps no copy.
 
+**A tool added here is not covered until it is on that script's `FILES` list.**
+The list is typed by hand, which is the property that let Longevity go unchecked
+for a day, and the three `micro_*` tools were added to it the same commit that
+moved them in.
+
 ## The comments say bowl and organ
 
 They describe the mechanism through the case it was built for: a bowl of food on
 the left of each row, the organ it feeds on the right, both filling a guide
 circle drawn over the wave's two tips. In `Exercise` the same two circles hold a
-lifter and a body. The mechanism is the circles; the nouns are the food version's.
+lifter and a body; in `Vitamins` the right one holds a badge ball this repository
+draws itself and the generator never touches. The mechanism is the circles; the
+nouns are the food version's.

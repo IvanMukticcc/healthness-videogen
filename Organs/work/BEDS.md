@@ -1,9 +1,12 @@
 # Water beds — where the four came from
 
-The engine's `flow_soft_8s.m4a` is what `render.sh` uses unless told otherwise,
-and it was rejected on 8 September for sounding like a tap running in a flat
-rather than water outdoors. That is measurable, which is how these four were
-chosen rather than guessed.
+The engine's `flow_soft_8s.m4a` was what `render.sh` used until 8 September, when
+it was rejected for sounding like a tap running in a flat rather than water
+outdoors. That is measurable, which is how these four were chosen rather than
+guessed. **What `render.sh` uses today is `flow_soft_warmer_8s.m4a`** - the same
+recording with a -14 dB shelf from 2 kHz - and the table below is the survey that
+led there, not a description of what is in use. The "(in use)" marker in it is
+historical; see the end of this file.
 
 **Basis: the finished 8 s beds, the whole 8.0 s, mono sum, Welch average of
 8192-sample Hann frames at 50% overlap, share of total energy, top band
@@ -15,7 +18,7 @@ re-measuring to catch it. Name the basis or the table is decoration.
 
 | bed | centroid | <80 Hz | 300 Hz-2 kHz | 2-8 kHz | >8 kHz |
 | --- | --- | --- | --- | --- | --- |
-| `flow_soft_8s.m4a` (in use) | 2838 Hz | 5.0% | 58.1% | **27.2%** | 9.1% |
+| `flow_soft_8s.m4a` (was in use, to 8 Sept) | 2838 Hz | 5.0% | 58.1% | **27.2%** | 9.1% |
 | `flow_river_8s.m4a` | **1193 Hz** | 1.1% | 74.3% | 15.7% | 0.3% |
 | `flow_brook_8s.m4a` | 1826 Hz | 1.3% | 75.7% | 16.3% | 3.6% |
 | `flow_stones_8s.m4a` | 1931 Hz | 4.9% | 65.5% | 19.8% | 5.6% |
@@ -139,10 +142,15 @@ they do not go to `OUTPUT/`.
 **They are on the shelf, not in here.** All four went into `engine/sfx/` on
 8 September on the user's instruction, with their source recordings and their
 entries in `sfx/LICENCES.md`, which is the fuller record - this file is the
-reasoning behind the choice. A bed is not Micro's own the way `micro_overlay.py`
-is: every variant pours water, so a bed belongs where all of them can reach it.
+reasoning behind the choice. A bed was never this variant's own: every variant
+pours water, so a bed belongs where all of them can reach it. (`micro_overlay.py`
+was the contrast this sentence used to draw, and on 16 September it went into the
+engine as well, for the same argument one size down - two categories read it now.)
 
-Nothing points at them yet. `render.sh` still defaults to `flow_soft_8s.m4a`, so
-no clip anywhere changed when they landed - Micro's last cut re-renders to a
-byte-identical audio track. Changing that default is a one-line edit to this
-variant's own `render.sh`, and it waits until one of them is picked.
+**One of them was picked.** `render.sh` defaults to `flow_soft_warmer_8s.m4a`,
+not `flow_soft_8s.m4a`, and has since 8 September: the soft one was rejected for
+sounding like a tap running indoors, `warm` took -10 dB off it from 2 kHz and
+`warmer` takes that shelf to -14. The sentence here said otherwise until
+16 September, which is the ordinary way of it - the default moved in the script
+and the paragraph describing it did not. `superfoods14` shipped on
+`flow_soft_warm`, which is why that file stays on the shelf.

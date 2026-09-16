@@ -6,14 +6,20 @@ too - then this.
 
 ## The job
 
-1. **Keep the engine one engine.** Eight tools, three authored wave assets, one
-   copy. `./engine-status.sh` must say every variant calls it and keeps none.
-   When it stops saying that, someone forked a tool; read the diff and put the
-   difference where it belongs before it grows.
+1. **Keep the engine one engine.** Eight tools, three authored wave assets, the
+   micro series' three and its badge set, one copy of each.
+   `./engine-status.sh` must say every variant calls it and keeps none. When it
+   stops saying that, someone forked a tool; read the diff and put the difference
+   where it belongs before it grows. **A tool you add is not covered until it is
+   on that script's `FILES` list** - the list is typed by hand, which is what let
+   Longevity go unchecked for a day.
 
 2. **Decide what is engine and what is variant.** The test that has held so far:
 
-   - Does the miss happen in all four? Engine.
+   - Does the miss happen in more than one variant? Engine. It does not have to
+     be all of them: `glass.py` and `flip.py` are read by two, and
+     `micro_overlay.py` by the two halves of the micro series. Two is enough,
+     because two copies is what drifts.
    - Is it about what *this* variant puts in its circles, or draws on top? The
      variant's own module, through `--overlay` (`build`/`draw`) or `refine_art`.
    - Is it a number another variant might want different? A flag, with the
@@ -98,13 +104,17 @@ that do not are the ones that go a day.
 
 ## Verify after you change
 
-Rule 4, in full. Re-render one clip in each of the four variants and compare
-against what it produced before:
+Rule 4, in full. Re-render one clip in each of the seven variants and compare
+against what it produced before. `engine/CLAUDE.md` carries the seven invocations
+that actually ran on 16 September, arguments and all, rather than these sketches:
 
-    cd Foods/work    && ../.venv/bin/python ../../engine/flowanim.py <poster> ...
-    cd Micro/work    && ./render.sh <topic> <topic>_labelled.png 'auto:...'
-    cd Exercise/work && ./render.sh <topic> <topic>_labelled.png 'auto:...'
-    cd Biohacks/work && ./render.sh <topic> 'auto:HACK,HACK,HACK,HACK,HACK'
+    cd Foods/work     && ./render.sh <topic> <topic>_labelled.png
+    cd Organs/work    && ./render.sh <topic> <topic>_labelled.png 'auto:...'
+    cd Vitamins/work  && ./render.sh <topic>
+    cd Exercise/work  && ./render.sh <topic> <topic>_labelled.png 'auto:...'
+    cd Biohacks/work  && ./render.sh <topic> 'auto:HACK,...' <topic>_labelled.png
+    cd Macro/work     && ./render.sh <topic> <topic>_labelled.png '<foods>' '<meal>'
+    cd Longevity/work && ./render.sh <topic> <protocol> <topic>_labelled.png
 
 Identical to the frame is what a refactor should produce. A difference is fine
 when it is a fix arriving - then say which fix, and how large, in pixels and
@@ -117,6 +127,40 @@ of mine - the one titled *The engine is off limits from a variant, said plainly*
 The change turned out to be worth keeping, which is luck, not process. Stage the
 files you touched, by name.
 
+## The micro series is two categories now
+
+Split on 16 September 2026 on the user's instruction: `Micro/` became `Organs/`
+(one scene, the organ on the right, the finale at the end) and `Vitamins/` (the
+headline vitamin in the right circle, no act-one finale, the poster turns over
+into the micro score). `git mv` carried the corpus - 34 bases, 28 posters and the
+whole of `work/` - into `Organs/`, because every one of those posters has organs
+in it.
+
+**Four things went into `engine/` rather than being copied**, and the decision is
+the rule-2 test above rather than a preference: `micro_overlay.py`,
+`micro_audio.py`, `micro_icons.py` and `micro/` - the 42 badge balls, the nine
+sources and `nutrients.json`. Both categories read all of them, and the whole of
+rule 1 is that two copies of one thing drift. The move was byte-neutral and was
+checked that way rather than asserted: `liver` re-rendered **byte-identical**
+before and after, and no pre-existing engine file differs from HEAD - every
+change under `engine/` is an addition or a move-in, which is the strongest
+available form of "the other five variants cannot have moved". All seven were
+re-rendered anyway.
+
+**What was deliberately NOT done**, because rule 5 says so: `OUTPUT/MICRO/` and
+`OUTPUT/DONE/MICRO/` are untouched. The 28 clips in DONE were cut as two-act
+organ clips and belong cleanly to neither new category. Nothing writes to either
+folder now and nothing should be re-filed into one of the new ones.
+
+**Two things the split made visible and did not fix.** `render.sh` in `Exercise/`
+and `Biohacks/` still writes `../OUTPUT/$DAY/` and ignores an `OUT=` handed to
+it - found by running both for rule 4, each of which made a `16.09/` folder that
+had to be removed afterwards. That is rule 12's outstanding half and it is those
+folders' to fix. And running rule 4 in a variant overwrites that variant's
+`work/` intermediates - `<topic>_silent.mp4`, its wavs and its cue files - which
+is harmless for gitignored scratch and is worth knowing before doing it in a
+folder somebody else is working in.
+
 ## What is open
 
 - **Exercise's base is not finished.** Do not change it, and do not act on ideas
@@ -124,6 +168,12 @@ files you touched, by name.
   giving `recolor_base.py` a per-side `--anchors`, so a variant that draws its
   own right-hand artwork can have a base with no right guide circle at all - no
   mark, nothing for the generator to fill, no ring to clean up afterwards.
+- **The badge set now has two readers, which is the thing to watch.** Adding a
+  nutrient to `engine/micro/nutrients.json` or a ball to `engine/micro/icons/`
+  changes both categories at once, and neither will say so. `micro_icons.py --all`
+  rebuilds the catalogue byte-identically to what every shipped clip was cut
+  from; that property is the check, and it has been true through two moves of
+  that folder now.
 - **`refine_art` has no user yet.** It was added for Exercise's black-singlet
   case; if a second variant needs the same correction, that is the signal to
   promote it into the animator.
@@ -203,7 +253,7 @@ files you touched, by name.
   covered and 55.2% visible, in five clusters. That is the first report from a
   variant whose number held.
 
-- **Micro's organs have no grammar yet.** Exercise's body reacts to every badge
+- **Organs' organs have no grammar yet.** Exercise's body reacts to every badge
   from the first second, so a finale there is a summary of something the viewer
   has been taught. Micro's organs do not move at all for eight seconds, so a
   finale would be the first thing an organ ever does - and a first time in the
@@ -352,7 +402,7 @@ stray total from 134 to 233 px, and it still passed. Fixed in that folder:
 `render.sh` now writes `<topic>_hacks.txt` beside the three cue files and
 `check.py` reads it when the flag is absent.
 
-The measured version of the same thing in `Micro/work/audit.py`, on
+The measured version of the same thing in `Organs/work/audit.py`, on
 `cholesterol_silent.mp4`, from this side:
 
     --cues and --finale, as render.sh runs it     4 windows    0 px   clean

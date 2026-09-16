@@ -1,16 +1,20 @@
 # Healthness Shorts
 
-Vertical clips where something pours along a wave into what it changes. Four
+Vertical clips where something pours along a wave into what it changes. Seven
 variants of the same idea, one engine underneath them.
 
 ## The two folders that matter
 
-Every variant has the same three, and only two of them are yours:
+Every variant has the same two:
 
     INPUT/     the base image for the topic, and nothing else. Take it from here
                and attach it to the prompt
-    OUTPUT/    the finished clip, in a folder for the day. Take it from here too
     work/      everything else, including the poster that comes back
+
+The finished clip does not come out of the variant any more. It goes to
+`OUTPUT/<CATEGORY>/` at the root of this repository, flat and dateless, and
+`OUTPUT/DONE/<CATEGORY>/` is where the user files it once it has been published.
+A variant's own `OUTPUT/` folder, where one still exists, is history.
 
 `INPUT/` holds `base_<topic>.png` and no other kind of file. Its clean copy and
 its layout are working files that only the tools read, so `recolor_base.py
@@ -25,12 +29,23 @@ generated from a prompt three revisions old.
 ## The variants
 
     Foods/       a food, a wave, the organ it feeds. The original
-    Micro/       the same, with the vitamins and minerals popping onto the rows
+    Organs/      the same, with the vitamins and minerals popping onto the rows
+    Vitamins/    the headline vitamin in the right circle instead of the organ,
+                 and the poster turns over into a second act with the score on it
     Exercise/    a lift, a wave, the muscles it works, lighting on a body
+    Macro/       a meal, and what it adds up to on the back of the card
+    Biohacks/    five habits, a day bar, chips and dials
+    Longevity/   five rows are one fast, not five topics
+
+`Organs/` and `Vitamins/` were one folder called `Micro/` until 16 September
+2026. They are the same clip with two differences: what is in the right circle,
+and whether the poster turns over.
 
 ## The engine
 
-    engine/      eight tools, three authored wave assets, and the sound shelf
+    engine/      eight tools, three authored wave assets, the sound shelf, and
+                 micro/ - the badge balls and nutrients.json, read by both halves
+                 of the micro series
 
 `engine/README.md` is the one to read before changing anything in there. The
 short version: **a variant never keeps a copy of an engine file.** It calls

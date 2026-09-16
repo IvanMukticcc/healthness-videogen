@@ -9,20 +9,32 @@ This is its own git repository — `healthness-videogen`, private, branch `main`
 
 **Started at the root rather than inside a variant?** Then the engine is yours
 and so is deciding what belongs in it: read `MAINTAINER.md` after this. Started
-inside `Foods/`, `Micro/`, `Exercise/` or `Biohacks/`? That folder is your whole
-remit - see
-rule 3 - and `MAINTAINER.md` is not addressed to you.
+inside `Foods/`, `Organs/`, `Vitamins/`, `Exercise/`, `Macro/`, `Biohacks/` or
+`Longevity/`? That folder is your whole remit - see rule 3 - and `MAINTAINER.md`
+is not addressed to you.
 
 ## The shape
 
     engine/                the eight tools, three authored wave assets, sfx/
-    Foods/ Micro/ Exercise/ Biohacks/   four variants, three folders each:
-    Longevity/             the father: five rows are one fast, not five topics
+        micro/             the badge balls and nutrients.json, read by the two
+                           halves of the micro series
+    Foods/ Organs/ Vitamins/ Exercise/ Macro/ Biohacks/    the variants, three
+    Longevity/             folders each. Longevity is the father: five rows are
+                           one fast, not five topics
         INPUT/             base_<topic>.png, and nothing else
         OUTPUT/            (was per-variant; see below - clips now ship to the
                            repository's own OUTPUT/, one folder per category)
         work/              everything else
     archive/               checkpoints from before this was a repository
+
+**`Micro/` became `Organs/` and `Vitamins/` on 16 September 2026**, on the user's
+instruction, because the one folder was making two different clips. `Organs/` is
+the classic: one scene, the organ each food feeds on the right, the finale at the
+end. `Vitamins/` puts the vitamin the food is known for in the right circle
+instead, drops act one's finale, and turns the poster over into a second act with
+the micro score on it. They share the badge set, the nutrient table and the badge
+animation, which is why those three went into `engine/` the same day rather than
+being copied - rule 1, one size down from the tools.
 
 ## The rules that are not negotiable
 
@@ -37,12 +49,13 @@ rule 3 - and `MAINTAINER.md` is not addressed to you.
    `engine/flowanim.py --overlay <module>` calls three functions in a module of
    yours - `add_arguments`, `build`, `draw`. See `engine/README.md`.
 
-3. **Change only your own variant.** If you were started in `Foods/`, `Micro/`,
-   `Exercise/` or `Biohacks/`, that folder is the whole of what you may edit.
-   Not the other three - other people and other agents are in them at the same
-   time. **And not
+3. **Change only your own variant.** If you were started in `Foods/`, `Organs/`,
+   `Vitamins/`, `Exercise/`, `Macro/`, `Biohacks/` or `Longevity/`, that folder is
+   the whole of what you may edit. Not the others - other people and other agents
+   are in them at the same time, and `Organs/` and `Vitamins/` are two folders
+   rather than one precisely so that two people can be in them at once. **And not
    `engine/`**, no matter how small or how obviously right the change looks.
-   A variant is not the place from which the thing all four variants run gets
+   A variant is not the place from which the thing all seven variants run gets
    changed.
 
    The rule reads like a restriction and works like a division of labour. Four
@@ -186,14 +199,15 @@ right. Do not rediscover them.
     Set by the user on 11 September 2026, replacing a per-variant `OUTPUT/` with
     a folder per day inside it.
 
-        OUTPUT/MICRO/  MACRO/  FITNESS/  BIOHACKS/    what has been made
-        OUTPUT/DONE/MICRO/  MACRO/  FITNESS/  BIOHACKS/   what has gone out
+        OUTPUT/ORGANS/  VITAMINS/  MACRO/  FITNESS/  BIOHACKS/   what has been made
+        OUTPUT/DONE/ORGANS/  VITAMINS/  MACRO/  FITNESS/  BIOHACKS/  what has gone out
 
     **Flat, and no day folders.** The date came off the clock, so a session that
     spanned midnight wrote into a folder that looked abandoned and a clip's
     filename was the only thing that said which topic it was - the day it was
-    cut said nothing anyone needed. `render.sh` in every variant writes
-    `../OUTPUT/$DAY/` and all six need changing to `../../OUTPUT/<CATEGORY>/`.
+    cut said nothing anyone needed. Every variant's `render.sh` wrote
+    `../OUTPUT/$DAY/` when this rule was made; the note below says which of them
+    still do.
 
     **`DONE/` is the user's, not a variant's.** They move a clip there by hand
     once it has been published, and that is the only record anywhere of what has
@@ -203,12 +217,24 @@ right. Do not rediscover them.
     `Exercise/` ships to `FITNESS/`. `Foods/` and `Longevity/` have no folder
     yet and have not been given one.
 
+    **`OUTPUT/MICRO/` and `OUTPUT/DONE/MICRO/` stay exactly as they are.** The 28
+    clips filed in DONE were cut before the 16 September split, as two-act organ
+    clips that belong cleanly to neither category. Rule 5 covers them: a shipped
+    clip is not re-filed, re-cut or re-named because a later one is organised
+    better. Nothing writes to either folder now.
+
+    Still true after the split, and still nobody's current task: `render.sh` in
+    `Exercise/` and `Biohacks/` writes `../OUTPUT/$DAY/` and ignores an `OUT=`
+    given to it. Checked on 16 September by running both - each made a fresh day
+    folder. `Organs/`, `Vitamins/` and `Macro/` are on `../../OUTPUT/<CATEGORY>/`.
+
 13. **An argument that was authored is recorded, not only passed.** Micro's
     badge list - the five nutrients a topic names - existed in exactly two
     places: `prompt_<topic>.txt`, which rule 8 forbids reading back, and the
     pixels of the finished clips. Nothing else. It was recovered for 28 topics
-    by matching each drawn disc against `icons/`, which worked, and would not
-    have if the clips had been cleaned before the prompts were.
+    by matching each drawn disc against the badge set - `engine/micro/icons/`
+    since the split, `Micro/work/icons/` then - which worked, and would not have
+    if the clips had been cleaned before the prompts were.
 
     **The test is whether a command can produce it.** A base comes back from
     `recolor_base.py`, a clip from `render.sh`, a label string from
@@ -216,9 +242,12 @@ right. Do not rediscover them.
     anything, and that is the same argument rule 9 makes about posters.
 
     So: per-topic authored data goes in a `*.json` beside the code that uses it.
-    Micro's `meals.json` already does this for act two's grams and the badge
-    list belongs with them. **Macro has no such file at all** - its five foods
-    and its meal are typed at the command line and recorded nowhere.
+    `Organs/work/meals.json` does this - title, captions, badge list and the five
+    foods - and `Vitamins/work/topics.json` goes further: nothing in that folder
+    takes a food, a vitamin or a badge as an argument at all, because `vitamins.py`
+    derives every one of them from that file and `render.sh` asks it. That is the
+    shape to copy. **Macro has no such file at all** - its five foods and its meal
+    are typed at the command line and recorded nowhere.
 
     This is not rule 8 loosened. The prompt is still not a file and still is not
     read back; the point is that the *inputs* the prompt was built from have to

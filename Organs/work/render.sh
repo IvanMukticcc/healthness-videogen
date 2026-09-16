@@ -2,11 +2,12 @@
 # render.sh - poster in, finished clip out: liquid, badges, water and pops.
 #
 # The three steps have to agree on when the badges land, and they do it through
-# one file: flowanim.py writes the landing times it actually used, micro_audio.py
-# reads them. Typing the times twice is how a pop ends up half a frame off the
-# badge it belongs to, which reads as a sync fault even when nobody can say why.
+# one file: flowanim.py writes the landing times it actually used, and
+# engine/micro_audio.py reads them. Typing the times twice is how a pop ends up
+# half a frame off the badge it belongs to, which reads as a sync fault even when
+# nobody can say why.
 #
-#   ./render.sh liver work/liver_labelled.png 'auto:LEAFY GREENS,BEETROOT,TURMERIC,BROCCOLI,COFFEE'
+#   ./render.sh liver liver_labelled.png 'auto:LEAFY GREENS,BEETROOT,TURMERIC,BROCCOLI,COFFEE'
 #
 # Anything after the third argument goes straight to flowanim.py, so
 # --micro-d, --micro-times, --seconds and the rest are available untouched.
@@ -14,7 +15,7 @@ set -euo pipefail
 cd "$(dirname "$0")"          # work/, where this variant's own code lives
 
 if [ $# -lt 3 ]; then
-    sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'
     exit 1
 fi
 
@@ -63,19 +64,24 @@ POP_GAIN="${POP_GAIN:-0.85}"
 # the badges coming forward rather than the clip getting quieter.
 BED_GAIN="${BED_GAIN:-0.30}"
 WIDTH="${WIDTH:-1080}"          # 540 while tuning: 26s a render against 66s, same timing
-# ../../OUTPUT/MICRO/, flat and dateless (../CLAUDE.md rule 12). The day folder
+# ../../OUTPUT/ORGANS/, flat and dateless (../CLAUDE.md rule 12). The day folder
 # is gone and with it the fault it caused: its name came from the clock, so a
 # session that ran past midnight wrote into a new one and the evening's work
-# looked abandoned. What has gone out lives in ../../OUTPUT/DONE/MICRO/, which
+# looked abandoned. What has gone out lives in ../../OUTPUT/DONE/ORGANS/, which
 # the user fills by hand and nothing here writes to.
-OUT="${OUT:-../../OUTPUT/MICRO/${TOPIC}_micro.mp4}"
+#
+# ORGANS rather than MICRO since 16 September, when the micro series split in two.
+# ../../OUTPUT/MICRO/ and ../../OUTPUT/DONE/MICRO/ are left exactly as they are:
+# the 28 clips in there were cut before the split and rule 5 says a shipped clip
+# is not re-filed because a later one is organised better.
+OUT="${OUT:-../../OUTPUT/ORGANS/${TOPIC}_organs.mp4}"
 # THE GUARD THAT USED TO BE HERE IS GONE, and deliberately rather than by
 # oversight. It refused when the target already existed, which was right when a
 # day folder meant "cut today": a second render of a topic into the same day was
 # a mistake worth stopping. In a flat folder the target exists after the first
 # render of a topic forever, so the same guard would refuse every legitimate
-# re-cut. What it protected is now protected by the structure - OUTPUT/MICRO is
-# what has been made and is rewritable, OUTPUT/DONE/MICRO is what has gone out
+# re-cut. What it protected is now protected by the structure - OUTPUT/ORGANS is
+# what has been made and is rewritable, OUTPUT/DONE/ORGANS is what has gone out
 # and nothing here writes to it.
 
 for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$ANCHORED" \
@@ -84,24 +90,25 @@ for f in "$POSTER" "$DIR/base_${TOPIC}_clean.png" "$ANCHORED" \
 done
 mkdir -p "$(dirname "$OUT")"
 
-# FINALE=off is for the two-act cut and only for it. The finale - the surge, the
-# organs lighting again, the chord - is an ENDING, and in a two-act clip act one
-# is not the end: the user's words were that it "looks too much like the end of
-# the whole video". A single-act clip keeps it, because there it is the end.
+# THE FINALE IS NOT OPTIONAL HERE ANY MORE, and that is the whole of what this
+# category is. A clip of one scene ends with the surge, the organs lighting again
+# and the chord, because that is where it ends.
 #
-# Off also means no ${TOPIC}_finale.txt, which is what the duck and the riser
-# below are conditional on, so they drop out on their own rather than needing
-# their own switch. The stale-file case is handled the same way it always was:
-# the file is removed first, so its presence can only mean this run wrote it.
+# There was a FINALE=off branch until 16 September and it existed for exactly one
+# caller: the two-act cut, where act one is not the end and a chord in the middle
+# "looks too much like the end of the whole video" in the user's words. That cut
+# is the Vitamins category now and it has its own render.sh, so the switch here
+# has no caller left. A flag nobody passes is a flag that is never exercised and
+# eventually is wrong, so it is gone rather than kept in case.
+#
+# The conditionals below still read ${TOPIC}_finale.txt rather than assuming it.
+# That is not the removed switch leaving a shadow: the file is deleted before the
+# render, so its presence afterwards can only mean this run wrote it, and a duck
+# placed around a finale that failed to happen would be a silent fault.
 MICRO_TIMES="${MICRO_TIMES:-0.25,1.35,2.45,3.55,4.65}"
-FINALE="${FINALE:-auto}"
-if [ "$FINALE" = off ]; then
-    rm -f "${TOPIC}_finale.txt"
-    FIN_ARGS=(--finale off)
-else
-    FIN_ARGS=(--finale auto --finale-cue "${TOPIC}_finale.txt"
-              --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05)
-fi
+rm -f "${TOPIC}_finale.txt"
+FIN_ARGS=(--finale auto --finale-cue "${TOPIC}_finale.txt"
+          --surge 0.30 --surge-dur 0.34 --surge-stagger 0.05)
 
 echo "== liquid, badges and finale"
 # THE RHYTHM IS A VARIABLE NOW, because it has moved twice in two days.
@@ -136,7 +143,7 @@ echo "== pops and the riser"
 # A riser left over from a previous run would be mixed into a clip that has no
 # finale, so the presence of the file is only allowed to mean this run wrote it.
 rm -f "${TOPIC}_riser.wav"
-../.venv/bin/python micro_audio.py --cues-file "${TOPIC}_cues.txt" \
+../.venv/bin/python ../../engine/micro_audio.py --cues-file "${TOPIC}_cues.txt" \
     --finale-file "${TOPIC}_finale.txt" \
     --finale-out "${TOPIC}_riser.wav" \
     --seconds "$SECONDS_USED" -o "${TOPIC}_pops.wav"

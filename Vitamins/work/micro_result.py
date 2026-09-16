@@ -29,7 +29,7 @@ Three things about the score are easy to get wrong and all three are the app's:
 averages the male and female goal for every nutrient, so the clip does not
 address half its audience with the other half's iron.
 
-    python3 micro_result.py --find beetroot          # ids, to fill meals.json
+    python3 micro_result.py --find beetroot          # ids, to fill topics.json
     python3 micro_result.py --topic pressure         # the whole result
     python3 micro_result.py --topic pressure --json  # for the overlay
 """
@@ -39,7 +39,13 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MEALS = os.path.join(HERE, "meals.json")
+# topics.json rather than Micro's meals.json: in this variant act one and act two
+# are about the same five foods, so they are authored once. A row carries the
+# food, its label, its headline vitamin and its serving, and this file reads the
+# last two. Splitting them into two files is how the two halves of a topic come
+# to disagree - and act two disagreeing with the picture above it is the one
+# error nothing downstream can catch.
+MEALS = os.path.join(HERE, "topics.json")
 # The app's own food table, read from the app rather than copied here: these
 # numbers move when the app's data moves, and a stale copy would be a clip
 # quoting a number the app no longer shows. --foods overrides it.
@@ -217,7 +223,10 @@ def result(topic, age=30, gender="none", foods_path=FOODS, meals_path=MEALS):
     if topic not in meals:
         raise SystemExit(f"{topic} is not in {os.path.basename(meals_path)} - "
                          f"have: {', '.join(sorted(k for k in meals if not k.startswith('_')))}")
-    meal = meals[topic]["foods"]
+    # `rows` is topics.json's name for them, because act one calls them rows and
+    # act two calls them foods and they are the same five things. `foods` is
+    # still accepted, so a meals.json copied over from Organs still works.
+    meal = meals[topic].get("rows") or meals[topic]["foods"]
     foods = load_foods(foods_path)
     totals, coverage, rows = total(meal, foods)
     ls = lines(totals, age, gender)

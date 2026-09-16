@@ -38,8 +38,10 @@ import wave
 
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                "..", "..", "engine"))
+# impact.py is beside this file now, so nothing has to be put on the path: a
+# script's own directory is already the first place Python looks. The three
+# `..`s that used to be here resolved from a variant's work/, and that is the
+# shape rule 1 exists to stop people relearning.
 import impact                                        # noqa: E402
 
 SR = impact.SR
