@@ -3,6 +3,22 @@
 Vertical clips where something pours along a wave into what it changes. Seven
 variants of the same idea, one engine underneath them.
 
+> **Arriving from outside the project?** The clips are not the interesting part.
+> This is a repository worked on by several agents at once — one at the root
+> holding the engine, one inside each variant — and what is written down here is
+> how they are kept from standing on each other.
+>
+> Three files carry that, and they are the ones to read:
+>
+> | | |
+> |---|---|
+> | [`CLAUDE.md`](CLAUDE.md) | the rules binding every agent. A variant never copies an engine tool; a variant needing what the engine lacks **says so and stops**; shipped is shipped. Each rule carries the date and the incident that produced it. |
+> | [`MAINTAINER.md`](MAINTAINER.md) | the root agent's job, and the part worth reading first — **"Verify before you believe."** Every variant report so far has been right about the cause and wrong about the number. Three shapes of that failure, with the measurements that caught each one. |
+> | [`engine-status.sh`](engine-status.sh) | drift detection. Per file, per variant: *calls the engine · same · stale · diverged*, and it dates a stale copy to the commit it came from. It discovers variants rather than listing them, after a hardcoded list quietly skipped the fifth one. |
+>
+> The engine is 14 Python tools in [`engine/`](engine). Everything else here is
+> artwork, audio and output.
+
 ## The two folders that matter
 
 Every variant has the same two:
